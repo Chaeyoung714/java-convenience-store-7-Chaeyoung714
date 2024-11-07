@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import store.view.InputView;
+import store.view.OutputView;
 
 public class Application {
     public static void main(String[] args) {
@@ -13,6 +15,8 @@ public class Application {
 
         Promotions promotions = registerPromotions();
         List<Product> products = registerProducts(promotions);
+        OutputView outputView = new OutputView();
+        outputView.printProudcts(products);
     }
 
     public static Promotions registerPromotions() {

@@ -49,4 +49,8 @@ public class Promotion {
     public LocalDate getEndDate() {
         return endDate;
     }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
 }
