@@ -11,11 +11,11 @@ public class Application {
     public static void main(String[] args) {
         // TODO: 프로그램 구현
 
-        List<Promotion> promotions = registerPromotions();
-
+        Promotions promotions = registerPromotions();
+        List<Product> products = registerProducts(promotions);
     }
 
-    public static List<Promotion> registerPromotions() {
+    public static Promotions registerPromotions() {
         try {
             List<Promotion> promotions = new ArrayList<>();
             Scanner scanner = new Scanner(new File(
@@ -23,20 +23,34 @@ public class Application {
             String ignore = scanner.next();
             while (scanner.hasNext()) {
                 String[] promotionInput = scanner.next().split(",");
-                System.out.println("startyear = " + promotionInput[3]);
-                System.out.println("endyear = " + promotionInput[4]);
                 promotions.add(new Promotion(
                         promotionInput[0], promotionInput[1], promotionInput[2], promotionInput[3], promotionInput[4]
                 ));
             }
-            for (Promotion promotion : promotions) {
-                System.out.println(promotion.getStartDate().getYear());
-                System.out.println(promotion.getEndDate().getYear());
-            }
-            return promotions;
+            return new Promotions(promotions);
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            return new ArrayList<>();
+            return null; // 리팩토링 예정
+        }
+    }
+
+    public static List<Product> registerProducts(Promotions promotions) {
+        try {
+            List<Product> products = new ArrayList<>();
+            Scanner scanner = new Scanner(new File(
+                    "./src/main/resources/products.md"));
+            String ignore = scanner.next();
+            while (scanner.hasNext()) {
+                String[] productInput = scanner.next().split(",");
+                products.add(new Product(
+                        productInput[0], productInput[1], productInput[2]
+                        , promotions.findByName(productInput[3])
+                ));
+            }
+            return products;
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>(); // 리팩토링 예정
         }
     }
 }
