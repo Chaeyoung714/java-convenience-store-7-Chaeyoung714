@@ -3,6 +3,7 @@ package store;
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,6 +16,7 @@ public class Application {
 
         Promotions promotions = registerPromotions();
         List<Product> products = registerProducts(promotions);
+        List<Promotion> ongoingPromotions = promotions.checkOngoingPromotionsOf(DateTimes.now().toLocalDate());
         OutputView outputView = new OutputView();
         outputView.printProudcts(products);
     }

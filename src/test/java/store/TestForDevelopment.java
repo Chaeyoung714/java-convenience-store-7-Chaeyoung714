@@ -2,6 +2,7 @@ package store;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -62,5 +63,16 @@ public class TestForDevelopment {
         assertThat(products.get(productsIndex).getQuantity()).isEqualTo(quantity);
         assertThat(products.get(productsIndex).getPromotion().getName()).isEqualTo(promotionName);
         productsIndex++; //이러면 테스트가 절차적이어진다. 연쇄적으로 영향을 받음 -> 리팩토링 필요
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"2023,1,1,0", "2024,1,1,2", "2024,11,1,3", "2024,12,1,2", "2025,1,1,0"}
+            , delimiter = ',')
+    void 날짜에_맞는_진행중인_프로모션을_반환한다(int year, int month, int day, int matchPromotionAmount) {
+        LocalDate localDate = LocalDate.of(year, month, day);
+
+        List<Promotion> ongoingPromotions = promotions.checkOngoingPromotionsOf(localDate);
+
+        assertThat(ongoingPromotions.size()).isEqualTo(matchPromotionAmount);
     }
 }
