@@ -3,7 +3,6 @@ package store;
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,8 +17,8 @@ public class Application {
         InputView inputView = new InputView();
 
         Promotions promotions = registerPromotions();
+        promotions.checkOngoingPromotionsBetweenAvailable(DateTimes.now().toLocalDate());//ongoing 확인 주기 : 한번 구매 시작할때(재입력은 따로 침)
         Products products = registerProducts(promotions);
-        List<Promotion> ongoingPromotions = promotions.checkOngoingPromotionsOf(DateTimes.now().toLocalDate());
         outputView.printProudcts(products.getProducts());
         String purchasingProducts = inputView.readPurchasingProducts();
         registerCart(purchasingProducts, products);
@@ -31,7 +30,7 @@ public class Application {
             List<Promotion> promotions = new ArrayList<>();
             Scanner scanner = new Scanner(new File(
                     "./src/main/resources/promotions.md"));
-            String ignore = scanner.next();
+            scanner.next(); //ignore first line
             while (scanner.hasNext()) {
                 String[] promotionInput = scanner.next().split(",");
                 promotions.add(new Promotion(
@@ -50,7 +49,7 @@ public class Application {
             List<Product> products = new ArrayList<>();
             Scanner scanner = new Scanner(new File(
                     "./src/main/resources/products.md"));
-            String ignore = scanner.next();
+            scanner.next(); //ignore first line
             while (scanner.hasNext()) {
                 String[] productInput = scanner.next().split(",");
                 products.add(new Product(
@@ -67,19 +66,21 @@ public class Application {
 
     public static Cart registerCart(String cartInput, Products products) {
         try {
-            Map<Product, Integer> cart = new HashMap<>();
             Map<String, String> parsedCart = parseCart(cartInput);
+            Map<String, Integer> cart = new HashMap<>();
             for (String productName : parsedCart.keySet()) {
                 int buyAmount = Integer.parseInt(parsedCart.get(productName));
                 if (buyAmount <= 0) {
                     throw new NumberFormatException();
                 }
-                cart.put(products.findByName(productName)
-                        , Integer.parseInt(parsedCart.get(productName)));
+                if (!products.hasName(productName)) {
+                    throw new IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
+                };
+                cart.put(productName, buyAmount);
             }
             return new Cart(cart);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+            throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -90,7 +91,7 @@ public class Application {
         try {
             Map<String, String> cart = new HashMap<>();
             String[] buyProducts = cartInput.split(",");
-            if (buyProducts.length > 0) { // ,로 split한 것 검증
+            if (buyProducts.length <= 0) { // ,로 split한 것 검증
                 throw new IllegalArgumentException();
             }
             for (String buyProduct : buyProducts) {

@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -72,14 +71,14 @@ public class TestForDevelopment {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"2023,1,1,0", "2024,1,1,2", "2024,11,1,3", "2024,12,1,2", "2025,1,1,0"}
+    @CsvSource(value = {"2023,1,1,false", "2024,1,1,false", "2024,11,1,true", "2024,12,1,false", "2025,1,1,false"}
             , delimiter = ',')
-    void 날짜에_맞는_진행중인_프로모션을_반환한다(int year, int month, int day, int matchPromotionAmount) {
+    void 날짜에_맞는_진행중인_프로모션을_반환한다(int year, int month, int day, boolean promotionDuringNovemberOngoing) {
         LocalDate localDate = LocalDate.of(year, month, day);
 
-        List<Promotion> ongoingPromotions = promotions.checkOngoingPromotionsOf(localDate);
+        promotions.checkOngoingPromotionsBetweenAvailable(localDate);
 
-        assertThat(ongoingPromotions.size()).isEqualTo(matchPromotionAmount);
+        assertThat(promotions.getPromotions().get(2).isOngoing()).isEqualTo(promotionDuringNovemberOngoing);
     }
 
     @Test

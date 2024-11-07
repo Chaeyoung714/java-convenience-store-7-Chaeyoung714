@@ -1,14 +1,16 @@
 package store;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
 
 public class Promotion {
-    private String name;
-    private int buyAmount;
-    private int getAmount;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private boolean isAvailable;
+    private final String name;
+    private final int buyAmount;
+    private final int getAmount;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
+    private final boolean isAvailable;
+    private boolean isOngoing;
 
     public Promotion(String name, String buyAmount, String getAmount, String startDate, String endDate) {
         this.name = name; //이름 중복 검증 필요!
@@ -17,6 +19,7 @@ public class Promotion {
         this.startDate = transferToDate(startDate);
         this.endDate = transferToDate(endDate);
         this.isAvailable = (this.getAmount != 0);
+        this.isOngoing = isOngoing(DateTimes.now().toLocalDate());
     }
 
     private LocalDate transferToDate(String dateInput) {
@@ -28,6 +31,23 @@ public class Promotion {
         } catch (NullPointerException e) {
             return null;
         }
+    }
+
+    public void checkIsOngoing(LocalDate date) {
+        if (isOngoing(date)) {
+            this.isOngoing = true;
+            return;
+        }
+        this.isOngoing = false;
+    }
+
+    private boolean isOngoing(LocalDate date) {
+        if (!isAvailable) {
+            return false;
+        }
+        return (isAvailable
+                && startDate.isEqual(date) || startDate.isBefore(date))
+                && (endDate.isEqual(date) || endDate.isAfter(date));
     }
 
     public String getName() {
@@ -52,5 +72,9 @@ public class Promotion {
 
     public boolean isAvailable() {
         return isAvailable;
+    }
+
+    public boolean isOngoing() {
+        return isOngoing;
     }
 }

@@ -9,13 +9,13 @@ public class Products {
         this.products = products;
     }
 
-    public Product findByName(String name) {
+    public boolean hasName(String name) {
         for (Product product : products) {
             if (product.getName().equals(name)) {
-                return product;
+                return true;
             }
         }
-        throw new IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
+        return false;
     }
 
     public List<Product> getProducts() {

@@ -21,19 +21,14 @@ public class Promotions {
         throw new IllegalStateException("[SYSTEM] Can't find such name of Promotion");
     }
 
-    public List<Promotion> getPromotions() {
-        return promotions;
+    public void checkOngoingPromotionsBetweenAvailable(LocalDate date) {
+        for (Promotion promotion : getAvailablePromotions()) {
+            promotion.checkIsOngoing(date);
+        }
     }
 
-    public List<Promotion> checkOngoingPromotionsOf(LocalDate date) {
-        List<Promotion> ongoingPromotions = new ArrayList<>();
-        for (Promotion promotion : getAvailablePromotions()) {
-            if ((promotion.getStartDate().isEqual(date) || promotion.getStartDate().isBefore(date))
-                    && (promotion.getEndDate().isEqual(date) || promotion.getEndDate().isAfter(date))) {
-                ongoingPromotions.add(promotion);
-            }
-        }
-        return ongoingPromotions;
+    public List<Promotion> getPromotions() {
+        return promotions;
     }
 
     private List<Promotion> getAvailablePromotions() {

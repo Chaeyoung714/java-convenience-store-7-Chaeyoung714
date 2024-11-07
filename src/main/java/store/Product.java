@@ -1,8 +1,11 @@
-package store;public class Product {
+package store;
+
+public class Product {
     private String name;
     private int price;
     private int quantity;
     private Promotion promotion;
+
 
     public Product(String name, String price, String quantity, Promotion promotion) {
         this.name = name;
