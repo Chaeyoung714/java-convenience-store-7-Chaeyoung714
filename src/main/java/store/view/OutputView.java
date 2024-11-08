@@ -51,7 +51,7 @@ public class OutputView {
         printPurchaseHistory(cart.getCart());
         printDivisionLine("증\t정");
         printPromotionHistory(customer.getPromotionGetProducts());
-        printDivisionLine("===");
+        printDivisionLine("=====");
         printPriceResult(customer);
     }
 
@@ -114,7 +114,7 @@ public class OutputView {
         StringBuilder paymentLine = new StringBuilder();
         paymentLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "내실돈"));
         paymentLine.append(
-                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", -customer.getPaymentAmount()));
+                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", customer.getPaymentAmount()));
 
         System.out.println(totalProductLine);
         System.out.println(promotionLine);

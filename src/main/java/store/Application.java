@@ -16,11 +16,16 @@ import store.view.OutputView;
 
 public class Application {
     public static void main(String[] args) {
+        Promotions promotions = registerPromotions();
+        Products products = registerProducts(promotions);
+
+        doOnePurchase(promotions, products);
+    }
+
+    public static void doOnePurchase(Promotions promotions, Products products) {
         OutputView outputView = new OutputView();
         InputView inputView = new InputView();
 
-        Promotions promotions = registerPromotions();
-        Products products = registerProducts(promotions);
         outputView.printProudcts(products.getProducts());
         String purchasingProducts = inputView.readPurchasingProducts();
         Cart cart = registerCart(purchasingProducts, products);
@@ -32,6 +37,7 @@ public class Application {
         applyMembership(customer, promotionAppliedAmount, inputView);
         customer.calculatePaymentAmount();
         outputView.printReceipt(customer);
+        restartOrStopPurchase(inputView, promotions, products);
     }
 
     public static Promotions registerPromotions() {
@@ -158,4 +164,13 @@ public class Application {
             customer.applyMembership(promotionAppliedAmount);
         }
     }
+
+    public static void restartOrStopPurchase(InputView inputView, Promotions promotions, Products products) {
+        String answer = inputView.readPurchaseRestart();
+        if (answer.equals("Y")) {
+            doOnePurchase(promotions, products);
+        }
+    }
+
+
 }
