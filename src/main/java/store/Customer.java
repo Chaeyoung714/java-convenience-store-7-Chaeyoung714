@@ -99,8 +99,9 @@ public class Customer {
     public void buyExcludingOutOfStockAmount(Product product, int outOfStockAmount,
                                              int buyAmount) {
         //excludesOutOfStock이면, buy가 달라진다. (6개 중 3개만 산다.)
-        buyAmount -= outOfStockAmount;
         int sumOfBuyAndGetAmountOfPromotionProduct = product.getPromotion().get().getBuyAmount() + 1;
+        buyAmount -= outOfStockAmount;
+        cart.deductBuyAmountOf(product, outOfStockAmount);
         product.buyPromotionAndRegularProduct(buyAmount);
         int promotionGetAmount = buyAmount / sumOfBuyAndGetAmountOfPromotionProduct;
         if (promotionGetAmount > 0) {
@@ -114,6 +115,7 @@ public class Customer {
         // includingPromotion이면, buyAmount가 하나 추가되고, 증정품도 추가된다.
         int sumOfBuyAndGetAmountOfPromotionProduct = product.getPromotion().get().getBuyAmount() + 1;
         buyAmount ++;
+        cart.addBuyAmountOf(product, 1);
         product.buyPromotionAndRegularProduct(buyAmount);
         int promotionGetAmount = buyAmount / sumOfBuyAndGetAmountOfPromotionProduct;
         if (promotionGetAmount > 0) {

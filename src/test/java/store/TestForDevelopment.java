@@ -171,7 +171,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_없으면_그냥_결제한다() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -179,6 +178,7 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("onlyRegular"), 3);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -191,7 +191,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_존재하고_프로모션_제공_개수랑_맞으면_결제한다() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -199,6 +198,7 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("withPromotion"), 3);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -212,7 +212,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_존재하고_프로모션_제공_개수의_2배면_2개를_증정하며_결제한다() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -220,6 +219,7 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "6", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("withPromotion"), 6);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -234,7 +234,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_존재하고_프로모션_제공_개수랑_맞는데_프로모션_재고가_부족하면_예외_발생() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -242,6 +241,7 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("withPromotion"), 6);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -252,7 +252,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_존재하고_프로모션_증정_상품을_안_가져왔는데_기존_프로모션_재고가_부족하면_예외_발생() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -260,6 +259,7 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "2", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("withPromotion"), 5);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -270,7 +270,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_존재하는데_프로모션_증정_상품을_안_가져왔을때_재고가_남아있으면_예외_발생() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -278,6 +277,7 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "6", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("withPromotion"), 5);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -288,7 +288,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_존재하고_프로모션_증정_상품을_안_가져왔는데_재고가_모자라면_증정하지_않고_계산한다() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -296,6 +295,7 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "4", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("withPromotion"), 5);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -309,7 +309,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_존재하고_프로모션_제공_개수와_맞지_않으면_그냥_결제한다() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -317,6 +316,7 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "4", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("withPromotion"), 4);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -330,7 +330,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_존재하고_프로모션_제공_개수와_맞지_않아서_그냥_결제할때_프로모션_재고가_모자라면_예외_발생() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -338,6 +337,7 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "2", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("withPromotion"), 4);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -348,7 +348,6 @@ public class TestForDevelopment {
 
     @Test
     void 프로모션_상품이_존재하지만_프로모션이_적용이_안되는_개수만_구매한다면_그냥_계산한다() {
-        Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
                 "withPromotion", "1000", "5", Optional.empty());
@@ -356,6 +355,8 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
+
+        Map<Product, Integer> cartMap = new HashMap<>();
         cartMap.put(testProducts.findByName("withPromotion"), 1);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
@@ -396,13 +397,18 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
-        Customer customer = new Customer(new Cart(new HashMap<>()));
+
+        Map<Product, Integer> carMap = new HashMap<>();
+        carMap.put(testProducts.findByName("withPromotion"), 6);
+        Cart cart = new Cart(carMap);
+        Customer customer = new Customer(cart);
 
         customer.buyExcludingOutOfStockAmount(testProducts.findByName("withPromotion"), 3, 6);
 
         assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(2);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
+        assertThat(cart.getCart().get(testProducts.findByName("withPromotion"))).isEqualTo(3);
     }
 
     @Test
@@ -415,14 +421,18 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "6", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
-        Customer customer = new Customer(new Cart(new HashMap<>()));
+
+        Map<Product, Integer> carMap = new HashMap<>();
+        carMap.put(testProducts.findByName("withPromotion"), 5);
+        Cart cart = new Cart(carMap);
+        Customer customer = new Customer(cart);
 
         customer.buyIncludingPromotionGetProduct(testProducts.findByName("withPromotion"), 5);
 
         assertThat(customer.getPromotionGetProducts().size()).isEqualTo(2);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
-
+        assertThat(cart.getCart().get(testProducts.findByName("withPromotion"))).isEqualTo(6);
     }
 
     @Test
