@@ -1,6 +1,7 @@
 package store;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import store.exceptions.DidNotBringPromotionGiveProductException;
@@ -8,12 +9,12 @@ import store.exceptions.OutOfPromotionStockException;
 
 public class Customer {
     private final Cart cart;
-    private final List<Product> promotionGetProducts;
+    private final Map<Product, Integer> promotionGetProducts;
     private int membershipDiscountAmount;
 
     public Customer(Cart cart) {
         this.cart = cart;
-        this.promotionGetProducts = new ArrayList<>();
+        this.promotionGetProducts = new HashMap<>();
         this.membershipDiscountAmount = 0;
     }
 
@@ -28,7 +29,7 @@ public class Customer {
             int promotionGetAmount = buyPromotionProduct(product, cartMap.get(product));
             if (promotionGetAmount > 0) {
                 for (int i = 0; i < promotionGetAmount; i++) {
-                    promotionGetProducts.add(product);
+                    addPromotionsGetProduct(product);
                 }
             }
         }
@@ -91,7 +92,7 @@ public class Customer {
         int promotionGetAmount = (buyAmount - outOfStockAmount) / sumOfBuyAndGetAmountOfPromotionProduct;
         if (promotionGetAmount > 0) {
             for (int i = 0; i < promotionGetAmount; i++) {
-                promotionGetProducts.add(product);
+                addPromotionsGetProduct(product);
             }
         }
     }
@@ -106,7 +107,7 @@ public class Customer {
         int promotionGetAmount = buyAmount / sumOfBuyAndGetAmountOfPromotionProduct;
         if (promotionGetAmount > 0) {
             for (int i = 0; i < promotionGetAmount; i++) {
-                promotionGetProducts.add(product);
+                addPromotionsGetProduct(product);
             }
         }
     }
@@ -120,7 +121,7 @@ public class Customer {
         int promotionGetAmount = buyAmount / sumOfBuyAndGetAmountOfPromotionProduct;
         if (promotionGetAmount > 0) {
             for (int i = 0; i < promotionGetAmount; i++) {
-                promotionGetProducts.add(product);
+                addPromotionsGetProduct(product);
             }
         }
     }
@@ -131,12 +132,20 @@ public class Customer {
         int promotionGetAmount = buyAmount / sumOfBuyAndGetAmountOfPromotionProduct;
         if (promotionGetAmount > 0) {
             for (int i = 0; i < promotionGetAmount; i++) {
-                promotionGetProducts.add(product);
+                addPromotionsGetProduct(product);
             }
         }
     }
 
-    public List<Product> getPromotionGetProducts() {
+    private void addPromotionsGetProduct(Product product) {
+        if (promotionGetProducts.containsKey(product)) {
+            promotionGetProducts.replace(product, promotionGetProducts.get(product) + 1);
+            return;
+        }
+        promotionGetProducts.put(product, 1);
+    }
+
+    public Map<Product, Integer> getPromotionGetProducts() {
         return promotionGetProducts;
     }
 }

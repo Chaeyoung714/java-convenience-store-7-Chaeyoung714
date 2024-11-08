@@ -207,7 +207,7 @@ public class TestForDevelopment {
 
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(2);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
-        assertThat(customer.getPromotionGetProducts()).containsExactly(testProducts.findByName("withPromotion"));
+        assertThat(customer.getPromotionGetProducts().containsKey(testProducts.findByName("withPromotion"))).isTrue();
     }
 
     @Test
@@ -228,8 +228,8 @@ public class TestForDevelopment {
 
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
-        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(2);
-        assertThat(customer.getPromotionGetProducts()).contains(testProducts.findByName("withPromotion"));
+        assertThat(customer.getPromotionGetProducts().get(testProducts.findByName("withPromotion"))).isEqualTo(2);
+        assertThat(customer.getPromotionGetProducts().containsKey(testProducts.findByName("withPromotion"))).isTrue();
     }
 
     @Test
@@ -302,7 +302,7 @@ public class TestForDevelopment {
 
         customer.applyPromotion();
 
-        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
+        assertThat(customer.getPromotionGetProducts().get(testProducts.findByName("withPromotion"))).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(4);
     }
@@ -323,7 +323,7 @@ public class TestForDevelopment {
 
         customer.applyPromotion();
 
-        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
+        assertThat(customer.getPromotionGetProducts().get(testProducts.findByName("withPromotion"))).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
     }
@@ -363,7 +363,7 @@ public class TestForDevelopment {
 
         customer.applyPromotion();
 
-        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(0);
+        assertThat(customer.getPromotionGetProducts().containsKey(testProducts.findByName("withPromotion"))).isFalse();
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(4);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
     }
@@ -382,7 +382,7 @@ public class TestForDevelopment {
 
         customer.buyIncludingOutOfStockAmount(testProducts.findByName("withPromotion"), 3, 6);
 
-        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
+        assertThat(customer.getPromotionGetProducts().get(testProducts.findByName("withPromotion"))).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(4);
     }
@@ -405,7 +405,7 @@ public class TestForDevelopment {
 
         customer.buyExcludingOutOfStockAmount(testProducts.findByName("withPromotion"), 3, 6);
 
-        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
+        assertThat(customer.getPromotionGetProducts().get(testProducts.findByName("withPromotion"))).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(2);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
         assertThat(cart.getCart().get(testProducts.findByName("withPromotion"))).isEqualTo(3);
@@ -429,7 +429,7 @@ public class TestForDevelopment {
 
         customer.buyIncludingPromotionGetProduct(testProducts.findByName("withPromotion"), 5);
 
-        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(2);
+        assertThat(customer.getPromotionGetProducts().get(testProducts.findByName("withPromotion"))).isEqualTo(2);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
         assertThat(cart.getCart().get(testProducts.findByName("withPromotion"))).isEqualTo(6);
@@ -449,7 +449,7 @@ public class TestForDevelopment {
 
         customer.buyExcludingPromotionGetProduct(testProducts.findByName("withPromotion"), 5);
 
-        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
+        assertThat(customer.getPromotionGetProducts().get(testProducts.findByName("withPromotion"))).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
 
