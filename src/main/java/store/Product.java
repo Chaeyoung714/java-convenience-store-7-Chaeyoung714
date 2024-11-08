@@ -44,6 +44,14 @@ public class Product {
         throw new IllegalStateException("[SYSTEM] Duplicated Promotion Item or Duplicated Regular Item");
     }
 
+    public void buyRegularProduct(int amount) {
+        if (regularQuantity - amount >= 0) {
+            regularQuantity -= amount;
+            return;
+        }
+        throw new IllegalStateException("out of regular product stock");
+    }
+
     public String getName() {
         return name;
     }

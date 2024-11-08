@@ -23,6 +23,7 @@ public class Application {
         String purchasingProducts = inputView.readPurchasingProducts();
         Cart cart = registerCart(purchasingProducts, products);
         cart.checkStock();
+        Customer customer = new Customer(cart);
 
     }
 
