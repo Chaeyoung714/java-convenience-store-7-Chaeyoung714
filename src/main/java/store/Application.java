@@ -3,6 +3,7 @@ package store;
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,17 +18,18 @@ public class Application {
         InputView inputView = new InputView();
 
         Promotions promotions = registerPromotions();
-        promotions.checkOngoingPromotionsBetweenAvailable(DateTimes.now().toLocalDate());//ongoing 확인 주기 : 한번 구매 시작할때(재입력은 따로 침)
         Products products = registerProducts(promotions);
         outputView.printProudcts(products.getProducts());
         String purchasingProducts = inputView.readPurchasingProducts();
         Cart cart = registerCart(purchasingProducts, products);
-        checkStockOfCartProducts(cart, products);
+        cart.checkStock();
+
     }
 
     public static Promotions registerPromotions() {
         try {
             List<Promotion> promotions = new ArrayList<>();
+            LocalDate todayDate = DateTimes.now().toLocalDate();
             Scanner scanner = new Scanner(new File(
                     "./src/main/resources/promotions.md"));
             scanner.next(); //ignore first line
@@ -35,6 +37,7 @@ public class Application {
                 String[] promotionInput = scanner.next().split(",");
                 promotions.add(new Promotion(
                         promotionInput[0], promotionInput[1], promotionInput[2], promotionInput[3], promotionInput[4]
+                        , todayDate
                 ));
             }
             return new Promotions(promotions);
@@ -46,18 +49,18 @@ public class Application {
 
     public static Products registerProducts(Promotions promotions) {
         try {
-            List<Product> products = new ArrayList<>();
+            Products products = new Products();
             Scanner scanner = new Scanner(new File(
                     "./src/main/resources/products.md"));
             scanner.next(); //ignore first line
             while (scanner.hasNext()) {
                 String[] productInput = scanner.next().split(",");
-                products.add(new Product(
+                products.registerProduct(
                         productInput[0], productInput[1], productInput[2]
                         , promotions.findByName(productInput[3])
-                ));
+                );
             }
-            return new Products(products);
+            return products;
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return null; // 리팩토링 예정
@@ -67,16 +70,18 @@ public class Application {
     public static Cart registerCart(String cartInput, Products products) {
         try {
             Map<String, String> parsedCart = parseCart(cartInput);
-            Map<String, Integer> cart = new HashMap<>();
+            Map<Product, Integer> cart = new HashMap<>();
             for (String productName : parsedCart.keySet()) {
+                // 구매하는 제품 이름 있는지, 그리고
                 int buyAmount = Integer.parseInt(parsedCart.get(productName));
                 if (buyAmount <= 0) {
                     throw new NumberFormatException();
                 }
                 if (!products.hasName(productName)) {
                     throw new IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
-                };
-                cart.put(productName, buyAmount);
+                }
+                ;
+                cart.put(products.findByName(productName), buyAmount);
             }
             return new Cart(cart);
         } catch (NumberFormatException e) {
@@ -110,19 +115,6 @@ public class Application {
             throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
-        }
-    }
-
-    public static void checkStockOfCartProducts(Cart cart, Products products) {
-        for (String productName : cart.getAllProductNames()) {
-            List<Product> buyProducts = products.findByName(productName);
-            int totalStockQuantity = 0;
-            for (Product product : buyProducts) {
-                totalStockQuantity += product.getQuantity();
-            }
-            if (totalStockQuantity < cart.getBuyCountByName(productName)) {
-                throw new IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
-            }
         }
     }
 }

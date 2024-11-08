@@ -14,10 +14,15 @@ public class OutputView {
         for (Product product : products) {
             String name = product.getName();
             int price = product.getPrice();
-            String quantity = quantityForPrint(product.getQuantity());
-            String promotionName = product.getPromotion().getName();
-            System.out.printf("- %s %,d원 %d개 %s" + System.lineSeparator()
-                    , name, price, quantity, promotionName);
+            String promotionQuantity = quantityForPrint(product.getPromotionQuantity());
+            String regularQuantity = quantityForPrint(product.getRegularQuantity());
+            if (product.hasOngoingPromotion()) {
+                String promotionName = product.getPromotion().get().getName();
+                System.out.printf("- %s %,d원 %s %s" + System.lineSeparator()
+                        , name, price, promotionQuantity, promotionName);
+            }
+            System.out.printf("- %s %,d원 %s" + System.lineSeparator()
+                    , name, price, regularQuantity);
         }
         System.out.println();
     }
@@ -26,6 +31,6 @@ public class OutputView {
         if (quantity == 0) {
             return "재고 없음";
         }
-        return String.valueOf(quantity);
+        return String.format("%d개", quantity);
     }
 }
