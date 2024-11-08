@@ -452,6 +452,57 @@ public class TestForDevelopment {
         assertThat(customer.getPromotionGetProducts().get(testProducts.findByName("withPromotion"))).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
+    }
 
+    @Test
+    void 최대금액_이하의_멤버십할인을_받는다() {
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "test", "10000", "5", Optional.empty());
+
+        Map<Product, Integer> carMap = new HashMap<>();
+        carMap.put(testProducts.findByName("test"), 1);
+        Cart cart = new Cart(carMap);
+        Customer customer = new Customer(cart);
+
+        customer.applyMembership(0);
+
+        assertThat(customer.getMembershipDiscountAmount()).isEqualTo(3000);
+    }
+
+    @Test
+    void 프로모션_적용_금액을_제외하고_멤버십할인을_받는다() {
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "test", "10000", "5", promotions.findByName("탄산2+1"));
+
+        Map<Product, Integer> carMap = new HashMap<>();
+        carMap.put(testProducts.findByName("test"), 5);
+        Cart cart = new Cart(carMap);
+        Customer customer = new Customer(cart);
+        customer.buyIncludingOutOfStockAmount(testProducts.findByName("test"), 2, 5);
+        int promotionAppliedAmount = customer.calculatePromotionAppliedAmount();
+
+        customer.applyMembership(promotionAppliedAmount);
+
+        assertThat(customer.getMembershipDiscountAmount()).isEqualTo(6000);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"81000", "100000", "1000000"})
+    void 최대금액_이상의_멤버십할인을_받으면_최대금액만큼_할인받는다(String purchasePrice) {
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "test", purchasePrice, "5", Optional.empty());
+
+        Map<Product, Integer> carMap = new HashMap<>();
+        carMap.put(testProducts.findByName("test"), 1);
+        Cart cart = new Cart(carMap);
+        Customer customer = new Customer(cart);
+
+
+        customer.applyMembership(0);
+
+        assertThat(customer.getMembershipDiscountAmount()).isEqualTo(8000);
     }
 }

@@ -27,6 +27,11 @@ public class Application {
         cart.checkStock();
         Customer customer = new Customer(cart);
         applyPromotion(customer, inputView);
+        customer.calculatePromotionDiscountAmount();
+        int promotionAppliedAmount = customer.calculatePromotionAppliedAmount();
+        applyMembership(customer, promotionAppliedAmount, inputView);
+        customer.calculatePaymentAmount();
+        outputView.printReceipt(customer);
     }
 
     public static Promotions registerPromotions() {
@@ -144,6 +149,13 @@ public class Application {
                 customer.buyExcludingOutOfStockAmount(e.getProduct(), e.getOutOfStockAmount(),
                         e.getBuyAmount());
             }
+        }
+    }
+
+    public static void applyMembership(Customer customer, int promotionAppliedAmount, InputView inputView) {
+        String answer = inputView.readIfApplyMembership();
+        if (answer.equals("Y")) {
+            customer.applyMembership(promotionAppliedAmount);
         }
     }
 }

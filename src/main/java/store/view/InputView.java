@@ -29,6 +29,7 @@ public class InputView {
 
     public String readIfBuyOutOfStockPromotionProduct(Product product, int outOfStockAmount) {
         System.out.printf("현재 %s %d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)"
+                + System.lineSeparator()
                 , product.getName(), outOfStockAmount);
         String answer = Console.readLine();
         validateInputYesOrNo(answer);
@@ -36,8 +37,17 @@ public class InputView {
     }
 
     public void validateInputYesOrNo(String answer) {
-        if (!answer.equals("Y") || !answer.equals("N")) {
+        if (!answer.equals("Y") && !answer.equals("N")) {
             throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
         }
+    }
+
+    public String readIfApplyMembership() {
+        System.out.println("멤버십 할인을 받으시겠습니까? (Y/N)");
+        String answer = Console.readLine();
+        if (answer == null || answer.isBlank()) {
+            throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+        }
+        return answer;
     }
 }

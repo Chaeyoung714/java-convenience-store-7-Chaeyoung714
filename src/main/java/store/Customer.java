@@ -1,8 +1,6 @@
 package store;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
@@ -10,12 +8,13 @@ import store.exceptions.OutOfPromotionStockException;
 public class Customer {
     private final Cart cart;
     private final Map<Product, Integer> promotionGetProducts;
+    private int promotionDiscountAmount;
     private int membershipDiscountAmount;
+    private int paymentAmount;
 
     public Customer(Cart cart) {
         this.cart = cart;
         this.promotionGetProducts = new HashMap<>();
-        this.membershipDiscountAmount = 0;
     }
 
     //cart에 들어가도 될것같긴한데... 역할은 customer가..
@@ -137,6 +136,37 @@ public class Customer {
         }
     }
 
+    public void calculatePromotionDiscountAmount() {
+        int promotionDiscountAmount = 0;
+        for (Product product : promotionGetProducts.keySet()) {
+            promotionDiscountAmount += (product.getPrice() * promotionGetProducts.get(product));
+        }
+        this.promotionDiscountAmount = promotionDiscountAmount;
+    }
+
+    public int calculatePromotionAppliedAmount() {
+        int promotionAppliedAmount = 0;
+        for (Product product : promotionGetProducts.keySet()) {
+            int sumOfBuyAndGetAmountOfPromotionProduct = product.getPromotion().get().getBuyAmount() + 1;
+            promotionAppliedAmount += (product.getPrice() * sumOfBuyAndGetAmountOfPromotionProduct
+                    * promotionGetProducts.get(product));
+        }
+        return promotionAppliedAmount;
+    }
+
+    public void applyMembership(int promotionAppliedAmount) {
+        int discountPrice = ((cart.getTotalProductPrice() - promotionAppliedAmount) * 3) / 10;
+        if (discountPrice > 8000) {
+            this.membershipDiscountAmount = 8000;
+            return;
+        }
+        this.membershipDiscountAmount = discountPrice;
+    }
+
+    public void calculatePaymentAmount() {
+        this.paymentAmount = cart.getTotalProductPrice() - (promotionDiscountAmount + membershipDiscountAmount);
+    }
+
     private void addPromotionsGetProduct(Product product) {
         if (promotionGetProducts.containsKey(product)) {
             promotionGetProducts.replace(product, promotionGetProducts.get(product) + 1);
@@ -147,5 +177,21 @@ public class Customer {
 
     public Map<Product, Integer> getPromotionGetProducts() {
         return promotionGetProducts;
+    }
+
+    public int getMembershipDiscountAmount() {
+        return membershipDiscountAmount;
+    }
+
+    public int getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public int getPromotionDiscountAmount() {
+        return promotionDiscountAmount;
     }
 }

@@ -37,6 +37,22 @@ public class Cart {
         throw new IllegalArgumentException("No such product in cart");
     }
 
+    public int getTotalProductPrice() {
+        int totalProductPrice = 0;
+        for (Product product : cart.keySet()) {
+            totalProductPrice += (product.getPrice()) * cart.get(product);
+        }
+        return totalProductPrice;
+    }
+
+    public int getTotalProductAmount() {
+        int totalProductAmount = 0;
+        for (Product product : cart.keySet()) {
+            totalProductAmount += cart.get(product);
+        }
+        return totalProductAmount;
+    }
+
     public Map<Product, Integer> getCart() {
         return cart;
     }

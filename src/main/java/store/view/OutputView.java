@@ -1,9 +1,19 @@
 package store.view;
 
 import java.util.List;
+import java.util.Map;
+import store.Cart;
+import store.Customer;
 import store.Product;
+import store.Products;
 
 public class OutputView {
+    private static final int TOTAL_BILL_WIDTH = 35;
+    private static final int PRODUCT_NAME_WIDTH = 19;
+    private static final int BUY_AMOUNT_WIDTH = 9;
+    private static final int PRICE_WIDTH = 7;
+    private static StringBuilder partBuilder = new StringBuilder();
+
     public void printProudcts(List<Product> products) {
         System.out.println("안녕하세요. W편의점입니다."
                 + System.lineSeparator()
@@ -33,4 +43,5 @@ public class OutputView {
         }
         return String.format("%d개", quantity);
     }
+
 }
