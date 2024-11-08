@@ -1,4 +1,4 @@
 package store.exceptions;
 
-public class DidNotBringPromotionGiveProductException extends Exception{
+public class DidNotBringPromotionGiveProductException extends RuntimeException{
 }

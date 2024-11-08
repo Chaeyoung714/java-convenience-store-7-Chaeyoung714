@@ -17,7 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import store.exceptions.DidNotBringPromotionGiveProductException;
-import store.exceptions.OutOfStockException;
+import store.exceptions.OutOfPromotionStockException;
 import store.view.InputView;
 
 public class TestForDevelopment {
@@ -184,7 +184,7 @@ public class TestForDevelopment {
         customer.applyPromotion();
 
         assertThat(testProducts.findByName("onlyRegular").getRegularQuantity()).isEqualTo(0);
-        assertThat(customer.getPromotionProducts()).isEmpty();
+        assertThat(customer.getPromotionGetProducts()).isEmpty();
     }
 
     @Test
@@ -205,7 +205,7 @@ public class TestForDevelopment {
 
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(2);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
-        assertThat(customer.getPromotionProducts()).containsExactly(testProducts.findByName("withPromotion"));
+        assertThat(customer.getPromotionGetProducts()).containsExactly(testProducts.findByName("withPromotion"));
     }
 
     @Test
@@ -213,9 +213,9 @@ public class TestForDevelopment {
         Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
-                "withPromotion", "1000", "6", Optional.empty());
+                "withPromotion", "1000", "5", Optional.empty());
         testProducts.registerProduct(
-                "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
+                "withPromotion", "1000", "6", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
         cartMap.put(testProducts.findByName("withPromotion"), 6);
@@ -226,8 +226,8 @@ public class TestForDevelopment {
 
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
-        assertThat(customer.getPromotionProducts().size()).isEqualTo(2);
-        assertThat(customer.getPromotionProducts()).contains(testProducts.findByName("withPromotion"));
+        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(2);
+        assertThat(customer.getPromotionGetProducts()).contains(testProducts.findByName("withPromotion"));
     }
 
     @Test
@@ -240,12 +240,12 @@ public class TestForDevelopment {
                 "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
-        cartMap.put(testProducts.findByName("onlyRegular"), 6);
+        cartMap.put(testProducts.findByName("withPromotion"), 6);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
 
         assertThatThrownBy(() -> customer.applyPromotion())
-                .isInstanceOf(OutOfStockException.class);
+                .isInstanceOf(OutOfPromotionStockException.class);
     }
 
     @Test
@@ -253,12 +253,12 @@ public class TestForDevelopment {
         Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
-                "withPromotion", "1000", "6", Optional.empty());
+                "withPromotion", "1000", "5", Optional.empty());
         testProducts.registerProduct(
-                "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
+                "withPromotion", "1000", "6", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
-        cartMap.put(testProducts.findByName("onlyRegular"), 5);
+        cartMap.put(testProducts.findByName("withPromotion"), 5);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
 
@@ -271,18 +271,18 @@ public class TestForDevelopment {
         Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
-                "withPromotion", "1000", "4", Optional.empty());
+                "withPromotion", "1000", "5", Optional.empty());
         testProducts.registerProduct(
-                "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
+                "withPromotion", "1000", "4", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
-        cartMap.put(testProducts.findByName("onlyRegular"), 5);
+        cartMap.put(testProducts.findByName("withPromotion"), 5);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
 
         customer.applyPromotion();
 
-        assertThat(customer.getPromotionProducts().size()).isEqualTo(1);
+        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(4);
     }
@@ -292,18 +292,18 @@ public class TestForDevelopment {
         Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
         testProducts.registerProduct(
-                "withPromotion", "1000", "4", Optional.empty());
+                "withPromotion", "1000", "5", Optional.empty());
         testProducts.registerProduct(
-                "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
+                "withPromotion", "1000", "4", promotions.findByName("탄산2+1"));
         testProducts.registerProduct(
                 "onlyRegular", "1000", "3", Optional.empty());
-        cartMap.put(testProducts.findByName("onlyRegular"), 4);
+        cartMap.put(testProducts.findByName("withPromotion"), 4);
         Cart cart = new Cart(cartMap);
         Customer customer = new Customer(cart);
 
         customer.applyPromotion();
 
-        assertThat(customer.getPromotionProducts().size()).isEqualTo(1);
+        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
     }

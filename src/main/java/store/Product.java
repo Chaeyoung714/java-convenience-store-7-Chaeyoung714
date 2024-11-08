@@ -44,12 +44,30 @@ public class Product {
         throw new IllegalStateException("[SYSTEM] Duplicated Promotion Item or Duplicated Regular Item");
     }
 
+    public void buyPromotionProduct(int amount) {
+        if (promotionQuantity >= amount) {
+            promotionQuantity -= amount;
+            return;
+        }
+        throw new IllegalStateException("out of promotion product stock");
+    }
+
     public void buyRegularProduct(int amount) {
-        if (regularQuantity - amount >= 0) {
+        if (regularQuantity >= amount) {
             regularQuantity -= amount;
             return;
         }
         throw new IllegalStateException("out of regular product stock");
+    }
+
+    public void buyPromotionAndRegularProduct(int amount) { //리팩토링하기
+        if (amount >= promotionQuantity) {
+            amount -= promotionQuantity;
+            promotionQuantity = 0;
+        }
+        if (amount > 0) {
+            buyRegularProduct(amount);
+        }
     }
 
     public String getName() {
