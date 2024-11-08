@@ -44,29 +44,25 @@ public class Product {
         throw new IllegalStateException("[SYSTEM] Duplicated Promotion Item or Duplicated Regular Item");
     }
 
-    public void buyPromotionProduct(int amount) {
-        if (promotionQuantity >= amount) {
-            promotionQuantity -= amount;
-            return;
-        }
-        throw new IllegalStateException("out of promotion product stock");
-    }
-
     public void buyRegularProduct(int amount) {
         if (regularQuantity >= amount) {
             regularQuantity -= amount;
             return;
         }
-        throw new IllegalStateException("out of regular product stock");
+        throw new IllegalStateException("Out of all product stock");
     }
 
     public void buyPromotionAndRegularProduct(int amount) { //리팩토링하기
-        if (amount >= promotionQuantity) {
-            amount -= promotionQuantity;
-            promotionQuantity = 0;
+        if (promotionQuantity >= amount) {
+            promotionQuantity -= amount;
+            return;
         }
-        if (amount > 0) {
-            buyRegularProduct(amount);
+        //amount - promotionQuantity > 0, amount <= regularquantity(여야함)
+        amount -= promotionQuantity;
+        promotionQuantity = 0;
+        regularQuantity -= amount;
+        if (regularQuantity < 0) {
+            throw new IllegalStateException("Out of all product stock");
         }
     }
 

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import store.exceptions.DidNotBringPromotionGiveProductException;
+import store.exceptions.OutOfPromotionStockException;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -24,7 +26,7 @@ public class Application {
         Cart cart = registerCart(purchasingProducts, products);
         cart.checkStock();
         Customer customer = new Customer(cart);
-
+        applyPromotion(customer, inputView);
     }
 
     public static Promotions registerPromotions() {
@@ -116,6 +118,32 @@ public class Application {
             throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+        }
+    }
+
+    public static void applyPromotion(Customer customer, InputView inputView) {
+        try {
+            customer.applyPromotion();
+        } catch (DidNotBringPromotionGiveProductException e) {
+            String answer = inputView.readIfBringPromotionGetProduct(e.getPromotionGetProduct().getName());
+            if (answer.equals("Y")) {
+                customer.buyIncludingPromotionGetProduct(
+                        e.getPromotionGetProduct(), e.getBuyAmount());
+            }
+            if (answer.equals("N")) {
+                customer.buyExcludingPromotionGetProduct(
+                        e.getPromotionGetProduct(), e.getBuyAmount());
+            }
+        } catch (OutOfPromotionStockException e) {
+            String answer = inputView.readIfBuyOutOfStockPromotionProduct(e.getProduct(), e.getOutOfStockAmount());
+            if (answer.equals("Y")) {
+                customer.buyIncludingOutOfStockAmount(e.getProduct(), e.getOutOfStockAmount(),
+                        e.getBuyAmount());
+            }
+            if (answer.equals("N")) {
+                customer.buyExcludingOutOfStockAmount(e.getProduct(), e.getOutOfStockAmount(),
+                        e.getBuyAmount());
+            }
         }
     }
 }

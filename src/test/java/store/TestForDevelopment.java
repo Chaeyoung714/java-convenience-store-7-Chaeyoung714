@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -79,7 +80,8 @@ public class TestForDevelopment {
             assertThatThrownBy(() -> products.getProducts().get(index).getPromotion().orElseThrow())
                     .isInstanceOf(NoSuchElementException.class);
         } else {
-            assertThat(products.getProducts().get(index).getPromotion().orElseThrow().getName()).isEqualTo(promotionName);
+            assertThat(products.getProducts().get(index).getPromotion().orElseThrow().getName()).isEqualTo(
+                    promotionName);
         }
     }
 
@@ -249,6 +251,24 @@ public class TestForDevelopment {
     }
 
     @Test
+    void 프로모션_상품이_존재하고_프로모션_증정_상품을_안_가져왔는데_기존_프로모션_재고가_부족하면_예외_발생() {
+        Map<Product, Integer> cartMap = new HashMap<>();
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", Optional.empty());
+        testProducts.registerProduct(
+                "withPromotion", "1000", "2", promotions.findByName("탄산2+1"));
+        testProducts.registerProduct(
+                "onlyRegular", "1000", "3", Optional.empty());
+        cartMap.put(testProducts.findByName("withPromotion"), 5);
+        Cart cart = new Cart(cartMap);
+        Customer customer = new Customer(cart);
+
+        assertThatThrownBy(() -> customer.applyPromotion())
+                .isInstanceOf(OutOfPromotionStockException.class);
+    }
+
+    @Test
     void 프로모션_상품이_존재하는데_프로모션_증정_상품을_안_가져왔을때_재고가_남아있으면_예외_발생() {
         Map<Product, Integer> cartMap = new HashMap<>();
         Products testProducts = new Products();
@@ -306,5 +326,122 @@ public class TestForDevelopment {
         assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
         assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
         assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
+    }
+
+    @Test
+    void 프로모션_상품이_존재하고_프로모션_제공_개수와_맞지_않아서_그냥_결제할때_프로모션_재고가_모자라면_예외_발생() {
+        Map<Product, Integer> cartMap = new HashMap<>();
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", Optional.empty());
+        testProducts.registerProduct(
+                "withPromotion", "1000", "2", promotions.findByName("탄산2+1"));
+        testProducts.registerProduct(
+                "onlyRegular", "1000", "3", Optional.empty());
+        cartMap.put(testProducts.findByName("withPromotion"), 4);
+        Cart cart = new Cart(cartMap);
+        Customer customer = new Customer(cart);
+
+        assertThatThrownBy(() -> customer.applyPromotion())
+                .isInstanceOf(OutOfPromotionStockException.class);
+    }
+
+    @Test
+    void 프로모션_상품이_존재하지만_프로모션이_적용이_안되는_개수만_구매한다면_그냥_계산한다() {
+        Map<Product, Integer> cartMap = new HashMap<>();
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", Optional.empty());
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
+        testProducts.registerProduct(
+                "onlyRegular", "1000", "3", Optional.empty());
+        cartMap.put(testProducts.findByName("withPromotion"), 1);
+        Cart cart = new Cart(cartMap);
+        Customer customer = new Customer(cart);
+
+        customer.applyPromotion();
+
+        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(0);
+        assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(4);
+        assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("/////////////프로모션 재고가 부족할 때, 부족한 양은 기존 정가로 계산한다고 답함")
+    void 프로모션_재고가_부족하면_부족한_양은_기존_정가로_계산한다() {
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", Optional.empty());
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
+        testProducts.registerProduct(
+                "onlyRegular", "1000", "3", Optional.empty());
+        Customer customer = new Customer(new Cart(new HashMap<>()));
+
+        customer.buyIncludingOutOfStockAmount(testProducts.findByName("withPromotion"), 3, 6);
+
+        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
+        assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
+        assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(4);
+    }
+
+    @Test
+    @DisplayName("프로모션 재고가 부족할 때, 부족한 양은 사지 않겠다고 답함")
+    void 프로모션_재고가_부족하면_부족한_양은_구매하지_않는다() {
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", Optional.empty());
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
+        testProducts.registerProduct(
+                "onlyRegular", "1000", "3", Optional.empty());
+        Customer customer = new Customer(new Cart(new HashMap<>()));
+
+        customer.buyExcludingOutOfStockAmount(testProducts.findByName("withPromotion"), 3, 6);
+
+        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
+        assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(2);
+        assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("프로모션 증정품을 덜 가져왔을 때, 가져오겠다고 답함")
+    void 프로모션_증정_상품을_덜_가져왔을때_가져온다() {
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", Optional.empty());
+        testProducts.registerProduct(
+                "withPromotion", "1000", "6", promotions.findByName("탄산2+1"));
+        testProducts.registerProduct(
+                "onlyRegular", "1000", "3", Optional.empty());
+        Customer customer = new Customer(new Cart(new HashMap<>()));
+
+        customer.buyIncludingPromotionGetProduct(testProducts.findByName("withPromotion"), 5);
+
+        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(2);
+        assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(0);
+        assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
+
+    }
+
+    @Test
+    @DisplayName("프로모션 증정품을 덜 가져왔을 때, 가져오지 않겠다고 답함")
+    void 프로모션_증정_상품을_덜_가져왔을때_가져오지_않는다() {
+        Products testProducts = new Products();
+        testProducts.registerProduct(
+                "withPromotion", "1000", "5", Optional.empty());
+        testProducts.registerProduct(
+                "withPromotion", "1000", "6", promotions.findByName("탄산2+1"));
+        testProducts.registerProduct(
+                "onlyRegular", "1000", "3", Optional.empty());
+        Customer customer = new Customer(new Cart(new HashMap<>()));
+
+        customer.buyExcludingPromotionGetProduct(testProducts.findByName("withPromotion"), 5);
+
+        assertThat(customer.getPromotionGetProducts().size()).isEqualTo(1);
+        assertThat(testProducts.findByName("withPromotion").getPromotionQuantity()).isEqualTo(1);
+        assertThat(testProducts.findByName("withPromotion").getRegularQuantity()).isEqualTo(5);
+
     }
 }
