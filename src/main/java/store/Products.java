@@ -1,5 +1,7 @@
 package store;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Products {
@@ -18,7 +20,17 @@ public class Products {
         return false;
     }
 
+    public List<Product> findByName(String name) {
+        List<Product> productsByName = new ArrayList<>();
+        for (Product product : products) {
+            if (product.getName().equals(name)) {
+                productsByName.add(product);
+            }
+        }
+        return productsByName;
+    }
+
     public List<Product> getProducts() {
-        return products;
+        return Collections.unmodifiableList(products);
     }
 }

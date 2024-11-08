@@ -21,8 +21,8 @@ public class Application {
         Products products = registerProducts(promotions);
         outputView.printProudcts(products.getProducts());
         String purchasingProducts = inputView.readPurchasingProducts();
-        registerCart(purchasingProducts, products);
-
+        Cart cart = registerCart(purchasingProducts, products);
+        checkStockOfCartProducts(cart, products);
     }
 
     public static Promotions registerPromotions() {
@@ -110,6 +110,19 @@ public class Application {
             throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+        }
+    }
+
+    public static void checkStockOfCartProducts(Cart cart, Products products) {
+        for (String productName : cart.getAllProductNames()) {
+            List<Product> buyProducts = products.findByName(productName);
+            int totalStockQuantity = 0;
+            for (Product product : buyProducts) {
+                totalStockQuantity += product.getQuantity();
+            }
+            if (totalStockQuantity < cart.getBuyCountByName(productName)) {
+                throw new IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
+            }
         }
     }
 }

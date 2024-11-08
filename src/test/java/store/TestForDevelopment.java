@@ -1,11 +1,14 @@
 package store;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -121,5 +124,26 @@ public class TestForDevelopment {
         assertThatIllegalArgumentException().isThrownBy(
                         () -> inputView.validateInputPurchasingProducts(testCart))
                 .withMessage("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
+
+    @Test
+    void 구매_상품의_재고_수량을_확인한다() {
+        Map<String, Integer> cartMap = new HashMap<>();
+        cartMap.put("콜라", 3);
+        cartMap.put("에너지바", 5);
+        Cart cart = new Cart(cartMap);
+        assertThatCode(() -> Application.checkStockOfCartProducts(cart, products))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 구매_상품의_재고가_부족하면_예외를_반환한다() {
+        Map<String, Integer> cartMap = new HashMap<>();
+        cartMap.put("콜라", 30);
+        cartMap.put("에너지바", 5);
+        Cart cart = new Cart(cartMap);
+        assertThatIllegalArgumentException().isThrownBy(
+                        () -> Application.checkStockOfCartProducts(cart, products))
+                .withMessage("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
     }
 }

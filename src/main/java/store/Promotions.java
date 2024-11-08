@@ -2,6 +2,7 @@ package store;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Promotions {
@@ -28,7 +29,7 @@ public class Promotions {
     }
 
     public List<Promotion> getPromotions() {
-        return promotions;
+        return Collections.unmodifiableList(promotions);
     }
 
     private List<Promotion> getAvailablePromotions() {
@@ -38,6 +39,6 @@ public class Promotions {
                 availablePromotions.add(promotion);
             }
         }
-        return availablePromotions;
+        return Collections.unmodifiableList(availablePromotions);
     }
 }
