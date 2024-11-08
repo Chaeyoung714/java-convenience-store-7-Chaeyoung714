@@ -5,7 +5,6 @@ import java.util.Map;
 import store.Cart;
 import store.Customer;
 import store.Product;
-import store.Products;
 
 public class OutputView {
     private static final int TOTAL_BILL_WIDTH = 35;
@@ -77,7 +76,7 @@ public class OutputView {
             int buyAmount = cart.get(product);
             purchaseHistoryLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", product.getName()));
             purchaseHistoryLine.append(String.format("%-" + BUY_AMOUNT_WIDTH + "s", buyAmount));
-            purchaseHistoryLine.append(String.format("%-" + PRICE_WIDTH + "s", product.getPrice() * buyAmount));
+            purchaseHistoryLine.append(String.format("%" + PRICE_WIDTH + "s", product.getPrice() * buyAmount));
             purchaseHistoryLine.append(System.lineSeparator());
         }
         System.out.println(purchaseHistoryLine);
