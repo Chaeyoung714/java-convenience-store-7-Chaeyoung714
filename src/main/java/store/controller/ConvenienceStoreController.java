@@ -1,5 +1,6 @@
 package store.controller;
 
+import store.discountPolicy.PromotionPolicy;
 import store.model.Cart;
 import store.service.OrderSevice;
 import store.view.InputView;
@@ -21,6 +22,7 @@ public class ConvenienceStoreController {
         String purchasingItems = inputView.readPurchasingItems();
         Cart cart = Cart.of(purchasingItems);
         orderSevice.checkStock(cart);
+        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
     }
 }
