@@ -93,7 +93,42 @@ public class OutputView {
         System.out.println(promotionHistory);
     }
 
+    private void printCostResult(Cart cart, PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy) {
+        printTotalProductPrice(cart);
+        printPromotionDiscountAmount(promotionPolicy);
+        printMembershipDiscoutAmount(membershipPolicy);
+        printFinalCost(cart, promotionPolicy, membershipPolicy);
+    }
 
+    private void printTotalProductPrice(Cart cart) {
+        StringBuilder totalProductPrice = new StringBuilder();
+        totalProductPrice.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "총구매액"));
+        totalProductPrice.append(String.format("%-" + BUY_AMOUNT_WIDTH + "d", cart.getTotalBuyAmount()));
+        totalProductPrice.append(String.format("%," + PRICE_WIDTH + "d", cart.getTotalCost()));
+        System.out.println(totalProductPrice);
+    }
 
+    private void printPromotionDiscountAmount(PromotionPolicy promotionPolicy) {
+        StringBuilder promotionLine = new StringBuilder();
+        promotionLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "행사할인"));
+        promotionLine.append(
+                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", -promotionPolicy.getDiscountAmount()));
+    }
 
+    private void printMembershipDiscoutAmount(MembershipPolicy membershipPolicy) {
+        StringBuilder membershipLine = new StringBuilder();
+        membershipLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "멤버십할인"));
+        membershipLine.append(
+                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", -membershipPolicy.getDiscountAmount()));
+
+    }
+
+    private void printFinalCost(Cart cart, PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy) {
+        int finalCost =
+                cart.getTotalCost() - (promotionPolicy.getDiscountAmount() + membershipPolicy.getDiscountAmount());
+        StringBuilder paymentLine = new StringBuilder();
+        paymentLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "내실돈"));
+        paymentLine.append(
+                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", finalCost));
+    }
 }
