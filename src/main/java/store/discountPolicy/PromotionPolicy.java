@@ -48,4 +48,12 @@ public class PromotionPolicy {
     private void updateDiscountAmount(int giftPrice, int giftAmount) {
         discountAmount += (giftAmount * giftPrice);
     }
+
+    public Map<Item, Integer> getGift() {
+        return gift;
+    }
+
+    public int getDiscountAmount() {
+        return discountAmount;
+    }
 }

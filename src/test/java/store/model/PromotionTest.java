@@ -9,11 +9,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 public class PromotionTest {
+    private static Promotions promotions;
     private static List<Promotion> promotionList;
 
     @BeforeAll
     static void setUp() {
-        promotionList = Promotions.getPromotions();
+        promotions = Promotions.register();
+        promotionList = promotions.getPromotions();
     }
 
     @ParameterizedTest

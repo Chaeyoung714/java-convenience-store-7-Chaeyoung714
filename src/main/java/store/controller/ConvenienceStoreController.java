@@ -6,6 +6,8 @@ import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
 import store.model.Item;
+import store.model.Items;
+import store.model.Promotions;
 import store.service.OrderService;
 import store.view.InputView;
 import store.view.OutputView;
@@ -22,9 +24,11 @@ public class ConvenienceStoreController {
     }
 
     public void run() {
-        outputView.printProducts();
+        Promotions promotions = Promotions.register();
+        Items items = Items.register(promotions);
+        outputView.printProducts(items);
         String purchasingItems = inputView.readPurchasingItems();
-        Cart cart = Cart.of(purchasingItems);
+        Cart cart = Cart.of(purchasingItems, items);
         orderService.checkStock(cart);
         PromotionPolicy promotionPolicy = new PromotionPolicy();
         applyPromotion(promotionPolicy, cart);

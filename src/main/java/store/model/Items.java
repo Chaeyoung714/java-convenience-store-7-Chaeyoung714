@@ -10,35 +10,36 @@ import store.exceptions.NotFoundByNameException;
 import store.util.FileScanner;
 
 public class Items {
-    private static final List<Item> ITEMS = register(
-            FileScanner.readFile("./src/main/resources/products.md"));
+    private final List<Item> items;
 
-    private Items() {
+    private Items(List<Item> items) {
+        this.items = items;
     }
 
-    public static List<Item> register(List<String> productFileData) {
+    public static Items register(Promotions promotions) {
         try {
+            List<String> itemFileData = FileScanner.readFile("./src/main/resources/products.md");
             List<Item> items = new ArrayList<>();
-            for (String productData : productFileData) {
-                String[] product = productData.split(",");
-                Optional<Item> registeredProduct = findByNameOrElseEmpty(product[0], items);
-                if (registeredProduct.isEmpty()) {
+            for (String itemData : itemFileData) {
+                String[] item = itemData.split(",");
+                Optional<Item> registeredItem = findByNameOrElseEmpty(item[0], items);
+                if (registeredItem.isEmpty()) {
                     items.add(Item.from(
-                            product[0], product[1], product[2], product[3]
+                            item[0], item[1], item[2], item[3], promotions
                     ));
                     continue;
                 }
-                registeredProduct.get().update(product[2], product[3]);
+                registeredItem.get().update(item[2], item[3], promotions);
             }
             validateNameDuplication(items);
-            return items;
+            return new Items(items);
         } catch (NullPointerException e) {
             throw new IllegalStateException("[SYSTEM] 잘못된 상품입니다.");
         }
     }
 
-    public static Item findByName(String name) {
-        for (Item item : ITEMS) {
+    public Item findByName(String name) {
+        for (Item item : items) {
             if (item.getName().equals(name)) {
                 return item;
             }
@@ -64,8 +65,8 @@ public class Items {
         }
     }
 
-    public static List<Item> getProducts() {
-        return Collections.unmodifiableList(ITEMS);
+    public List<Item> getItems() {
+        return Collections.unmodifiableList(items);
     }
 
 }

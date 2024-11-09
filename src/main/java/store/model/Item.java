@@ -20,13 +20,13 @@ public class Item {
         this.promotion = promotion;
     }
 
-    public static Item from(String name, String price, String quantity, String promotionName) {
+    public static Item from(String name, String price, String quantity, String promotionName, Promotions promotions) {
         try {
             int promotionQuantity = 0;
             int regularQuantity = 0;
             boolean hasOngoingPromotion = false;
 
-            Optional<Promotion> promotion = Promotions.findByName(promotionName);
+            Optional<Promotion> promotion = promotions.findByName(promotionName);
             if (promotion.isEmpty()) { //프로모션 없음
                 regularQuantity = Integer.parseInt(quantity);
             }
@@ -47,9 +47,9 @@ public class Item {
         }
     }
 
-    public void update(String quantity, String promotionName) {
+    public void update(String quantity, String promotionName, Promotions promotions) {
         try {
-            Optional<Promotion> promotion = Promotions.findByName(promotionName);
+            Optional<Promotion> promotion = promotions.findByName(promotionName);
             if (promotion.isEmpty() && this.promotion.isPresent()) {
                 this.regularQuantity = Integer.parseInt(quantity);
                 return;

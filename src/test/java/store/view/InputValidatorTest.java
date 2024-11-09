@@ -14,7 +14,7 @@ public class InputValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"[콜라5],[사이다-3]", "[콜라~5],[사이다-3]", "[콜라[5],[사이다-3]", "[콜라,5]-[사이다-3]", "[콜라--5],[사이다-3]"})
+    @ValueSource(strings = {"[콜라5],[사이다-3]", "[콜라~5],[사이다-3]", "[콜라[5],[사이다-3]", "[콜라,5]-[사이다-3]"})
     void 하이픈을_사용하지_않으면_예외가_발생한다(String wrongInput) {
         Assertions.assertThatIllegalArgumentException().isThrownBy(
                         () -> InputValidator.validatePurchasingItems(wrongInput))

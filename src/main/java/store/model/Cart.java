@@ -12,12 +12,13 @@ public class Cart{
         this.cart = cart;
     }
 
-    public static Cart of(String orderDetails) {
+    public static Cart of(String orderDetails, Items items) {
+        //역할 분리 필요
         try {
             Map<String, String> parsedOrderDetails = parseItems(orderDetails);
             Map<Item, Integer> cart = new HashMap<>();
             for (String itemName : parsedOrderDetails.keySet()) {
-                Item item = Items.findByName(itemName);
+                Item item = items.findByName(itemName);
                 int buyAmount = Integer.parseInt(parsedOrderDetails.get(itemName));
                 validatePositiveNumber(buyAmount);
                 cart.put(item, buyAmount);

@@ -9,15 +9,15 @@ import java.util.Set;
 import store.util.FileScanner;
 
 public class Promotions {
-    //ENUM처럼 사용하기!
-    private static final List<Promotion> promotions = register(
-            FileScanner.readFile("./src/main/resources/promotions.md"));
+    private final List<Promotion> promotions;
 
-    private Promotions() {
+    private Promotions(List<Promotion> promotions) {
+        this.promotions = promotions;
     }
 
-    public static List<Promotion> register(List<String> promotionFileData) {
+    public static Promotions register() {
         try {
+            List<String> promotionFileData = FileScanner.readFile("./src/main/resources/promotions.md");
             List<Promotion> promotions = new ArrayList<>();
             for (String promotionData : promotionFileData) {
                 String[] promotion = promotionData.split(",");
@@ -26,13 +26,13 @@ public class Promotions {
                 ));
             }
             validateNameDuplication(promotions);
-            return promotions;
+            return new Promotions(promotions);
         } catch (NullPointerException e) {
             throw new IllegalStateException("[SYSTEM] 잘못된 프로모션입니다.");
         }
     }
 
-    public static Optional<Promotion> findByName(String name) {
+    public Optional<Promotion> findByName(String name) {
         for (Promotion promotion : promotions) {
             if (promotion.getName().equals(name)) {
                 return Optional.of(promotion);
@@ -50,7 +50,7 @@ public class Promotions {
         }
     }
 
-    public static List<Promotion> getPromotions() {
+    public List<Promotion> getPromotions() {
         return Collections.unmodifiableList(promotions);
     }
 }

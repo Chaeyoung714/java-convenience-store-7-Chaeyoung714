@@ -5,13 +5,13 @@ import store.model.Items;
 
 public class OutputView {
 
-    public void printProducts() {
+    public void printProducts(Items items) {
         System.out.println("안녕하세요. W편의점입니다."
                 + System.lineSeparator()
                 + "현재 보유하고 있는 상품입니다."
                 + System.lineSeparator());
 
-        for (Item item : Items.getProducts()) {
+        for (Item item : items.getItems()) {
             String name = item.getName();
             int price = item.getPrice();
             String regularQuantity = quantityForPrint(item.getRegularQuantity());

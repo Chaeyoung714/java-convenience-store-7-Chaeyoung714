@@ -22,48 +22,8 @@ public class TestForDevelopment {
 //                .withMessage("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
 //    }
 //
-//    @Test
-//    void 구매_상품의_재고_수량을_확인한다() {
-//        Map<Product, Integer> cartMap = new HashMap<>();
-//        Product testProduct = new Product(
-//                "test", "1000", "10", Optional.empty());
-//        cartMap.put(testProduct, 3);
-//        Cart cart = new Cart(cartMap);
-//        assertThatCode(() -> cart.checkStock())
-//                .doesNotThrowAnyException();
-//    }
+
 //
-//    @Test
-//    void 구매_상품의_재고가_부족하면_예외를_반환한다() {
-//        Map<Product, Integer> cartMap = new HashMap<>();
-//        Product testProduct = new Product(
-//                "test", "1000", "10", Optional.empty());
-//        cartMap.put(testProduct, 20);
-//        Cart cart = new Cart(cartMap);
-//        assertThatIllegalArgumentException().isThrownBy(
-//                        () -> cart.checkStock())
-//                .withMessage("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
-//    }
-//
-//    @Test
-//    void 프로모션_상품이_없으면_그냥_결제한다() {
-//        Products testProducts = new Products();
-//        testProducts.registerProduct(
-//                "withPromotion", "1000", "5", Optional.empty());
-//        testProducts.registerProduct(
-//                "withPromotion", "1000", "5", promotions.findByName("탄산2+1"));
-//        testProducts.registerProduct(
-//                "onlyRegular", "1000", "3", Optional.empty());
-//        Map<Product, Integer> cartMap = new HashMap<>();
-//        cartMap.put(testProducts.findByName("onlyRegular"), 3);
-//        Cart cart = new Cart(cartMap);
-//        Customer customer = new Customer(cart);
-//
-//        customer.applyPromotion();
-//
-//        assertThat(testProducts.findByName("onlyRegular").getRegularQuantity()).isEqualTo(0);
-//        assertThat(customer.getPromotionGetProducts()).isEmpty();
-//    }
 //
 //    @Test
 //    void 프로모션_상품이_존재하고_프로모션_제공_개수랑_맞으면_결제한다() {
