@@ -54,6 +54,10 @@ public class Cart{
         cart.replace(item, cart.get(item) - deductAmount);
     }
 
+    public void addBuyAmountOf(Item item, int addAmount) {
+        cart.replace(item, cart.get(item) + addAmount);
+    }
+
     private static void validateBracketDelimiter(String orderDetail) {
         if (!orderDetail.startsWith("[") || !orderDetail.endsWith("]")) {
             throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");

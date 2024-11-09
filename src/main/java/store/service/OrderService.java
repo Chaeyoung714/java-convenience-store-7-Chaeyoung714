@@ -1,6 +1,7 @@
 package store.service;
 
 import java.util.Map;
+import store.Promotion;
 import store.discountPolicy.PromotionPolicy;
 import store.model.Cart;
 import store.model.Item;
@@ -40,5 +41,14 @@ public class OrderService {
         int updatedBuyAmount = item.getPromotionQuantity();
         promotionPolicy.addGift(item, updatedBuyAmount);
         cart.deductBuyAmountOf(item, outOfStockAmount);
+    }
+
+    public void orderAddingGift(PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
+        int updatedBuyAmount = buyAmount + 1;
+        promotionPolicy.addGift(item, updatedBuyAmount);
+        cart.addBuyAmountOf(item, 1);
+    }
+
+    public void orderExcludingGift(PromotionPolicy promotionPolicy, Item gift, int buyAmount) {
     }
 }
