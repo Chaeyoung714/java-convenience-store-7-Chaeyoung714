@@ -1,8 +1,11 @@
 package store.controller;
 
+import store.Promotion;
 import store.discountPolicy.PromotionPolicy;
+import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
+import store.model.Item;
 import store.service.OrderService;
 import store.view.InputView;
 import store.view.OutputView;
@@ -31,7 +34,25 @@ public class ConvenienceStoreController {
         try {
             orderService.applyPromotion(promotionPolicy, cart);
         } catch (OutOfPromotionStockException e) {
-            String answer = inputView.readOutOfStockPromotion(e.getItem(), e.getOutOfStockAmount());
+            checkOrderIncludingRegularItems(promotionPolicy, e.getItem(), e.getBuyAmount(), cart);
+        } catch (DidNotBringPromotionGiveProductException e) {
+
+        }
+    }
+
+    private void checkOrderIncludingRegularItems(PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
+        while (true) {
+            try {
+                String answer = inputView.readOutOfStockPromotion(item, buyAmount);
+                if (answer.equals("Y")) {
+                    orderService.orderIncludingRegularItems(promotionPolicy, item, buyAmount);
+                }
+                if (answer.equals("N")) {
+                    orderService.orderExcludingRegularItems(promotionPolicy, item, buyAmount, cart);
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }

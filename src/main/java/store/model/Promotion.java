@@ -8,6 +8,7 @@ public class Promotion {
     private final String name;
     private final int buyAmount;
     private final int getAmount;
+    private final int bundleAmount;
     private final LocalDate startDate;
     private final LocalDate endDate;
 
@@ -17,6 +18,7 @@ public class Promotion {
         this.name = name;
         this.buyAmount = buyAmount;
         this.getAmount = getAmount;
+        this.bundleAmount = buyAmount + getAmount;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -66,6 +68,10 @@ public class Promotion {
 
     public int getGetAmount() {
         return getAmount;
+    }
+
+    public int getBundleAmount() {
+        return bundleAmount;
     }
 
     public LocalDate getStartDate() {

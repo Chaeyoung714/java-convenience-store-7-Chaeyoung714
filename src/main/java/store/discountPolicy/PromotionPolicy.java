@@ -19,10 +19,10 @@ public class PromotionPolicy {
     }
 
     private void checkWhetherReAskToConsumer(Item item, int buyAmount) {
-        int promotionBundleAmount = item.getPromotionQuantity() + item.getRegularQuantity();
         if (buyAmount > item.getPromotionQuantity()) {
             throw new OutOfPromotionStockException(item, buyAmount);
         }
+        int promotionBundleAmount = item.getPromotion().get().getBundleAmount();
         if (buyAmount % promotionBundleAmount == 1) {
             if ((buyAmount + 1) <= item.getPromotionQuantity()) {
                 throw new DidNotBringPromotionGiveProductException(item, buyAmount);
@@ -30,5 +30,22 @@ public class PromotionPolicy {
         }
     }
 
+    public void addGift(Item item, int buyAmount) {
+        int promotionBundleAmount = item.getPromotion().get().getBundleAmount();
+        int giftAmount = buyAmount / promotionBundleAmount; //프로모션의 일인가.
+        updateGift(item, giftAmount);
+        updateDiscountAmount(item.getPrice(), giftAmount);
+    }
 
+    private void updateGift(Item item, int giftAmount) {
+        if (gift.keySet().contains(item)) {
+            gift.replace(item, gift.get(item) + giftAmount);
+            return;
+        }
+        gift.put(item, giftAmount);
+    }
+
+    private void updateDiscountAmount(int giftPrice, int giftAmount) {
+        discountAmount += (giftAmount * giftPrice);
+    }
 }
