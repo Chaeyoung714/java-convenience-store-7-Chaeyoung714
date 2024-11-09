@@ -83,6 +83,16 @@ public class OutputView {
         System.out.println(purchaseHistory);
     }
 
+    private void printPromotionHistory(Map<Item, Integer> gifts) {
+        StringBuilder promotionHistory = new StringBuilder();
+        for (Item item : gifts.keySet()) {
+            promotionHistory.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", item.getName()));
+            promotionHistory.append(
+                    String.format("%-" + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "s", gifts.get(item)));
+        }
+        System.out.println(promotionHistory);
+    }
+
 
 
 
