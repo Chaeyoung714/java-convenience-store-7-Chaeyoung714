@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import store.exceptions.NotFoundByNameException;
 import store.util.FileScanner;
 
 public class Items {
@@ -42,7 +43,7 @@ public class Items {
                 return item;
             }
         }
-        throw new IllegalArgumentException("[SYSTEM] No Such Name Of Product");
+        throw new NotFoundByNameException();
     }
 
     private static Optional<Item> findByNameOrElseEmpty(String name, List<Item> registeredItems) {

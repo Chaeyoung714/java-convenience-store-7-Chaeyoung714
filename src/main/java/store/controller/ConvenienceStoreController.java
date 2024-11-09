@@ -1,5 +1,6 @@
 package store.controller;
 
+import store.model.Cart;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -14,6 +15,8 @@ public class ConvenienceStoreController {
 
     public void run() {
         outputView.printProducts();
+        String purchasingItems = inputView.readPurchasingItems();
+        Cart cart = Cart.of(purchasingItems);
 
     }
 }
