@@ -4,17 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 public class PromotionTest {
-    private static Promotions promotions;
     private static List<Promotion> promotionList;
 
     @BeforeAll
     static void setUp() {
-        promotions = Promotions.register();
-        promotionList = promotions.getPromotions();
+        promotionList = Promotions.getPromotions();
     }
 
     @ParameterizedTest
@@ -35,4 +34,15 @@ public class PromotionTest {
     }
 
     // 예외 테스트 고민중.
+
+    @ParameterizedTest
+    @DisplayName("오늘 날짜 : 2024-11-09~2024-11-11 기준")
+    @CsvSource(value = {"2024-11-09,2024-11-11,true", "2024-11-01,2024-11-30,true", "2024-01-01,2024-10-31,false",
+            "2024-12-01,2025-07-14,false"}
+            , delimiter = ',')
+    void 날짜에_맞는_진행중인_프로모션을_반환한다(String startDate, String endDate, boolean expectedOngoing) {
+        Promotion promotion = Promotion.from("test", "2", "1", startDate, endDate);
+
+        assertThat(promotion.isOngoing()).isEqualTo(expectedOngoing);
+    }
 }

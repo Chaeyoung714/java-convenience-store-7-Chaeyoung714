@@ -1,6 +1,8 @@
 package store.model;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Promotion {
     private final String name;
@@ -46,6 +48,12 @@ public class Promotion {
         } catch (NullPointerException | NumberFormatException e) {
             throw new IllegalStateException("[SYSTEM] 잘못된 날짜입니다.");
         }
+    }
+
+    public boolean isOngoing() { //실시간 바뀌므로 변수로 굳이 관리 x
+        LocalDate date = DateTimes.now().toLocalDate();
+        return (startDate.isEqual(date) || startDate.isBefore(date))
+                && (endDate.isEqual(date) || endDate.isAfter(date));
     }
 
     public String getName() {
