@@ -2,6 +2,7 @@ package store;
 
 
 import store.controller.ConvenienceStoreController;
+import store.service.OrderSevice;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -14,7 +15,7 @@ public class Application {
 //            System.out.println("[SYSTEM] 매장 내 오류로 서비스 이용이 일시 중단되었습니다. 이용에 불편을 드려 죄송합니다.");
 //        }
         ConvenienceStoreController controller = new ConvenienceStoreController(
-                new InputView(), new OutputView()
+                new InputView(), new OutputView(), new OrderSevice()
         );
         controller.run();
 
