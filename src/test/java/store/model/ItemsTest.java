@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class ProductsTest {
+public class ItemsTest {
     @ParameterizedTest
     @CsvSource(value = {
             "0,콜라,1000,10,10,탄산2+1", "1,사이다,1000,8,7,탄산2+1", "2,오렌지주스,1800,9,0,MD추천상품", "3,탄산수,1200,5,0,탄산2+1"
@@ -18,23 +18,23 @@ public class ProductsTest {
     )
     void 상품_목록을_등록한다(int index, String name, int price, int promotionQuantity, int regularQuantity,
                      String promotionName) {
-        assertThat(Products.getProducts().get(index).getName()).isEqualTo(name);
-        assertThat(Products.getProducts().get(index).getPrice()).isEqualTo(price);
-        assertThat(Products.getProducts().get(index).getPromotionQuantity()).isEqualTo(promotionQuantity);
-        assertThat(Products.getProducts().get(index).getRegularQuantity()).isEqualTo(regularQuantity);
+        assertThat(Items.getProducts().get(index).getName()).isEqualTo(name);
+        assertThat(Items.getProducts().get(index).getPrice()).isEqualTo(price);
+        assertThat(Items.getProducts().get(index).getPromotionQuantity()).isEqualTo(promotionQuantity);
+        assertThat(Items.getProducts().get(index).getRegularQuantity()).isEqualTo(regularQuantity);
         if (promotionName.equals("null")) {
-            assertThatThrownBy(() -> Products.getProducts().get(index).getPromotion().orElseThrow())
+            assertThatThrownBy(() -> Items.getProducts().get(index).getPromotion().orElseThrow())
                     .isInstanceOf(NoSuchElementException.class);
         } else {
-            assertThat(Products.getProducts().get(index).getPromotion().orElseThrow().getName()).isEqualTo(
+            assertThat(Items.getProducts().get(index).getPromotion().orElseThrow().getName()).isEqualTo(
                     promotionName);
         }
     }
 
     @Test
     void 상품_저장_시_프로모션_상품과_일반_상품을_통합해_저장한다() {
-        assertThat(Products.findByName("사이다").hasOngoingPromotion()).isTrue();
-        assertThat(Products.findByName("사이다").getPromotionQuantity()).isEqualTo(8);
-        assertThat(Products.findByName("사이다").getRegularQuantity()).isEqualTo(7);
+        assertThat(Items.findByName("사이다").hasOngoingPromotion()).isTrue();
+        assertThat(Items.findByName("사이다").getPromotionQuantity()).isEqualTo(8);
+        assertThat(Items.findByName("사이다").getRegularQuantity()).isEqualTo(7);
     }
 }

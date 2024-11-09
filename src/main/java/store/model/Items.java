@@ -8,63 +8,63 @@ import java.util.Optional;
 import java.util.Set;
 import store.util.FileScanner;
 
-public class Products {
-    private static final List<Product> products = register();
+public class Items {
+    private static final List<Item> ITEMS = register();
 
-    private Products() {
+    private Items() {
     }
 
-    public static List<Product> register() {
+    public static List<Item> register() {
         try {
             List<String> productFileBody = FileScanner.readFile("./src/main/resources/products.md");
-            List<Product> products = new ArrayList<>();
+            List<Item> items = new ArrayList<>();
             for (String productBody : productFileBody) {
                 String[] product = productBody.split(",");
-                Optional<Product> registeredProduct = findByNameOrElseEmpty(product[0], products);
+                Optional<Item> registeredProduct = findByNameOrElseEmpty(product[0], items);
                 if (registeredProduct.isEmpty()) {
-                    products.add(Product.from(
+                    items.add(Item.from(
                             product[0], product[1], product[2], product[3]
                     ));
                     continue;
                 }
                 registeredProduct.get().update(product[2], product[3]);
             }
-            validateNameDuplication(products);
-            return products;
+            validateNameDuplication(items);
+            return items;
         } catch (NullPointerException e) {
             throw new IllegalStateException("[SYSTEM] 잘못된 상품입니다.");
         }
     }
 
-    public static Product findByName(String name) {
-        for (Product product : products) {
-            if (product.getName().equals(name)) {
-                return product;
+    public static Item findByName(String name) {
+        for (Item item : ITEMS) {
+            if (item.getName().equals(name)) {
+                return item;
             }
         }
         throw new IllegalArgumentException("[SYSTEM] No Such Name Of Product");
     }
 
-    private static Optional<Product> findByNameOrElseEmpty(String name, List<Product> registeredProducts) {
-        for (Product product : registeredProducts) {
-            if (product.getName().equals(name)) {
-                return Optional.of(product);
+    private static Optional<Item> findByNameOrElseEmpty(String name, List<Item> registeredItems) {
+        for (Item item : registeredItems) {
+            if (item.getName().equals(name)) {
+                return Optional.of(item);
             }
         }
         return Optional.empty();
     }
 
-    private static void validateNameDuplication(List<Product> products) {
+    private static void validateNameDuplication(List<Item> items) {
         Set<String> uniqueNames = new HashSet<>();
-        for (Product product : products) {
-            if (!uniqueNames.add(product.getName())) {
+        for (Item item : items) {
+            if (!uniqueNames.add(item.getName())) {
                 throw new IllegalStateException("[SYSTEM] 중복된 상품명입니다.");
             }
         }
     }
 
-    public static List<Product> getProducts() {
-        return Collections.unmodifiableList(products);
+    public static List<Item> getProducts() {
+        return Collections.unmodifiableList(ITEMS);
     }
 
 }

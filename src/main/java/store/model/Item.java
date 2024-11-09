@@ -2,7 +2,7 @@ package store.model;
 
 import java.util.Optional;
 
-public class Product {
+public class Item {
     private String name;
     private int price;
     private int promotionQuantity;
@@ -10,8 +10,8 @@ public class Product {
     private boolean hasOngoingPromotion;
     private Optional<Promotion> promotion;
 
-    private Product(String name, int price, int promotionQuantity, int regularQuantity, boolean hasOngoingPromotion,
-                   Optional<Promotion> promotion) {
+    private Item(String name, int price, int promotionQuantity, int regularQuantity, boolean hasOngoingPromotion,
+                 Optional<Promotion> promotion) {
         this.name = name;
         this.price = price;
         this.promotionQuantity = promotionQuantity;
@@ -20,7 +20,7 @@ public class Product {
         this.promotion = promotion;
     }
 
-    public static Product from(String name, String price, String quantity, String promotionName) {
+    public static Item from(String name, String price, String quantity, String promotionName) {
         try {
             int promotionQuantity = 0;
             int regularQuantity = 0;
@@ -34,7 +34,7 @@ public class Product {
                 promotionQuantity = Integer.parseInt(quantity);
                 hasOngoingPromotion = promotion.get().isOngoing();
             }
-            return new Product(
+            return new Item(
                     name
                     , Integer.parseInt(price)
                     , promotionQuantity

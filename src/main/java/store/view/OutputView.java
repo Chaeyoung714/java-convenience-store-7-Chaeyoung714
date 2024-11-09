@@ -1,7 +1,7 @@
 package store.view;
 
-import store.model.Product;
-import store.model.Products;
+import store.model.Item;
+import store.model.Items;
 
 public class OutputView {
 
@@ -11,14 +11,14 @@ public class OutputView {
                 + "현재 보유하고 있는 상품입니다."
                 + System.lineSeparator());
 
-        for (Product product : Products.getProducts()) {
-            String name = product.getName();
-            int price = product.getPrice();
-            String regularQuantity = quantityForPrint(product.getRegularQuantity());
-            String promotionQuantity = quantityForPrint(product.getPromotionQuantity());
+        for (Item item : Items.getProducts()) {
+            String name = item.getName();
+            int price = item.getPrice();
+            String regularQuantity = quantityForPrint(item.getRegularQuantity());
+            String promotionQuantity = quantityForPrint(item.getPromotionQuantity());
 
-            if (product.hasOngoingPromotion()) {
-                String promotionName = product.getPromotion().get().getName();
+            if (item.hasOngoingPromotion()) {
+                String promotionName = item.getPromotion().get().getName();
                 System.out.println(String.format(
                         "- %s %,d원 %s %s"
                         , name, price, promotionQuantity, promotionName));

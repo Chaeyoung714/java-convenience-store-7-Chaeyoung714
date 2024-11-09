@@ -2,8 +2,6 @@ package store;
 
 
 import store.controller.ConvenienceStoreController;
-import store.model.Products;
-import store.model.Promotions;
 import store.view.InputView;
 import store.view.OutputView;
 
