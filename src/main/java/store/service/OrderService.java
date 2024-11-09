@@ -49,6 +49,7 @@ public class OrderService {
         cart.addBuyAmountOf(item, 1);
     }
 
-    public void orderExcludingGift(PromotionPolicy promotionPolicy, Item gift, int buyAmount) {
+    public void orderExcludingGift(PromotionPolicy promotionPolicy, Item item, int buyAmount) {
+        promotionPolicy.addGift(item, buyAmount);
     }
 }

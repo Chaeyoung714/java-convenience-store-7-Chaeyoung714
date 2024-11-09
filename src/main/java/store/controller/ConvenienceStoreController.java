@@ -36,7 +36,7 @@ public class ConvenienceStoreController {
         } catch (OutOfPromotionStockException e) {
             checkOrderIncludingRegularItems(promotionPolicy, e.getItem(), e.getBuyAmount(), cart);
         } catch (DidNotBringPromotionGiveProductException e) {
-            checkAddGift(e.getGift(), e.getBuyAmount());
+            checkAddGift(promotionPolicy, e.getGift(), e.getBuyAmount(), cart);
         }
     }
 
@@ -56,15 +56,15 @@ public class ConvenienceStoreController {
         }
     }
 
-    private void checkAddGift(Item gift, int buyAmount) {
+    private void checkAddGift(PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
         while (true) {
             try {
-                String answer = inputView.readAddGift(gift);
+                String answer = inputView.readAddGift(item);
                 if (answer.equals("Y")) {
-                    orderService.orderAddingGift(gift, buyAmount);
+                    orderService.orderAddingGift(promotionPolicy, item, buyAmount, cart);
                 }
                 if (answer.equals("N")) {
-                    orderService.orderExcludingGift(gift, buyAmount);
+                    orderService.orderExcludingGift(promotionPolicy, item, buyAmount);
                 }
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
