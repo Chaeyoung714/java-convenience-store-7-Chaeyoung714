@@ -26,13 +26,11 @@ public class OrderService {
             for (Item item : cart.keySet()) {
                 if (item.hasOngoingPromotion()) {
                     checkWhetherReAskToConsumer(item, cart.get(item));
+                    simplyApplyPromotion(promotionPolicy, item, cart.get(item)); // 프로모션 예외가 안터진 경우
                 }
-                simplyApplyPromotion(promotionPolicy, item, cart.get(item));
             }
         } catch (OutOfPromotionStockException | DidNotBringPromotionGiveProductException e) {
             throw e;
-        } finally {
-            orderItems(consumerCart);
         }
     }
 
@@ -88,8 +86,9 @@ public class OrderService {
 
     private void orderWithoutRegularItems(PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
         //모자란 건 결제 안함! = outOfStock 만큼 구매하지 않음 + 결제시 프로모션만 적용
-        int outOfStockAmount = buyAmount - item.getPromotionQuantity();
-        int updatedBuyAmount = item.getPromotionQuantity();
+        int bundleAmount = item.getPromotion().get().getBundleAmount();
+        int outOfStockAmount = buyAmount - (bundleAmount * (item.getPromotionQuantity() / bundleAmount));
+        int updatedBuyAmount = buyAmount - outOfStockAmount;
         promotionPolicy.addGift(item, updatedBuyAmount);
         cart.deductBuyAmountOf(item, outOfStockAmount);
     }

@@ -14,7 +14,7 @@ public class PromotionPolicy {
 
     public void addGift(Item item, int buyAmount) {
         int promotionBundleAmount = item.getPromotion().get().getBundleAmount();
-        int giftAmount = buyAmount / promotionBundleAmount; //프로모션의 일인가.
+        int giftAmount = Math.min(item.getPromotionQuantity(), buyAmount) / promotionBundleAmount;
         updateGift(item, giftAmount);
         updateDiscountAmount(item.getPrice(), giftAmount);
     }

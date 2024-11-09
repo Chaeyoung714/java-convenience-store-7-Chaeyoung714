@@ -187,7 +187,7 @@ public class OrderServiceTest {
         PromotionPolicy promotionPolicy = new PromotionPolicy();
         MembershipPolicy membershipPolicy = new MembershipPolicy();
 
-        orderService.applyMemberShip(promotionPolicy, membershipPolicy, cart);
+        orderService.applyMemberShip("Y", promotionPolicy, membershipPolicy, cart);
 
         assertThat(membershipPolicy.getDiscountAmount()).isEqualTo(1500);
     }
@@ -205,7 +205,7 @@ public class OrderServiceTest {
 
         orderService.simplyApplyPromotion(promotionPolicy, items.findByName("test"), 6);
         orderService.orderItems(cart);
-        orderService.applyMemberShip(promotionPolicy, membershipPolicy, cart);
+        orderService.applyMemberShip("Y", promotionPolicy, membershipPolicy, cart);
 
         assertThat(membershipPolicy.getDiscountAmount()).isEqualTo(0);
     }
@@ -221,7 +221,7 @@ public class OrderServiceTest {
         PromotionPolicy promotionPolicy = new PromotionPolicy();
         MembershipPolicy membershipPolicy = new MembershipPolicy();
 
-        orderService.applyMemberShip(promotionPolicy, membershipPolicy, cart);
+        orderService.applyMemberShip("Y", promotionPolicy, membershipPolicy, cart);
 
         assertThat(membershipPolicy.getDiscountAmount()).isEqualTo(8000);
     }

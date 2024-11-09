@@ -15,9 +15,8 @@ public class OutputView {
     private static StringBuilder partBuilder = new StringBuilder();
 
     public void printProducts(Items items) {
-        System.out.println("안녕하세요. W편의점입니다."
-                + System.lineSeparator()
-                + "현재 보유하고 있는 상품입니다."
+        System.out.println(System.lineSeparator() + "안녕하세요. W편의점입니다."
+                + System.lineSeparator() + "현재 보유하고 있는 상품입니다."
                 + System.lineSeparator());
 
         for (Item item : items.getItems()) {
@@ -46,6 +45,7 @@ public class OutputView {
     }
 
     public void printReceipt(Cart cart, PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy) {
+        System.out.println();
         printDivisionLine("W 편의점");
         printPurchaseHistoryStartLine();
         printPurchaseHistory(cart.getCart());
@@ -80,7 +80,7 @@ public class OutputView {
             purchaseHistory.append(String.format("%" + PRICE_WIDTH + "s", item.getPrice() * buyAmount));
             purchaseHistory.append(System.lineSeparator());
         }
-        System.out.println(purchaseHistory);
+        System.out.print(purchaseHistory);
     }
 
     private void printPromotionHistory(Map<Item, Integer> gifts) {
@@ -89,8 +89,9 @@ public class OutputView {
             promotionHistory.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", item.getName()));
             promotionHistory.append(
                     String.format("%-" + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "s", gifts.get(item)));
+            promotionHistory.append(System.lineSeparator());
         }
-        System.out.println(promotionHistory);
+        System.out.print(promotionHistory);
     }
 
     private void printCostResult(Cart cart, PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy) {
@@ -113,6 +114,7 @@ public class OutputView {
         promotionLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "행사할인"));
         promotionLine.append(
                 String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", -promotionPolicy.getDiscountAmount()));
+        System.out.println(promotionLine);
     }
 
     private void printMembershipDiscoutAmount(MembershipPolicy membershipPolicy) {
@@ -120,15 +122,16 @@ public class OutputView {
         membershipLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "멤버십할인"));
         membershipLine.append(
                 String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", -membershipPolicy.getDiscountAmount()));
-
+        System.out.println(membershipLine);
     }
 
     private void printFinalCost(Cart cart, PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy) {
+        StringBuilder paymentLine = new StringBuilder();
         int finalCost =
                 cart.getTotalCost() - (promotionPolicy.getDiscountAmount() + membershipPolicy.getDiscountAmount());
-        StringBuilder paymentLine = new StringBuilder();
         paymentLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "내실돈"));
         paymentLine.append(
                 String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", finalCost));
+        System.out.println(paymentLine);
     }
 }
