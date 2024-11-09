@@ -36,4 +36,20 @@ public class InputValidatorTest {
                         () -> InputValidator.validatePurchasingItems(wrongInput))
                 .withMessage("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"[콜라 - 5],[사이다-3]", "[콜라-5], [사이다-3]", "[ 콜라-5 ],[사이다-3]", "[콜라-5],[사이다-3] "})
+    void 입력값에_빈칸이_들어가면_예외가_발생한다(String wrongInput) {
+        Assertions.assertThatIllegalArgumentException().isThrownBy(
+                        () -> InputValidator.validatePurchasingItems(wrongInput))
+                .withMessage("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "  "})
+    void 입력값이_빈칸이면_예외가_발생한다(String wrongInput) {
+        Assertions.assertThatIllegalArgumentException().isThrownBy(
+                        () -> InputValidator.validatePurchasingItems(wrongInput))
+                .withMessage("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+    }
 }
