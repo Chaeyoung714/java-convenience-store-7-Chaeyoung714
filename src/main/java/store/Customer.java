@@ -44,7 +44,7 @@ public class Customer {
             if (product.getPromotionQuantity() < promotionNeedAmount) { //프로모션 상품은 재고가 떨어지면 일반으로 가므로 미리 분기처리 체크
                 //프로모션 재고가 모자란 경우
                 int outOfStockAmount = buyAmount - product.getPromotionQuantity();
-                throw new OutOfPromotionStockException(product, outOfStockAmount, buyAmount);
+//                throw new OutOfPromotionStockException(product, outOfStockAmount, buyAmount);
             }
             //프로모션 재고가 충분한 경우
             product.buyPromotionAndRegularProduct(buyAmount);
@@ -56,15 +56,15 @@ public class Customer {
             if (product.getPromotionQuantity() < promotionNeedAmount) {
                 //기존 프로모션도 제공을 못한다면
                 int outOfStockAmount = buyAmount - product.getPromotionQuantity();
-                throw new OutOfPromotionStockException(product, outOfStockAmount, buyAmount);
+//                throw new OutOfPromotionStockException(product, outOfStockAmount, buyAmount);
             }
             if (product.getPromotionQuantity() >= buyAmountIfIncludesPromotionGetProduct) {
                 //증정품까지 줄 수 있는 재고라면
-                throw new DidNotBringPromotionGiveProductException(product, buyAmount);
+//                throw new DidNotBringPromotionGiveProductException(product, buyAmount);
             }
             //기존 프로모션 제공까진 가능하다면
             product.buyPromotionAndRegularProduct(buyAmount);
-            return buyAmount / sumOfBuyAndGetAmountOfPromotionProduct;
+//            return buyAmount / sumOfBuyAndGetAmountOfPromotionProduct;
         }
         //그냥 프로모션이랑 섞어서 가져온 경우 (사실은 buyAmount > buyAmountOfPromotionProduct)
         if (buyAmount >= buyAmountOfPromotionProduct) {
@@ -72,7 +72,7 @@ public class Customer {
             if (product.getPromotionQuantity() < promotionNeedAmount) {
                 //기존 프로모션도 제공을 못한다면
                 int outOfStockAmount = buyAmount - product.getPromotionQuantity();
-                throw new OutOfPromotionStockException(product, outOfStockAmount, buyAmount);
+//                throw new OutOfPromotionStockException(product, outOfStockAmount, buyAmount);
             }
             product.buyPromotionAndRegularProduct(buyAmount);
             return buyAmount / sumOfBuyAndGetAmountOfPromotionProduct;

@@ -1,6 +1,7 @@
 package store.controller;
 
 import store.discountPolicy.PromotionPolicy;
+import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
 import store.service.OrderService;
 import store.view.InputView;
@@ -23,6 +24,14 @@ public class ConvenienceStoreController {
         Cart cart = Cart.of(purchasingItems);
         orderService.checkStock(cart);
         PromotionPolicy promotionPolicy = new PromotionPolicy();
+        applyPromotion(promotionPolicy, cart);
+    }
 
+    private void applyPromotion(PromotionPolicy promotionPolicy, Cart cart) {
+        try {
+            orderService.applyPromotion(promotionPolicy, cart);
+        } catch (OutOfPromotionStockException e) {
+            String answer = inputView.readOutOfStockPromotion(e.getItem(), e.getOutOfStockAmount());
+        }
     }
 }

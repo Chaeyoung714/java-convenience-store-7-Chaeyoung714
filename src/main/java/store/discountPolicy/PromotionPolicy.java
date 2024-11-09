@@ -25,7 +25,7 @@ public class PromotionPolicy {
         }
         if (buyAmount % promotionBundleAmount == 1) {
             if ((buyAmount + 1) <= item.getPromotionQuantity()) {
-                throw new DidNotBringPromotionGiveProductException();
+                throw new DidNotBringPromotionGiveProductException(item, buyAmount);
             }
         }
     }

@@ -52,4 +52,12 @@ public class InputValidatorTest {
                         () -> InputValidator.validatePurchasingItems(wrongInput))
                 .withMessage("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "  ", "y", "n", "YN", "yes", "no"})
+    void 입력값이_Y나_N이_아니면_예외가_발생한다(String wrongInput) {
+        Assertions.assertThatIllegalArgumentException().isThrownBy(
+                        () -> InputValidator.validateYesOrNoAnswer(wrongInput))
+                .withMessage("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+    }
 }
