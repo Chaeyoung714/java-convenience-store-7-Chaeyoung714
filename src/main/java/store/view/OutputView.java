@@ -1,9 +1,18 @@
 package store.view;
 
+import java.util.Map;
+import store.discountPolicy.MembershipPolicy;
+import store.discountPolicy.PromotionPolicy;
+import store.model.Cart;
 import store.model.Item;
 import store.model.Items;
 
 public class OutputView {
+    private static final int TOTAL_BILL_WIDTH = 35;
+    private static final int PRODUCT_NAME_WIDTH = 19;
+    private static final int BUY_AMOUNT_WIDTH = 9;
+    private static final int PRICE_WIDTH = 7;
+    private static StringBuilder partBuilder = new StringBuilder();
 
     public void printProducts(Items items) {
         System.out.println("안녕하세요. W편의점입니다."
@@ -35,4 +44,46 @@ public class OutputView {
         }
         return String.format("%,d개", quantity);
     }
+
+    public void printReceipt(Cart cart, PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy) {
+        printDivisionLine("W 편의점");
+        printPurchaseHistoryStartLine();
+        printPurchaseHistory(cart.getCart());
+        printDivisionLine("증\t정");
+        printPromotionHistory(promotionPolicy.getGift());
+        printDivisionLine("===");
+        printCostResult(cart, promotionPolicy, membershipPolicy);
+    }
+
+    private void printDivisionLine(String title) {
+        StringBuilder startLine = new StringBuilder("=".repeat(TOTAL_BILL_WIDTH));
+        int halfIndexOfBillWidth = TOTAL_BILL_WIDTH / 2;
+        int halfLengthOfName = title.length() / 2;
+        startLine.replace(halfIndexOfBillWidth - halfLengthOfName, halfIndexOfBillWidth + halfLengthOfName, title);
+        System.out.println(startLine);
+    }
+
+    private void printPurchaseHistoryStartLine() {
+        StringBuilder secondLine = new StringBuilder();
+        secondLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "상품명"));
+        secondLine.append(String.format("%-" + BUY_AMOUNT_WIDTH + "s", "수량"));
+        secondLine.append(String.format("%-" + PRICE_WIDTH + "s", "금액"));
+        System.out.println(secondLine);
+    }
+
+    private void printPurchaseHistory(Map<Item, Integer> cart) {
+        StringBuilder purchaseHistory = new StringBuilder();
+        for (Item item : cart.keySet()) {
+            int buyAmount = cart.get(item);
+            purchaseHistory.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", item.getName()));
+            purchaseHistory.append(String.format("%-" + BUY_AMOUNT_WIDTH + "s", buyAmount));
+            purchaseHistory.append(String.format("%" + PRICE_WIDTH + "s", item.getPrice() * buyAmount));
+            purchaseHistory.append(System.lineSeparator());
+        }
+        System.out.println(purchaseHistory);
+    }
+
+
+
+
 }

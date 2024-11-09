@@ -67,6 +67,14 @@ public class Cart{
         return totalCost;
     }
 
+    public int getTotalBuyAmount() {
+        int totalBuyAmount = 0;
+        for (Item item : cart.keySet()) {
+            totalBuyAmount += cart.get(item);
+        }
+        return totalBuyAmount;
+    }
+
     private static void validateBracketDelimiter(String orderDetail) {
         if (!orderDetail.startsWith("[") || !orderDetail.endsWith("]")) {
             throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");

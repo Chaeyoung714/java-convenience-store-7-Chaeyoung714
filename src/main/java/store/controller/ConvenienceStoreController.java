@@ -33,6 +33,7 @@ public class ConvenienceStoreController {
         outputView.printProducts(items);
         Cart cart = orderItems(items, promotionPolicy);
         applyMemberShip(promotionPolicy, membershipPolicy, cart);
+        outputView.printReceipt(cart, promotionPolicy, membershipPolicy);
     }
 
     private Cart orderItems(Items items, PromotionPolicy promotionPolicy) {
