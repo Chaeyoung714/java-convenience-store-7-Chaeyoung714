@@ -5,7 +5,7 @@ import store.discountPolicy.PromotionPolicy;
 import store.model.Cart;
 import store.model.Item;
 
-public class OrderSevice {
+public class OrderService {
     public void checkStock(Cart consumerCart) {
         Map<Item, Integer> cart = consumerCart.getCart();
         for (Item item : cart.keySet()) {

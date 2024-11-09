@@ -1,18 +1,18 @@
 package store.exceptions;
 
-import store.Product;
+import store.model.Item;
 
 public class DidNotBringPromotionGiveProductException extends RuntimeException{
-    private final Product promotionGetProduct;
+    private final Item gift;
     private final int buyAmount;
 
-    public DidNotBringPromotionGiveProductException(Product promotionGetProduct, int buyAmount) {
-        this.promotionGetProduct = promotionGetProduct;
+    public DidNotBringPromotionGiveProductException(Item gift, int buyAmount) {
+        this.gift = gift;
         this.buyAmount = buyAmount;
     }
 
-    public Product getPromotionGetProduct() {
-        return promotionGetProduct;
+    public Item getGift() {
+        return gift;
     }
 
     public int getBuyAmount() {

@@ -1,24 +1,18 @@
 package store.exceptions;
 
-import store.Product;
+import store.model.Item;
 
 public class OutOfPromotionStockException extends RuntimeException{
-    private final Product product;
-    private final int outOfStockAmount;
+    private final Item item;
     private final int buyAmount;
 
-    public OutOfPromotionStockException(Product product, int outOfStockAmount, int buyAmount) {
-        this.product = product;
-        this.outOfStockAmount = outOfStockAmount;
+    public OutOfPromotionStockException(Item item, int buyAmount) {
+        this.item = item;
         this.buyAmount = buyAmount;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
-    public int getOutOfStockAmount() {
-        return outOfStockAmount;
+    public Item getItem() {
+        return item;
     }
 
     public int getBuyAmount() {
