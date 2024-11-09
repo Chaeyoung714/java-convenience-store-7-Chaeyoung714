@@ -25,11 +25,6 @@ public class OrderService {
         }
     }
 
-    // 프로모션 적용과, 할인, 상품 실제 결제를 따로 한다.
-    public void orderItems(Cart cart) {
-
-    }
-
     public void orderIncludingRegularItems(PromotionPolicy promotionPolicy, Item item, int buyAmount) {
         //모자란 건 프로모션 적용 안함! = 이대로 결제 + 결제시 프로모션과 정가 모두 적용
         promotionPolicy.addGift(item, buyAmount);
@@ -44,12 +39,22 @@ public class OrderService {
     }
 
     public void orderAddingGift(PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
+        // 증정품 추가함 = 1만큼 구매 추가 + 결제시 프로모션만 적용
         int updatedBuyAmount = buyAmount + 1;
         promotionPolicy.addGift(item, updatedBuyAmount);
         cart.addBuyAmountOf(item, 1);
     }
 
     public void orderExcludingGift(PromotionPolicy promotionPolicy, Item item, int buyAmount) {
+        // 증정품 추가하지 않음 = 이대로 결제 + 결제시 프로모션만 적용
         promotionPolicy.addGift(item, buyAmount);
+    }
+
+    // 프로모션 적용과, 할인, 상품 실제 결제를 따로 한다.
+    public void orderItems(Cart consumerCart) {
+        Map<Item, Integer> cart = consumerCart.getCart();
+        for (Item item : cart.keySet()) {
+            item.purchase(cart.get(item));
+        }
     }
 }

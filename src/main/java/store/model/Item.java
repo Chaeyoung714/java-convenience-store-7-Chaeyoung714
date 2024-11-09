@@ -65,6 +65,22 @@ public class Item {
         }
     }
 
+    public void purchase(int amount) {
+        // amount <= promotionQuality
+        if (promotionQuantity >= amount) {
+            promotionQuantity -= amount;
+            return;
+        }
+        // promotionQuality < amount <= pro+regularQuality
+        amount -= promotionQuantity;
+        promotionQuantity = 0;
+        if (regularQuantity >= amount) {
+            regularQuantity -= amount;
+            return;
+        }
+        throw new IllegalStateException("Out of all product stock");
+    }
+
     public String getName() {
         return name;
     }

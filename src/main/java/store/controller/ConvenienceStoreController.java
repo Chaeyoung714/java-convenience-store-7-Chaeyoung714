@@ -28,6 +28,8 @@ public class ConvenienceStoreController {
         orderService.checkStock(cart);
         PromotionPolicy promotionPolicy = new PromotionPolicy();
         applyPromotion(promotionPolicy, cart);
+        orderService.orderItems(cart);
+
     }
 
     private void applyPromotion(PromotionPolicy promotionPolicy, Cart cart) {
