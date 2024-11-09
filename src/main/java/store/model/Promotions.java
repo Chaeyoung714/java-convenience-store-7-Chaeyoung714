@@ -10,17 +10,17 @@ import store.util.FileScanner;
 
 public class Promotions {
     //ENUM처럼 사용하기!
-    private static final List<Promotion> promotions = register();
+    private static final List<Promotion> promotions = register(
+            FileScanner.readFile("./src/main/resources/promotions.md"));
 
     private Promotions() {
     }
 
-    public static List<Promotion> register() {
+    public static List<Promotion> register(List<String> promotionFileData) {
         try {
-            List<String> promotionFileBody = FileScanner.readFile("./src/main/resources/promotions.md");
             List<Promotion> promotions = new ArrayList<>();
-            for (String promotionBody : promotionFileBody) {
-                String[] promotion = promotionBody.split(",");
+            for (String promotionData : promotionFileData) {
+                String[] promotion = promotionData.split(",");
                 promotions.add(Promotion.from(
                         promotion[0], promotion[1], promotion[2], promotion[3], promotion[4]
                 ));

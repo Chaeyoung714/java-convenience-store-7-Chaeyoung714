@@ -10,17 +10,17 @@ import store.exceptions.NotFoundByNameException;
 import store.util.FileScanner;
 
 public class Items {
-    private static final List<Item> ITEMS = register();
+    private static final List<Item> ITEMS = register(
+            FileScanner.readFile("./src/main/resources/products.md"));
 
     private Items() {
     }
 
-    public static List<Item> register() {
+    public static List<Item> register(List<String> productFileData) {
         try {
-            List<String> productFileBody = FileScanner.readFile("./src/main/resources/products.md");
             List<Item> items = new ArrayList<>();
-            for (String productBody : productFileBody) {
-                String[] product = productBody.split(",");
+            for (String productData : productFileData) {
+                String[] product = productData.split(",");
                 Optional<Item> registeredProduct = findByNameOrElseEmpty(product[0], items);
                 if (registeredProduct.isEmpty()) {
                     items.add(Item.from(
