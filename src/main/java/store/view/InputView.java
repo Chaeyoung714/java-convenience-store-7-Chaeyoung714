@@ -26,4 +26,11 @@ public class InputView {
         InputValidator.validateYesOrNoAnswer(answer);
         return answer;
     }
+
+    public String readApplyMemberShip() {
+        System.out.println("멤버십 할인을 받으시겠습니까? (Y/N)");
+        String answer = Console.readLine();
+        InputValidator.validateYesOrNoAnswer(answer);
+        return answer;
+    }
 }

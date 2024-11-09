@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import store.discountPolicy.MembershipPolicy;
 import store.discountPolicy.PromotionPolicy;
 import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
@@ -61,7 +62,7 @@ public class OrderServiceTest {
         Cart cart = Cart.of("[onlyRegular-3]", items);
         PromotionPolicy promotionPolicy = new PromotionPolicy();
 
-        orderService.applyPromotion(cart);
+        orderService.applyPromotion(cart, promotionPolicy);
 
         assertThat(promotionPolicy.getGift().size()).isEqualTo(0);
         assertThat(promotionPolicy.getDiscountAmount()).isEqualTo(0);
@@ -76,8 +77,9 @@ public class OrderServiceTest {
         ));
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[withPromotion-7]", items);
+        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
-        assertThatThrownBy(() -> orderService.applyPromotion(cart))
+        assertThatThrownBy(() -> orderService.applyPromotion(cart, promotionPolicy))
                 .isInstanceOf(OutOfPromotionStockException.class);
     }
 
@@ -130,8 +132,9 @@ public class OrderServiceTest {
         ));
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[withPromotion-5]", items);
+        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
-        assertThatThrownBy(() -> orderService.applyPromotion(cart))
+        assertThatThrownBy(() -> orderService.applyPromotion(cart, promotionPolicy))
                 .isInstanceOf(DidNotBringPromotionGiveProductException.class);
     }
 
@@ -172,4 +175,56 @@ public class OrderServiceTest {
         assertThat(promotionPolicy.getGift().get(items.findByName("withPromotion"))).isEqualTo(1);
         assertThat(promotionPolicy.getDiscountAmount()).isEqualTo(1000);
     }
+
+    @Test
+    void 프로모션_없이_멤버십할인을_받는다() {
+        List<String> testItems = new ArrayList<>(Arrays.asList(
+                "test,1000,6,null"
+        ));
+        Items items = Items.register(testItems, defaultPromotions);
+        Cart cart = Cart.of("[test-5]", items);
+
+        PromotionPolicy promotionPolicy = new PromotionPolicy();
+        MembershipPolicy membershipPolicy = new MembershipPolicy();
+
+        orderService.applyMemberShip(promotionPolicy, membershipPolicy, cart);
+
+        assertThat(membershipPolicy.getDiscountAmount()).isEqualTo(1500);
+    }
+
+    @Test
+    void 프로모션이_적용됐을때_프로모션_적용가를_제외하고_멤버십_할인을_받는다() {
+        List<String> testItems = new ArrayList<>(Arrays.asList(
+                "test,1000,6,탄산2+1"
+        ));
+        Items items = Items.register(testItems, defaultPromotions);
+        Cart cart = Cart.of("[test-6]", items);
+
+        PromotionPolicy promotionPolicy = new PromotionPolicy();
+        MembershipPolicy membershipPolicy = new MembershipPolicy();
+
+        orderService.simplyApplyPromotion(promotionPolicy, items.findByName("test"), 6);
+        orderService.orderItems(cart);
+        orderService.applyMemberShip(promotionPolicy, membershipPolicy, cart);
+
+        assertThat(membershipPolicy.getDiscountAmount()).isEqualTo(0);
+    }
+
+    @Test
+    void 멤버십_할인금액이_최대금액_8000원_이상이면_8000원_할인을_받는다() {
+        List<String> testItems = new ArrayList<>(Arrays.asList(
+                "test,10000,6,null"
+        ));
+        Items items = Items.register(testItems, defaultPromotions);
+        Cart cart = Cart.of("[test-5]", items);
+
+        PromotionPolicy promotionPolicy = new PromotionPolicy();
+        MembershipPolicy membershipPolicy = new MembershipPolicy();
+
+        orderService.applyMemberShip(promotionPolicy, membershipPolicy, cart);
+
+        assertThat(membershipPolicy.getDiscountAmount()).isEqualTo(8000);
+    }
+
+
 }

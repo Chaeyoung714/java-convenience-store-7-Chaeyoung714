@@ -1,6 +1,8 @@
 package store.service;
 
 import java.util.Map;
+import store.Promotions;
+import store.discountPolicy.MembershipPolicy;
 import store.discountPolicy.PromotionPolicy;
 import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
@@ -18,13 +20,14 @@ public class OrderService {
         }
     }
 
-    public void applyPromotion(Cart consumerCart) {
+    public void applyPromotion(Cart consumerCart, PromotionPolicy promotionPolicy) {
         try {
             Map<Item, Integer> cart = consumerCart.getCart();
             for (Item item : cart.keySet()) {
                 if (item.hasOngoingPromotion()) {
                     checkWhetherReAskToConsumer(item, cart.get(item));
                 }
+                simplyApplyPromotion(promotionPolicy, item, cart.get(item));
             }
         } catch (OutOfPromotionStockException | DidNotBringPromotionGiveProductException e) {
             throw e;
@@ -73,6 +76,11 @@ public class OrderService {
         }
     }
 
+    public void simplyApplyPromotion(PromotionPolicy promotionPolicy, Item item, int buyAmount) {
+        //가장 기본 - 그대로 프로모션 적용
+        promotionPolicy.addGift(item, buyAmount);
+    }
+
     private void orderWithRegularItems(PromotionPolicy promotionPolicy, Item item, int buyAmount) {
         //모자란 건 프로모션 적용 안함! = 이대로 결제 + 결제시 프로모션과 정가 모두 적용
         promotionPolicy.addGift(item, buyAmount);
@@ -96,5 +104,13 @@ public class OrderService {
     private void orderWithoutGift(PromotionPolicy promotionPolicy, Item item, int buyAmount) {
         // 증정품 추가하지 않음 = 이대로 결제 + 결제시 프로모션만 적용
         promotionPolicy.addGift(item, buyAmount);
+    }
+
+    public void applyMemberShip(String answer, PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy, Cart cart) {
+        if (answer.equals("Y")) {
+            int totalCost = cart.getTotalCost();
+            int promotionAppliledAmount = promotionPolicy.getPromotionAppliedAmount();
+            membershipPolicy.applyMembership(totalCost - promotionAppliledAmount);
+        }
     }
 }

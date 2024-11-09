@@ -1,5 +1,6 @@
 package store.controller;
 
+import store.discountPolicy.MembershipPolicy;
 import store.discountPolicy.PromotionPolicy;
 import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
@@ -26,19 +27,31 @@ public class ConvenienceStoreController {
     public void run() {
         Promotions promotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
         Items items = Items.register(FileScanner.readFile("./src/main/resources/products.md"), promotions);
-        outputView.printProducts(items);
-        String purchasingItems = inputView.readPurchasingItems();
-        Cart cart = Cart.of(purchasingItems, items);
-        orderService.checkStock(cart);
         PromotionPolicy promotionPolicy = new PromotionPolicy();
-        applyPromotion(promotionPolicy, cart);
-        orderService.orderItems(cart);
+        MembershipPolicy membershipPolicy = new MembershipPolicy();
 
+        outputView.printProducts(items);
+        Cart cart = orderItems(items, promotionPolicy);
+        applyMemberShip(promotionPolicy, membershipPolicy, cart);
+    }
+
+    private Cart orderItems(Items items, PromotionPolicy promotionPolicy) {
+        while (true) {
+            try {
+                String purchasingItems = inputView.readPurchasingItems();
+                Cart cart = Cart.of(purchasingItems, items);
+                orderService.checkStock(cart);
+                applyPromotion(promotionPolicy, cart);
+                orderService.orderItems(cart);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     private void applyPromotion(PromotionPolicy promotionPolicy, Cart cart) {
         try {
-            orderService.applyPromotion(cart);
+            orderService.applyPromotion(cart, promotionPolicy);
         } catch (OutOfPromotionStockException e) {
             checkOrderIncludingRegularItems(promotionPolicy, e.getItem(), e.getBuyAmount(), cart);
         } catch (DidNotBringPromotionGiveProductException e) {
@@ -64,6 +77,17 @@ public class ConvenienceStoreController {
             try {
                 String answer = inputView.readAddGift(item);
                 orderService.orderAddingOrWithoutGift(answer, promotionPolicy, item, buyAmount, cart);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    private void applyMemberShip(PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy, Cart cart) {
+        while (true) {
+            try {
+                String answer = inputView.readApplyMemberShip();
+                orderService.applyMemberShip(answer, promotionPolicy, membershipPolicy, cart);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }

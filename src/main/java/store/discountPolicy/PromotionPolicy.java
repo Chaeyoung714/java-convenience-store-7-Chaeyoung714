@@ -31,11 +31,20 @@ public class PromotionPolicy {
         discountAmount += (giftAmount * giftPrice);
     }
 
-    public Map<Item, Integer> getGift() {
-        return gift;
+    public int getPromotionAppliedAmount() {
+        int promotionAppliledAmount = 0;
+        for (Item item : gift.keySet()) {
+            int bundleAmount = item.getPromotion().get().getBundleAmount();
+            promotionAppliledAmount += (bundleAmount * gift.get(item) * item.getPrice());
+        }
+        return promotionAppliledAmount;
     }
 
     public int getDiscountAmount() {
         return discountAmount;
+    }
+
+    public Map<Item, Integer> getGift() {
+        return gift;
     }
 }
