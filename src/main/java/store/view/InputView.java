@@ -18,4 +18,12 @@ public class InputView {
         InputValidator.validateYesOrNoAnswer(answer);
         return answer;
     }
+
+    public String readAddGift(Item gift) {
+        System.out.printf("현재 %s은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)"
+                , gift.getName());
+        String answer = Console.readLine();
+        InputValidator.validateYesOrNoAnswer(answer);
+        return answer;
+    }
 }
