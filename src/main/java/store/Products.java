@@ -8,7 +8,7 @@ import java.util.Optional;
 public class Products {
     private final List<Product> products;
 
-    public Products() {
+    private Products() {
         products = new ArrayList<>(); //이름중복검증필요
     }
 
@@ -18,7 +18,7 @@ public class Products {
             registeredProduct.updateProductInfo(quantity, promotion);
             return;
         }
-        products.add(new Product(name, price, quantity, promotion));
+//        products.add(new Product(name, price, quantity, promotion));
     }
 
     public boolean hasName(String name) {

@@ -11,7 +11,7 @@ public class Promotion {
     private final LocalDate endDate;
     private boolean isOngoing;
 
-    public Promotion(String name, String buyAmount, String getAmount, String startDate, String endDate,
+    private Promotion(String name, String buyAmount, String getAmount, String startDate, String endDate,
                      LocalDate today) {
         this.name = name; //이름 중복 검증 필요!
         this.buyAmount = Integer.parseInt(buyAmount);

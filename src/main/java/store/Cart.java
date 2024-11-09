@@ -5,7 +5,7 @@ import java.util.Map;
 public class Cart {
     private final Map<Product, Integer> cart;
 
-    public Cart(Map<Product, Integer> cart) {
+    private Cart(Map<Product, Integer> cart) {
         this.cart = cart;
     }
 

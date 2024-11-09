@@ -7,7 +7,7 @@ import java.util.Optional;
 public class Promotions {
     private final List<Promotion> promotions;
 
-    public Promotions(List<Promotion> promotions) {
+    private Promotions(List<Promotion> promotions) {
         this.promotions = promotions;
     }
 

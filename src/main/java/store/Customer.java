@@ -12,7 +12,7 @@ public class Customer {
     private int membershipDiscountAmount;
     private int paymentAmount;
 
-    public Customer(Cart cart) {
+    private Customer(Cart cart) {
         this.cart = cart;
         this.promotionGetProducts = new HashMap<>();
     }

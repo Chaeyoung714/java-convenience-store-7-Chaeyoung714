@@ -11,7 +11,7 @@ public class Product {
     private Optional<Promotion> promotion;
 
 
-    public Product(String name, String price, String quantity, Optional<Promotion> promotion) {
+    private Product(String name, String price, String quantity, Optional<Promotion> promotion) {
         this.name = name;
         this.price = Integer.parseInt(price);
         if (promotion.isEmpty()) {
