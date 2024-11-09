@@ -2,8 +2,6 @@ package store.discountPolicy;
 
 import java.util.HashMap;
 import java.util.Map;
-import store.exceptions.DidNotBringPromotionGiveProductException;
-import store.exceptions.OutOfPromotionStockException;
 import store.model.Item;
 
 public class PromotionPolicy {
@@ -12,22 +10,6 @@ public class PromotionPolicy {
 
     public PromotionPolicy() {
         this.gift = new HashMap<>();
-    }
-
-    public void applyPromotion(Item item, int buyAmount) {
-        checkWhetherReAskToConsumer(item, buyAmount);
-    }
-
-    private void checkWhetherReAskToConsumer(Item item, int buyAmount) {
-        if (buyAmount > item.getPromotionQuantity()) {
-            throw new OutOfPromotionStockException(item, buyAmount);
-        }
-        int promotionBundleAmount = item.getPromotion().get().getBundleAmount();
-        if (buyAmount % promotionBundleAmount == 1) {
-            if ((buyAmount + 1) <= item.getPromotionQuantity()) {
-                throw new DidNotBringPromotionGiveProductException(item, buyAmount);
-            }
-        }
     }
 
     public void addGift(Item item, int buyAmount) {

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import store.util.FileScanner;
 
 public class CartTest {
     private static Promotions defaultPromotions;
@@ -14,8 +15,8 @@ public class CartTest {
 
     @BeforeAll
     static void setUp() {
-        defaultPromotions = Promotions.register();
-        defaultItems = Items.register(defaultPromotions);
+        defaultPromotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
+        defaultItems = Items.register(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
     }
 
     @Test

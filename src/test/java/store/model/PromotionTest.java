@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import store.util.FileScanner;
 
 public class PromotionTest {
     private static Promotions promotions;
@@ -14,7 +15,7 @@ public class PromotionTest {
 
     @BeforeAll
     static void setUp() {
-        promotions = Promotions.register();
+        promotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
         promotionList = promotions.getPromotions();
     }
 

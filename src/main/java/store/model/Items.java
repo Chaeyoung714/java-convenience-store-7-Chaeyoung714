@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import store.exceptions.NotFoundByNameException;
-import store.util.FileScanner;
 
 public class Items {
     private final List<Item> items;
@@ -16,9 +15,8 @@ public class Items {
         this.items = items;
     }
 
-    public static Items register(Promotions promotions) {
+    public static Items register(List<String> itemFileData, Promotions promotions) {
         try {
-            List<String> itemFileData = FileScanner.readFile("./src/main/resources/products.md");
             List<Item> items = new ArrayList<>();
             for (String itemData : itemFileData) {
                 String[] item = itemData.split(",");

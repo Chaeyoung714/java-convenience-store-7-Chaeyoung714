@@ -1,6 +1,5 @@
 package store.controller;
 
-import store.Promotion;
 import store.discountPolicy.PromotionPolicy;
 import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
@@ -9,6 +8,7 @@ import store.model.Item;
 import store.model.Items;
 import store.model.Promotions;
 import store.service.OrderService;
+import store.util.FileScanner;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -24,8 +24,8 @@ public class ConvenienceStoreController {
     }
 
     public void run() {
-        Promotions promotions = Promotions.register();
-        Items items = Items.register(promotions);
+        Promotions promotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
+        Items items = Items.register(FileScanner.readFile("./src/main/resources/products.md"), promotions);
         outputView.printProducts(items);
         String purchasingItems = inputView.readPurchasingItems();
         Cart cart = Cart.of(purchasingItems, items);
@@ -38,11 +38,13 @@ public class ConvenienceStoreController {
 
     private void applyPromotion(PromotionPolicy promotionPolicy, Cart cart) {
         try {
-            orderService.applyPromotion(promotionPolicy, cart);
+            orderService.applyPromotion(cart);
         } catch (OutOfPromotionStockException e) {
             checkOrderIncludingRegularItems(promotionPolicy, e.getItem(), e.getBuyAmount(), cart);
         } catch (DidNotBringPromotionGiveProductException e) {
             checkAddGift(promotionPolicy, e.getGift(), e.getBuyAmount(), cart);
+        } finally {
+            orderService.orderItems(cart);
         }
     }
 
@@ -50,12 +52,7 @@ public class ConvenienceStoreController {
         while (true) {
             try {
                 String answer = inputView.readOutOfStockPromotion(item, buyAmount);
-                if (answer.equals("Y")) {
-                    orderService.orderIncludingRegularItems(promotionPolicy, item, buyAmount);
-                }
-                if (answer.equals("N")) {
-                    orderService.orderExcludingRegularItems(promotionPolicy, item, buyAmount, cart);
-                }
+                orderService.orderWithOrWithoutRegularItems(answer, promotionPolicy, item, buyAmount, cart);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
@@ -66,12 +63,7 @@ public class ConvenienceStoreController {
         while (true) {
             try {
                 String answer = inputView.readAddGift(item);
-                if (answer.equals("Y")) {
-                    orderService.orderAddingGift(promotionPolicy, item, buyAmount, cart);
-                }
-                if (answer.equals("N")) {
-                    orderService.orderExcludingGift(promotionPolicy, item, buyAmount);
-                }
+                orderService.orderAddingOrWithoutGift(answer, promotionPolicy, item, buyAmount, cart);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }

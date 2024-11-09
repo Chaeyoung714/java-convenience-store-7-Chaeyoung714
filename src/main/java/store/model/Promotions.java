@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import store.util.FileScanner;
 
 public class Promotions {
     private final List<Promotion> promotions;
@@ -15,9 +14,8 @@ public class Promotions {
         this.promotions = promotions;
     }
 
-    public static Promotions register() {
+    public static Promotions register(List<String> promotionFileData) {
         try {
-            List<String> promotionFileData = FileScanner.readFile("./src/main/resources/promotions.md");
             List<Promotion> promotions = new ArrayList<>();
             for (String promotionData : promotionFileData) {
                 String[] promotion = promotionData.split(",");
