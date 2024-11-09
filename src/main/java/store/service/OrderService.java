@@ -35,6 +35,10 @@ public class OrderService {
     }
 
     public void orderExcludingRegularItems(PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
-
+    //모자란 건 결제 안함! = outOfStock 만큼 구매하지 않음 + 결제시 프로모션만 적용
+        int outOfStockAmount = buyAmount - item.getPromotionQuantity();
+        int updatedBuyAmount = item.getPromotionQuantity();
+        promotionPolicy.addGift(item, updatedBuyAmount);
+        cart.deductBuyAmountOf(item, outOfStockAmount);
     }
 }
