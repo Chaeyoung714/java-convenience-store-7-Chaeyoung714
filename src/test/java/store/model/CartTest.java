@@ -2,70 +2,108 @@ package store.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import store.exceptions.ExceptionMessages;
 import store.model.consumer.Cart;
 import store.model.item.Item;
 import store.model.item.ItemFactory;
 import store.model.item.Items;
-import store.model.item.ItemsFactory;
-import store.model.promotion.Promotions;
-import store.util.FileScanner;
 
 public class CartTest {
-    private static List<String> defaultPromotion;
-    private static Promotions defaultPromotions;
-    private static Item defaultItem;
+    private static Item defaultItem1;
+    private static Item defaultItem2;
     private static Items defaultItems;
+
+    private Map<Item, Integer> cartMap;
 
     @BeforeAll
     static void setUp() {
-        defaultPromotion = new ArrayList<>(Arrays.asList("testPromo2+1,2,1,2024-01-01,2024-12-31"));
-        defaultPromotions = Promotions.register(defaultPromotion);
-        defaultItems = ItemsFactory.of(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
+        defaultItem1 = ItemFactory.from("test1", "1000", "5", Optional.empty());
+        defaultItem2 = ItemFactory.from("test2", "2000", "10", Optional.empty());
+        defaultItems = new Items(new ArrayList<>(Arrays.asList(defaultItem1, defaultItem2)));
+    }
+
+    @BeforeEach
+    void setUpCartMap() {
+        cartMap = new HashMap<>();
     }
 
     @Test
-    void 상품명과_수량_문자열을_분리한다() {
-        Map<Item, Integer> carMap = new HashMap<>();
-        carMap.put(defaultItems.findByName("콜라"), 3);
-        carMap.put(defaultItems.findByName("에너지바"), 5);
-        Cart cart = Cart.of(carMap, defaultItems);
+    @DisplayName("[success] 구매할 상품과 구매 수량을 저장한다.")
+    void saveItemAndBuyAmount() {
+        cartMap.put(defaultItem1, 3);
+        cartMap.put(defaultItem2, 5);
+        Cart cart = Cart.of(cartMap, defaultItems);
 
         assertThat(cart.getCart().size()).isEqualTo(2);
-        assertThat(cart.getCart().get(defaultItems.findByName("콜라"))).isEqualTo(3);
-        assertThat(cart.getCart().get(defaultItems.findByName("에너지바"))).isEqualTo(5);
+        assertThat(cart.getCart().get(defaultItem1)).isEqualTo(3);
+        assertThat(cart.getCart().get(defaultItem2)).isEqualTo(5);
     }
 
     @Test
-    void 잘못된_상품명_입력시_Application에서_예외를_반환한다() {
-        Map<Item, Integer> carMap = new HashMap<>();
-        Item wrongItem = ItemFactory.from("코카콜라", "1000", "1", Optional.empty());
-        carMap.put(wrongItem, 3);
+    @DisplayName("[fail] 구매하는 상품명이 상품리스트에 없으면 예외가 발생한다.")
+    void fail_ifItemNotExistsInItems() {
+        Item wrongItem = ItemFactory.from("우테코카콜라", "1000", "1", Optional.empty());
+        cartMap.put(wrongItem, 3);
 
         assertThatIllegalArgumentException().isThrownBy(
-                        () -> Cart.of(carMap, defaultItems))
+                        () -> Cart.of(cartMap, defaultItems))
                 .withMessage(ExceptionMessages.ITEM_NOT_EXISTS.getMessage());
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, -1})
-    void 구매수량_양의정수_아닐시_Application에서_예외를_반환한다(int wrongAmount) {
-        Map<Item, Integer> carMap = new HashMap<>();
-        carMap.put(defaultItems.findByName("콜라"), wrongAmount);
+    @DisplayName("[fail] 구매수량이 양의 정수가 아니면 예외가 발생한다.")
+    @ValueSource(ints = {0, -1, -100})
+    void fail_ifBuyAmountNotPositiveInteger(int wrongAmount) {
+        cartMap.put(defaultItem1, wrongAmount);
 
         assertThatIllegalArgumentException().isThrownBy(
-                        () -> Cart.of(carMap, defaultItems))
+                        () -> Cart.of(cartMap, defaultItems))
                 .withMessage(ExceptionMessages.WRONG_ORDER_FORMAT.getMessage());
+    }
+
+    @Test
+    @DisplayName("[success] 특정 상품의 구매 수량을 차감한다.")
+    void deductBuyAmountOfItem() {
+        cartMap.put(defaultItem1, 10);
+        Cart cart = Cart.of(cartMap, defaultItems);
+
+        cart.deductBuyAmountOf(defaultItem1, 5);
+
+        assertThat(cart.getCart().get(defaultItem1)).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("[fail] 특정 상품의 구매 수량보다 많은 양을 차감하면 예외가 발생한다.")
+    void fail_ifDeductExceedsBuyAmount() {
+        cartMap.put(defaultItem1, 10);
+        Cart cart = Cart.of(cartMap, defaultItems);
+
+        assertThatThrownBy(() -> cart.deductBuyAmountOf(defaultItem1, 20))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    @DisplayName("[success] 특정 상품의 구매 수량을 더한다.")
+    void addBuyAmountOfItem() {
+        cartMap.put(defaultItem1, 10);
+        Cart cart = Cart.of(cartMap, defaultItems);
+
+        cart.addBuyAmountOf(defaultItem1, 5);
+
+        assertThat(cart.getCart().get(defaultItem1)).isEqualTo(15);
     }
 }
