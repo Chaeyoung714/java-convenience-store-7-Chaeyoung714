@@ -3,6 +3,7 @@ package store.view;
 import java.util.Map;
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
+import store.model.consumer.PurchaseCost;
 import store.model.item.Item;
 import store.model.item.Items;
 
@@ -43,7 +44,7 @@ public class OutputView {
         return String.format("%,d개", quantity);
     }
 
-    public void printReceipt(Cart cart, DiscountHistory discountHistory) {
+    public void printReceipt(Cart cart, DiscountHistory discountHistory, PurchaseCost purchaseCost) {
         System.out.println();
         printDivisionLine("W 편의점");
         printPurchaseHistoryStartLine();

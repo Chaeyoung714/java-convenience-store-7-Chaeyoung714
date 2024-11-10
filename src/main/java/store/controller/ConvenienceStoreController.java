@@ -4,6 +4,7 @@ import static store.util.Answer.YES;
 
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
+import store.model.consumer.PurchaseCost;
 import store.model.item.Items;
 import store.service.MembershipService;
 import store.service.handlerWithController.PromotionServiceOutboundHandler;
@@ -37,7 +38,7 @@ public class ConvenienceStoreController {
         DiscountHistory discountHistory = new DiscountHistory();
         Cart cart = orderItems(items, discountHistory);
         applyMemberShip(cart, discountHistory);
-        outputView.printReceipt(cart, discountHistory);
+        showPurchaseResult(cart, discountHistory);
         restartOrEndPurchase(items);
     }
 
@@ -70,6 +71,11 @@ public class ConvenienceStoreController {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    private void showPurchaseResult(Cart cart, DiscountHistory discountHistory) {
+        PurchaseCost purchaseCost = orderService.calculateCost(cart, discountHistory);
+        outputView.printReceipt(cart, discountHistory, purchaseCost);
     }
 
     private void restartOrEndPurchase(Items items) {

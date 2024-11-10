@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import store.exceptions.NotFoundByNameException;
 import store.model.consumer.Cart;
+import store.model.consumer.DiscountHistory;
+import store.model.consumer.PurchaseCost;
 import store.model.item.Item;
 import store.model.item.Items;
 import store.util.Parser;
@@ -44,5 +46,12 @@ public class OrderService {
         for (Item item : cart.keySet()) {
             item.purchase(cart.get(item));
         }
+    }
+
+    public PurchaseCost calculateCost(Cart cart, DiscountHistory discountHistory) {
+        int totalItemCost = cart.calculateTotalCost();
+        int totalDiscountAmount =
+                discountHistory.getMembershipDiscountAmount() + discountHistory.getPromotionDiscountAmount();
+        return new PurchaseCost(totalItemCost - totalDiscountAmount, totalItemCost);
     }
 }
