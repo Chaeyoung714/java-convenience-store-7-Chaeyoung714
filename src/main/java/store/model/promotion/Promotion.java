@@ -1,5 +1,6 @@
 package store.model.promotion;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import store.util.DateMonitor;
 
@@ -51,7 +52,7 @@ public class Promotion {
             return LocalDate.of(Integer.parseInt(date[YEAR])
                     , Integer.parseInt(date[MONTH])
                     , Integer.parseInt(date[DAY]));
-        } catch (NullPointerException | NumberFormatException e) {
+        } catch (NullPointerException | NumberFormatException | DateTimeException e) {
             throw new IllegalStateException("[SYSTEM] 잘못된 날짜입니다.");
         }
     }

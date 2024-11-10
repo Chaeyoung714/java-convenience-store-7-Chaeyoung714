@@ -1,5 +1,8 @@
 package store.model.item;
 
+import static store.exceptions.ExceptionMessages.WRONG_ORDER_FORMAT;
+
+import java.util.Collection;
 import java.util.Optional;
 import store.model.promotion.Promotion;
 
@@ -13,6 +16,9 @@ public class Item{
 
     protected Item(String name, int price, int promotionQuantity, int regularQuantity, boolean hasOngoingPromotion,
                    Optional<Promotion> promotion) {
+        validatePositiveNumber(price);
+        validatePositiveNumber(promotionQuantity);
+        validatePositiveNumber(regularQuantity);
         this.name = name;
         this.price = price;
         this.promotionQuantity = promotionQuantity;
@@ -23,6 +29,7 @@ public class Item{
 
     public void updateItemInfo(String quantity, Optional<Promotion> promotion) {
         try {
+            validatePositiveNumber(Integer.parseInt(quantity));
             if (promotion.isEmpty() && this.promotion.isPresent()) {
                 this.regularQuantity = Integer.parseInt(quantity);
                 return;
@@ -30,6 +37,7 @@ public class Item{
             if (promotion.isPresent() && this.promotion.isEmpty()) {
                 this.promotionQuantity = Integer.parseInt(quantity);
                 this.hasOngoingPromotion = promotion.get().isOngoing();
+                this.promotion = promotion;
                 return;
             }
             throw new IllegalStateException("[SYSTEM] 프로모션이 중복 적용되거나 정가제품이 중복 적용되었습니다.");
@@ -60,6 +68,12 @@ public class Item{
         amount -= promotionQuantity;
         promotionQuantity = 0;
         return amount;
+    }
+
+    private void validatePositiveNumber(int number) {
+        if (number < 0) {
+            throw new IllegalStateException("[SYSTEM] Wrong number in Item");
+        }
     }
 
     public String getName() {

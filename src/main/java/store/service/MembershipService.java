@@ -18,7 +18,7 @@ public class MembershipService {
             int totalCost = cart.calculateTotalCost();
             int promotionAppliedAmount = discountHistory.getPromotionAppliedAmount();
             int membershipAmount = membershipPolicy.applyMembership(totalCost - promotionAppliedAmount);
-            discountHistory.addMembershipDiscount(membershipAmount);
+            discountHistory.setMembershipDiscount(membershipAmount);
         }
     }
 

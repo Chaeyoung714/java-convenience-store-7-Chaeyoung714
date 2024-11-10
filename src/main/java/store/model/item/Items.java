@@ -9,7 +9,7 @@ import store.exceptions.NotFoundByNameException;
 public class Items {
     private final List<Item> items;
 
-    public Items(List<Item> items) {
+    protected Items(List<Item> items) {
         validateNameDuplication(items);
         this.items = items;
     }

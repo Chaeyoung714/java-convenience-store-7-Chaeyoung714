@@ -22,6 +22,7 @@ import store.model.consumer.DiscountHistory;
 import store.model.item.Item;
 import store.model.item.Items;
 import store.model.item.ItemsFactory;
+import store.model.promotion.Promotion;
 import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
@@ -32,7 +33,9 @@ public class PromotionServiceTest {
 
     @BeforeAll
     static void setUp() {
-        defaultPromotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
+        defaultPromotions = Promotions.register(new ArrayList<>(Arrays.asList(
+                "testPromo2+1,2,1,2024-01-01,2024-12-31"
+        )));
         promotionService = new PromotionService(new PromotionPolicy());
     }
 

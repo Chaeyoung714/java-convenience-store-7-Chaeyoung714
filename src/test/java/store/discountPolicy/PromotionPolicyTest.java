@@ -15,12 +15,12 @@ import store.model.promotion.Promotion;
 
 public class PromotionPolicyTest {
     private static PromotionPolicy promotionPolicy;
-    private static Promotion promotion;
+    private static Promotion defaultPromotion;
 
     @BeforeAll
     static void setUp() {
         promotionPolicy = new PromotionPolicy();
-        promotion = Promotion.from("testPromo2+1", "2", "1", "2024-01-01", "2024-12-31");
+        defaultPromotion = Promotion.from("testPromo2+1", "2", "1", "2024-01-01", "2024-12-31");
     }
 
     @ParameterizedTest
@@ -28,7 +28,7 @@ public class PromotionPolicyTest {
     @CsvSource(value = {"1:0", "2:0", "3:1", "4:1", "5:1", "6:2", "7:2", "8:2", "9:2", "10:2"}
             , delimiter = ':')
     void calculateGiftAmount(int buyAmount, int expectedGiftAmount) {
-        Item testItem = ItemFactory.from("test", "1000", "7", Optional.of(promotion));
+        Item testItem = ItemFactory.from("test", "1000", "7", Optional.of(defaultPromotion));
 
         int giftAmount = promotionPolicy.calculateGift(testItem, buyAmount);
 

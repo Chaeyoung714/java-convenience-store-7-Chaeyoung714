@@ -8,9 +8,11 @@ public class DiscountHistory {
     private int promotionDiscountAmount;
     private int membershipDiscountAmount;
     private final Map<Item, Integer> gifts;
+    private boolean isMembershipApplied;
 
     public DiscountHistory() {
         this.gifts = new HashMap<>();
+        this.isMembershipApplied = false;
     }
 
     public int getPromotionAppliedAmount() {
@@ -23,13 +25,30 @@ public class DiscountHistory {
     }
 
     public void addGift(Item item, int amount) {
-        //필요시 중복이름 체크도 하기
+        validateHasOngoingPromotion(item);
+        validateDuplicatedGift(item);
         gifts.put(item, amount);
         promotionDiscountAmount += (item.getPrice() * amount);
     }
 
-    public void addMembershipDiscount(int membershipDiscountAmount) {
+    public void setMembershipDiscount(int membershipDiscountAmount) {
+        if (isMembershipApplied) {
+            throw new IllegalStateException("[SYSTEM] Duplicated membership applied.");
+        }
         this.membershipDiscountAmount = membershipDiscountAmount;
+        this.isMembershipApplied = true;
+    }
+
+    private void validateDuplicatedGift(Item item) {
+        if (gifts.keySet().contains(item)) {
+            throw new IllegalStateException("[SYSTEM] Duplicated promotion on same item.");
+        }
+    }
+
+    private void validateHasOngoingPromotion(Item item) {
+        if (!item.hasOngoingPromotion()) {
+            throw new IllegalStateException("[SYSTEM] Gift is not have Ongoing Promotion Item.");
+        }
     }
 
     public int getPromotionDiscountAmount() {

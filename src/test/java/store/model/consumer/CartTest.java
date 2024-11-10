@@ -1,4 +1,4 @@
-package store.model;
+package store.model.consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -14,26 +14,32 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import store.exceptions.ExceptionMessages;
-import store.model.consumer.Cart;
 import store.model.item.Item;
 import store.model.item.ItemFactory;
 import store.model.item.Items;
+import store.model.item.ItemsFactory;
+import store.model.promotion.Promotions;
 
 public class CartTest {
     private static Item defaultItem1;
     private static Item defaultItem2;
     private static Items defaultItems;
+    private static Promotions defaultPromotions;
 
     private Map<Item, Integer> cartMap;
 
     @BeforeAll
     static void setUp() {
+        defaultPromotions = Promotions.register(new ArrayList<>(Arrays.asList(
+                "testPromo2+1,2,1,2024-01-01,2024-12-31"
+        )));
         defaultItem1 = ItemFactory.from("test1", "1000", "5", Optional.empty());
         defaultItem2 = ItemFactory.from("test2", "2000", "10", Optional.empty());
-        defaultItems = new Items(new ArrayList<>(Arrays.asList(defaultItem1, defaultItem2)));
+        defaultItems = ItemsFactory.of(new ArrayList<>(Arrays.asList(
+                "test1,1000,5,null", "test2,2000,10,null"
+        )), defaultPromotions);
     }
 
     @BeforeEach
@@ -105,5 +111,25 @@ public class CartTest {
         cart.addBuyAmountOf(defaultItem1, 5);
 
         assertThat(cart.getCart().get(defaultItem1)).isEqualTo(15);
+    }
+
+    @Test
+    @DisplayName("[success] 총 구매 상품 가격의 합을 구한다.")
+    void calculateTotalCartItemsCost() {
+        cartMap.put(defaultItem1, 10);
+        cartMap.put(defaultItem2, 10);
+        Cart cart = Cart.of(cartMap, defaultItems);
+
+        assertThat(cart.calculateTotalCost()).isEqualTo(30000);
+    }
+
+    @Test
+    @DisplayName("[success] 총 구매 상품 개수의 합을 구한다.")
+    void calculateTotalCartItemAmount() {
+        cartMap.put(defaultItem1, 10);
+        cartMap.put(defaultItem2, 10);
+        Cart cart = Cart.of(cartMap, defaultItems);
+
+        assertThat(cart.calculateTotalBuyAmount()).isEqualTo(20);
     }
 }
