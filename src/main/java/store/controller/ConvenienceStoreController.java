@@ -8,6 +8,7 @@ import store.model.Cart;
 import store.model.DiscountHistory;
 import store.model.Items;
 import store.model.Promotions;
+import store.service.ApplyPromotionHandler;
 import store.service.OrderService;
 import store.util.FileScanner;
 import store.view.InputView;
@@ -17,11 +18,14 @@ public class ConvenienceStoreController {
     private final InputView inputView;
     private final OutputView outputView;
     private final OrderService orderService;
+    private final ApplyPromotionHandler applyPromotionHandler;
 
-    public ConvenienceStoreController(InputView inputView, OutputView outputView, OrderService orderService) {
+    public ConvenienceStoreController(InputView inputView, OutputView outputView, OrderService orderService,
+                                      ApplyPromotionHandler applyPromotionHandler) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.orderService = orderService;
+        this.applyPromotionHandler = applyPromotionHandler;
     }
 
     public void run() {
@@ -70,7 +74,7 @@ public class ConvenienceStoreController {
         while (true) {
             try {
                 String answer = inputView.readOutOfStockPromotion(dto);
-                orderService.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
+                applyPromotionHandler.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
@@ -82,7 +86,7 @@ public class ConvenienceStoreController {
         while (true) {
             try {
                 String answer = inputView.readAddGift(dto);
-                orderService.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
+                applyPromotionHandler.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());

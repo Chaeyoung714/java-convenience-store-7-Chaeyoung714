@@ -43,7 +43,7 @@ public class OrderService {
         }
     }
 
-    private void checkWhetherReAskToConsumer(Item item, int buyAmount) {
+    public void checkWhetherReAskToConsumer(Item item, int buyAmount) {
         if (buyAmount > item.getPromotionQuantity()) {
             throw new OutOfPromotionStockException(item, buyAmount);
         }
@@ -64,32 +64,13 @@ public class OrderService {
         }
     }
 
-    public void orderAddingOrWithoutGift(String answer, GiftDto dto, Cart cart, DiscountHistory discountHistory) {
-        if (answer.equals("Y")) {
-            applyPromotionAddingGift(dto, cart, discountHistory);
-        }
-        if (answer.equals("N")) {
-            simplyApplyPromotion(dto.gift(), dto.buyAmount(), discountHistory);
-        }
-    }
-
-    public void orderWithOrWithoutRegularItems(String answer, OutOfStockPromotionDto dto, Cart cart,
-                                               DiscountHistory discountHistory) {
-        if (answer.equals("Y")) {
-            simplyApplyPromotion(dto.item(), dto.buyAmount(), discountHistory);
-        }
-        if (answer.equals("N")) {
-            applyPromotionWithoutRegularItems(dto, cart, discountHistory);
-        }
-    }
-
-    private void simplyApplyPromotion(Item item, int buyAmount, DiscountHistory discountHistory) {
+    public void simplyApplyPromotion(Item item, int buyAmount, DiscountHistory discountHistory) {
         //가장 기본 - 그대로 프로모션 적용
         int giftAmount = promotionPolicy.calculateGift(item, buyAmount);
         discountHistory.addGift(item, giftAmount);
     }
 
-    private void applyPromotionWithoutRegularItems(OutOfStockPromotionDto dto, Cart cart,
+    public void applyPromotionWithoutRegularItems(OutOfStockPromotionDto dto, Cart cart,
                                                    DiscountHistory discountHistory) {
         //모자란 건 결제 안함! = outOfStock 만큼 구매하지 않음 + 결제시 프로모션만 적용
         int updatedBuyAmount = dto.buyAmount() - dto.outOfStockAmount();
@@ -98,7 +79,7 @@ public class OrderService {
         cart.deductBuyAmountOf(dto.item(), dto.outOfStockAmount());
     }
 
-    private void applyPromotionAddingGift(GiftDto dto, Cart cart, DiscountHistory discountHistory) {
+    public void applyPromotionAddingGift(GiftDto dto, Cart cart, DiscountHistory discountHistory) {
         // 증정품 추가함 = 1만큼 구매 추가 + 결제시 프로모션만 적용
         int updatedBuyAmount = dto.buyAmount() + 1;
         int giftAmount = promotionPolicy.calculateGift(dto.gift(), updatedBuyAmount);

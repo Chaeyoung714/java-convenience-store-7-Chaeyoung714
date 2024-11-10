@@ -99,11 +99,8 @@ public class OrderServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[withPromotion-7]", items);
-        OutOfStockPromotionDto testOutOfStockInfo = OutOfStockPromotionDto.from(items.findByName("withPromotion"), 7);
 
-        orderService.orderWithOrWithoutRegularItems(
-                "Y", testOutOfStockInfo, cart, discountHistory);
+        orderService.simplyApplyPromotion(items.findByName("withPromotion"), 7, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
         assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(2);
@@ -122,8 +119,7 @@ public class OrderServiceTest {
         Cart cart = Cart.of("[withPromotion-7]", items);
         OutOfStockPromotionDto testOutOfStockInfo = OutOfStockPromotionDto.from(items.findByName("withPromotion"), 1);
 
-        orderService.orderWithOrWithoutRegularItems(
-                "N", testOutOfStockInfo, cart, discountHistory);
+        orderService.applyPromotionWithoutRegularItems(testOutOfStockInfo, cart, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
         assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(2);
@@ -156,9 +152,7 @@ public class OrderServiceTest {
         Cart cart = Cart.of("[withPromotion-5]", items);
         GiftDto testGiftInfo = new GiftDto(items.findByName("withPromotion"), 5);
 
-
-        orderService.orderAddingOrWithoutGift(
-                "Y", testGiftInfo, cart, discountHistory);
+        orderService.applyPromotionAddingGift(testGiftInfo, cart, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
         assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(2);
@@ -173,11 +167,8 @@ public class OrderServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[withPromotion-5]", items);
-        GiftDto testGiftInfo = new GiftDto(items.findByName("withPromotion"), 5);
 
-        orderService.orderAddingOrWithoutGift(
-                "N", testGiftInfo, cart, discountHistory);
+        orderService.simplyApplyPromotion(items.findByName("withPromotion"), 5, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
         assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(1);
