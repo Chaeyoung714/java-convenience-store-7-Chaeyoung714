@@ -8,7 +8,7 @@ import store.model.Cart;
 import store.model.DiscountHistory;
 import store.model.Items;
 import store.model.Promotions;
-import store.service.ApplyPromotionHandler;
+import store.service.PromotionServiceHandler;
 import store.service.OrderService;
 import store.util.FileScanner;
 import store.view.InputView;
@@ -18,14 +18,14 @@ public class ConvenienceStoreController {
     private final InputView inputView;
     private final OutputView outputView;
     private final OrderService orderService;
-    private final ApplyPromotionHandler applyPromotionHandler;
+    private final PromotionServiceHandler promotionServiceHandler;
 
     public ConvenienceStoreController(InputView inputView, OutputView outputView, OrderService orderService,
-                                      ApplyPromotionHandler applyPromotionHandler) {
+                                      PromotionServiceHandler promotionServiceHandler) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.orderService = orderService;
-        this.applyPromotionHandler = applyPromotionHandler;
+        this.promotionServiceHandler = promotionServiceHandler;
     }
 
     public void run() {
@@ -61,7 +61,7 @@ public class ConvenienceStoreController {
 
     private void applyPromotion(Cart cart, DiscountHistory discountHistory) {
         try {
-            orderService.applyPromotion(cart, discountHistory);
+            promotionServiceHandler.applyPromotion(cart, discountHistory);
         } catch (OutOfPromotionStockException e) {
             checkOrderIncludingRegularItems(e.getOutOfStockPromotionDto(), cart, discountHistory);
         } catch (NotAddGiftException e) {
@@ -74,7 +74,7 @@ public class ConvenienceStoreController {
         while (true) {
             try {
                 String answer = inputView.readOutOfStockPromotion(dto);
-                applyPromotionHandler.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
+                promotionServiceHandler.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
@@ -86,7 +86,7 @@ public class ConvenienceStoreController {
         while (true) {
             try {
                 String answer = inputView.readAddGift(dto);
-                applyPromotionHandler.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
+                promotionServiceHandler.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
