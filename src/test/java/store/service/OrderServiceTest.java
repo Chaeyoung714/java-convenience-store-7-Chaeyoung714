@@ -8,11 +8,11 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import store.model.Cart;
-import store.model.DiscountHistory;
-import store.model.Item;
-import store.model.Items;
-import store.model.Promotions;
+import store.model.consumer.Cart;
+import store.model.consumer.DiscountHistory;
+import store.model.item.Item;
+import store.model.item.Items;
+import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
 public class OrderServiceTest {

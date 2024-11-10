@@ -1,6 +1,6 @@
 package store.discountPolicy;
 
-import store.model.Item;
+import store.model.item.Item;
 
 public class PromotionPolicy {
 

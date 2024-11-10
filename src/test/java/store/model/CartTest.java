@@ -10,6 +10,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import store.model.consumer.Cart;
+import store.model.item.Item;
+import store.model.item.Items;
+import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
 public class CartTest {

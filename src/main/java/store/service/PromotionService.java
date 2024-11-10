@@ -5,9 +5,9 @@ import store.dto.GiftDto;
 import store.dto.OutOfStockPromotionDto;
 import store.exceptions.NotAddGiftException;
 import store.exceptions.OutOfPromotionStockException;
-import store.model.Cart;
-import store.model.DiscountHistory;
-import store.model.Item;
+import store.model.consumer.Cart;
+import store.model.consumer.DiscountHistory;
+import store.model.item.Item;
 
 public class PromotionService {
     private final PromotionPolicy promotionPolicy;

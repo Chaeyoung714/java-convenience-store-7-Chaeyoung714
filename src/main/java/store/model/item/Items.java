@@ -1,4 +1,4 @@
-package store.model;
+package store.model.item;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import store.exceptions.NotFoundByNameException;
+import store.model.promotion.Promotion;
+import store.model.promotion.Promotions;
 
 public class Items {
     private static final String PRODUCTS_FILE_DELIMITER = ",";

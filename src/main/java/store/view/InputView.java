@@ -3,7 +3,6 @@ package store.view;
 import camp.nextstep.edu.missionutils.Console;
 import store.dto.GiftDto;
 import store.dto.OutOfStockPromotionDto;
-import store.model.Item;
 
 public class InputView {
     public String readPurchasingItems() {

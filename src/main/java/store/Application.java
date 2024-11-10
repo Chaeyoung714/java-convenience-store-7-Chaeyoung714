@@ -1,8 +1,8 @@
 package store;
 
 import store.controller.ConvenienceStoreController;
-import store.model.Items;
-import store.model.Promotions;
+import store.model.item.Items;
+import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
 public class Application {

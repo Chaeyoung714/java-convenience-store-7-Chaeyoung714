@@ -1,5 +1,7 @@
 package store.view;
 
+import store.util.Answer;
+
 public class InputValidator {
     private static final String DELIMITERS_IN_ORDER_REGEX_WITH_BLANK_UNALLOWED = "\\[[^\\s\\-,]+\\-[0-9]+\\](,\\[[^\\s\\-,]+\\-[0-9]+\\])*";
 

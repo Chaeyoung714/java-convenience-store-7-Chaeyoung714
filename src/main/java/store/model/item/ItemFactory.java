@@ -1,6 +1,7 @@
-package store.model;
+package store.model.item;
 
 import java.util.Optional;
+import store.model.promotion.Promotion;
 
 public class ItemFactory {
 

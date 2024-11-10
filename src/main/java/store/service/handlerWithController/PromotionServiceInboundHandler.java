@@ -1,12 +1,13 @@
-package store.service;
+package store.service.handlerWithController;
 
-import static store.view.Answer.NO;
-import static store.view.Answer.YES;
+import static store.util.Answer.NO;
+import static store.util.Answer.YES;
 
 import store.dto.GiftDto;
 import store.dto.OutOfStockPromotionDto;
-import store.model.Cart;
-import store.model.DiscountHistory;
+import store.model.consumer.Cart;
+import store.model.consumer.DiscountHistory;
+import store.service.PromotionService;
 
 public class PromotionServiceInboundHandler {
     private final PromotionService promotionService;

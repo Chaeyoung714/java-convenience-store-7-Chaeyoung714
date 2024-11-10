@@ -1,4 +1,4 @@
-package store.view;
+package store.util;
 
 public enum Answer {
     YES("Y"),

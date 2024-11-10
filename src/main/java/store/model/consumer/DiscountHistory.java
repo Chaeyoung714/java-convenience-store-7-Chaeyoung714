@@ -1,7 +1,8 @@
-package store.model;
+package store.model.consumer;
 
 import java.util.HashMap;
 import java.util.Map;
+import store.model.item.Item;
 
 public class DiscountHistory {
     private int promotionDiscountAmount;

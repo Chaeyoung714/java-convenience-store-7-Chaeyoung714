@@ -8,8 +8,8 @@ import store.discountPolicy.PromotionPolicy;
 import store.service.MembershipService;
 import store.service.OrderService;
 import store.service.PromotionService;
-import store.service.PromotionServiceInboundHandler;
-import store.service.PromotionServiceOutboundHandler;
+import store.service.handlerWithController.PromotionServiceInboundHandler;
+import store.service.handlerWithController.PromotionServiceOutboundHandler;
 import store.view.InputView;
 import store.view.OutputView;
 

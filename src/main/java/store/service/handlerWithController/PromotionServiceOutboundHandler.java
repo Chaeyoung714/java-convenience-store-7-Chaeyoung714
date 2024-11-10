@@ -1,4 +1,4 @@
-package store.service;
+package store.service.handlerWithController;
 
 import java.util.Map;
 import store.controller.PromotionServiceObserver;
@@ -6,9 +6,10 @@ import store.dto.GiftDto;
 import store.dto.OutOfStockPromotionDto;
 import store.exceptions.NotAddGiftException;
 import store.exceptions.OutOfPromotionStockException;
-import store.model.Cart;
-import store.model.DiscountHistory;
-import store.model.Item;
+import store.model.consumer.Cart;
+import store.model.consumer.DiscountHistory;
+import store.model.item.Item;
+import store.service.PromotionService;
 
 public class PromotionServiceOutboundHandler {
     private final PromotionService promotionService;

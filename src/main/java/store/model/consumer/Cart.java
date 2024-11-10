@@ -1,10 +1,12 @@
-package store.model;
+package store.model.consumer;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import store.exceptions.NotFoundByNameException;
+import store.model.item.Item;
+import store.model.item.Items;
 
 public class Cart{
     private final Map<Item, Integer> cart;

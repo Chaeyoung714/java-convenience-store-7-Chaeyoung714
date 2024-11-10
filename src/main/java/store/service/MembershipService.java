@@ -1,10 +1,10 @@
 package store.service;
 
-import static store.view.Answer.YES;
+import static store.util.Answer.YES;
 
 import store.discountPolicy.MembershipPolicy;
-import store.model.Cart;
-import store.model.DiscountHistory;
+import store.model.consumer.Cart;
+import store.model.consumer.DiscountHistory;
 
 public class MembershipService {
     private final MembershipPolicy membershipPolicy;

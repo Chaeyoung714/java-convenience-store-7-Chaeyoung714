@@ -3,9 +3,9 @@ package store.service;
 import java.util.HashMap;
 import java.util.Map;
 import store.exceptions.NotFoundByNameException;
-import store.model.Cart;
-import store.model.Item;
-import store.model.Items;
+import store.model.consumer.Cart;
+import store.model.item.Item;
+import store.model.item.Items;
 import store.util.Parser;
 
 public class OrderService {

@@ -1,6 +1,6 @@
 package store.dto;
 
-import store.model.Item;
+import store.model.item.Item;
 
 public record OutOfStockPromotionDto(Item item, int buyAmount, int outOfStockAmount) {
 

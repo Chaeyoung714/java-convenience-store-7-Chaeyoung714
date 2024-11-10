@@ -1,10 +1,10 @@
 package store.view;
 
 import java.util.Map;
-import store.model.Cart;
-import store.model.DiscountHistory;
-import store.model.Item;
-import store.model.Items;
+import store.model.consumer.Cart;
+import store.model.consumer.DiscountHistory;
+import store.model.item.Item;
+import store.model.item.Items;
 
 public class OutputView {
     private static final int TOTAL_BILL_WIDTH = 35;

@@ -1,12 +1,12 @@
 package store.controller;
 
-import static store.view.Answer.YES;
+import static store.util.Answer.YES;
 
-import store.model.Cart;
-import store.model.DiscountHistory;
-import store.model.Items;
+import store.model.consumer.Cart;
+import store.model.consumer.DiscountHistory;
+import store.model.item.Items;
 import store.service.MembershipService;
-import store.service.PromotionServiceOutboundHandler;
+import store.service.handlerWithController.PromotionServiceOutboundHandler;
 import store.service.OrderService;
 import store.view.InputView;
 import store.view.OutputView;

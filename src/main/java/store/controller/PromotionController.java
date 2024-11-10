@@ -2,9 +2,9 @@ package store.controller;
 
 import store.dto.GiftDto;
 import store.dto.OutOfStockPromotionDto;
-import store.model.Cart;
-import store.model.DiscountHistory;
-import store.service.PromotionServiceInboundHandler;
+import store.model.consumer.Cart;
+import store.model.consumer.DiscountHistory;
+import store.service.handlerWithController.PromotionServiceInboundHandler;
 import store.view.InputView;
 
 public class PromotionController implements PromotionServiceObserver {
