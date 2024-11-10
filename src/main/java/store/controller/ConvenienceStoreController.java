@@ -28,10 +28,7 @@ public class ConvenienceStoreController {
         this.promotionServiceHandler = promotionServiceHandler;
     }
 
-    public void run() {
-        Promotions promotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
-        Items items = Items.register(FileScanner.readFile("./src/main/resources/products.md"), promotions);
-
+    public void run(Items items) {
         purchaseOnce(items);
     }
 
@@ -62,31 +59,6 @@ public class ConvenienceStoreController {
     private void applyPromotion(Cart cart, DiscountHistory discountHistory) {
         promotionServiceHandler.applyPromotion(cart, discountHistory);
     }
-
-//    private void checkOrderIncludingRegularItems(OutOfStockPromotionDto dto, Cart cart,
-//                                                 DiscountHistory discountHistory) {
-//        while (true) {
-//            try {
-//                String answer = inputView.readOutOfStockPromotion(dto);
-//                promotionServiceHandler.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
-//                return;
-//            } catch (IllegalArgumentException e) {
-//                System.out.println(e.getMessage());
-//            }
-//        }
-//    }
-
-//    private void checkAddGift(GiftDto dto, Cart cart, DiscountHistory discountHistory) {
-//        while (true) {
-//            try {
-//                String answer = inputView.readAddGift(dto);
-//                promotionServiceHandler.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
-//                return;
-//            } catch (IllegalArgumentException e) {
-//                System.out.println(e.getMessage());
-//            }
-//        }
-//    }
 
     private void applyMemberShip(Cart cart, DiscountHistory discountHistory) {
         while (true) {

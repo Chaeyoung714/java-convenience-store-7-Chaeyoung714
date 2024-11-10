@@ -7,7 +7,7 @@ import store.model.DiscountHistory;
 import store.service.PromotionServiceInboundHandler;
 import store.view.InputView;
 
-public class PromotionController implements Observer {
+public class PromotionController implements PromotionServiceObserver {
     private final InputView inputView;
     private final PromotionServiceInboundHandler promotionServiceHandler;
 

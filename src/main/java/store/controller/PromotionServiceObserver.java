@@ -5,7 +5,7 @@ import store.dto.OutOfStockPromotionDto;
 import store.model.Cart;
 import store.model.DiscountHistory;
 
-public interface Observer {
+public interface PromotionServiceObserver {
     void notifyOutOfPromotionStock(OutOfStockPromotionDto dto, Cart cart, DiscountHistory discountHistory);
 
     void notifyAddGift(GiftDto giftDto, Cart cart, DiscountHistory discountHistory);

@@ -1,7 +1,7 @@
 package store.service;
 
 import java.util.Map;
-import store.controller.Observer;
+import store.controller.PromotionServiceObserver;
 import store.dto.GiftDto;
 import store.dto.OutOfStockPromotionDto;
 import store.exceptions.NotAddGiftException;
@@ -12,11 +12,11 @@ import store.model.Item;
 
 public class PromotionServiceOutboundHandler {
     private final PromotionService promotionService;
-    private final Observer observer;
+    private final PromotionServiceObserver promotionServiceObserver;
 
-    public PromotionServiceOutboundHandler(PromotionService promotionService, Observer observer) {
+    public PromotionServiceOutboundHandler(PromotionService promotionService, PromotionServiceObserver promotionServiceObserver) {
         this.promotionService = promotionService;
-        this.observer = observer;
+        this.promotionServiceObserver = promotionServiceObserver;
     }
 
     public void applyPromotion(Cart consumerCart, DiscountHistory discountHistory) {
@@ -25,10 +25,10 @@ public class PromotionServiceOutboundHandler {
             try {
                 promotionService.checkAndApplyPromotion(item, cart.get(item), discountHistory);
             } catch (OutOfPromotionStockException e) {
-                observer.notifyOutOfPromotionStock(
+                promotionServiceObserver.notifyOutOfPromotionStock(
                         OutOfStockPromotionDto.from(item, cart.get(item)), consumerCart, discountHistory);
             } catch (NotAddGiftException e) {
-                observer.notifyAddGift(new GiftDto(item, cart.get(item)), consumerCart, discountHistory);
+                promotionServiceObserver.notifyAddGift(new GiftDto(item, cart.get(item)), consumerCart, discountHistory);
             }
         }
     }
