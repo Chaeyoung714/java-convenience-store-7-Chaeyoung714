@@ -1,10 +1,11 @@
 package store.controller;
 
-import store.exceptions.DidNotBringPromotionGiveProductException;
+import store.dto.GiftDto;
+import store.dto.OutOfStockPromotionDto;
+import store.exceptions.NotAddGiftException;
 import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
 import store.model.DiscountHistory;
-import store.model.Item;
 import store.model.Items;
 import store.model.Promotions;
 import store.service.OrderService;
@@ -58,18 +59,18 @@ public class ConvenienceStoreController {
         try {
             orderService.applyPromotion(cart, discountHistory);
         } catch (OutOfPromotionStockException e) {
-            checkOrderIncludingRegularItems(e.getItem(), e.getBuyAmount(), e.getOutOfStockAmount(), cart, discountHistory);
-        } catch (DidNotBringPromotionGiveProductException e) {
-            checkAddGift(e.getGift(), e.getBuyAmount(), cart, discountHistory);
+            checkOrderIncludingRegularItems(e.getOutOfStockPromotionDto(), cart, discountHistory);
+        } catch (NotAddGiftException e) {
+            checkAddGift(e.getGiftDto(), cart, discountHistory);
         }
     }
 
-    private void checkOrderIncludingRegularItems(Item item, int buyAmount, int outOfStockAmount, Cart cart,
+    private void checkOrderIncludingRegularItems(OutOfStockPromotionDto dto, Cart cart,
                                                  DiscountHistory discountHistory) {
         while (true) {
             try {
-                String answer = inputView.readOutOfStockPromotion(item, outOfStockAmount);
-                orderService.orderWithOrWithoutRegularItems(answer, item, buyAmount, outOfStockAmount, cart, discountHistory);
+                String answer = inputView.readOutOfStockPromotion(dto);
+                orderService.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
@@ -77,11 +78,11 @@ public class ConvenienceStoreController {
         }
     }
 
-    private void checkAddGift(Item item, int buyAmount, Cart cart, DiscountHistory discountHistory) {
+    private void checkAddGift(GiftDto dto, Cart cart, DiscountHistory discountHistory) {
         while (true) {
             try {
-                String answer = inputView.readAddGift(item);
-                orderService.orderAddingOrWithoutGift(answer, item, buyAmount, cart, discountHistory);
+                String answer = inputView.readAddGift(dto);
+                orderService.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());

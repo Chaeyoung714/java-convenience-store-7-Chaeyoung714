@@ -112,7 +112,7 @@ public class OutputView {
         StringBuilder promotionLine = new StringBuilder();
         promotionLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "행사할인"));
         promotionLine.append(
-                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", -discountHistory.getPromotionAppliedAmount()));
+                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", -discountHistory.getPromotionDiscountAmount()));
         System.out.println(promotionLine);
     }
 
