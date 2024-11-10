@@ -10,8 +10,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import store.exceptions.ExceptionMessages;
 import store.model.consumer.Cart;
 import store.model.item.Item;
+import store.model.item.ItemFactory;
 import store.model.item.Items;
 import store.model.promotion.Promotions;
 import store.util.FileScanner;
@@ -41,12 +43,12 @@ public class CartTest {
     @Test
     void 잘못된_상품명_입력시_Application에서_예외를_반환한다() {
         Map<Item, Integer> carMap = new HashMap<>();
-        Item wrongItem = new Item("코카콜라", 1000, 1, 1, true, Optional.empty());
+        Item wrongItem = ItemFactory.from("코카콜라", "1000", "1", Optional.empty());
         carMap.put(wrongItem, 3);
 
         assertThatIllegalArgumentException().isThrownBy(
                         () -> Cart.of(carMap, defaultItems))
-                .withMessage("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
+                .withMessage(ExceptionMessages.ITEM_NOT_EXISTS.getMessage());
     }
 
     @ParameterizedTest
@@ -57,17 +59,6 @@ public class CartTest {
 
         assertThatIllegalArgumentException().isThrownBy(
                         () -> Cart.of(carMap, defaultItems))
-                .withMessage("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+                .withMessage(ExceptionMessages.WRONG_ORDER_FORMAT.getMessage());
     }
-
-    /**
-     * Deprecated - 다른 객체 책임임
-     */
-//    @ParameterizedTest
-//    @ValueSource(strings = {"", "{콜라-3],[에너지바-5]", "[콜라~3],[에너지바-5]", "[콜라-3]&[에너지바-5]"})
-//    void 올바르지_않은_구분자_입력시_Application에서_예외를_반환한다(String testCart) {
-//        assertThatIllegalArgumentException().isThrownBy(
-//                        () -> Cart.of(testCart, defaultItems))
-//                .withMessage("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
-//    }
 }

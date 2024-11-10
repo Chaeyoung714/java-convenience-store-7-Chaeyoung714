@@ -19,18 +19,20 @@ public class PromotionService {
     public void checkAndApplyPromotion(Item item, int buyAmount, DiscountHistory discountHistory) {
         if (item.hasOngoingPromotion()) {
             checkWhetherNotifyConsumer(item, buyAmount);
-            applyDefaultPromotion(item, buyAmount, discountHistory); // 프로모션 예외가 안터진 경우
+            applyDefaultPromotion(item, buyAmount, discountHistory);
         }
     }
 
     public void checkWhetherNotifyConsumer(Item item, int buyAmount) {
-        if (buyAmount > item.getPromotionQuantity()) {
-            throw new OutOfPromotionStockException();
-        }
         int promotionBundleAmount = item.getPromotion().get().getBundleAmount();
         int requiredBuyAmount = item.getPromotion().get().getBuyAmount();
+        if (buyAmount > item.getPromotionQuantity()) {
+            int outOfStockAmount =
+                    buyAmount - (promotionBundleAmount * (item.getPromotionQuantity() / promotionBundleAmount));
+            throw new OutOfPromotionStockException(outOfStockAmount);
+        }
         if (buyAmount % promotionBundleAmount == requiredBuyAmount) {
-            if ((buyAmount + 1) <= item.getPromotionQuantity()) {
+            if ((buyAmount + promotionPolicy.getGiftAmount()) <= item.getPromotionQuantity()) {
                 throw new NotAddGiftException();
             }
         }
@@ -50,9 +52,9 @@ public class PromotionService {
     }
 
     public void applyPromotionAddingGift(GiftDto dto, Cart cart, DiscountHistory discountHistory) {
-        int updatedBuyAmount = dto.buyAmount() + 1;
+        int updatedBuyAmount = dto.buyAmount() + promotionPolicy.getGiftAmount();
         int giftAmount = promotionPolicy.calculateGift(dto.gift(), updatedBuyAmount);
         discountHistory.addGift(dto.gift(), giftAmount);
-        cart.addBuyAmountOf(dto.gift(), 1);
+        cart.addBuyAmountOf(dto.gift(), promotionPolicy.getGiftAmount());
     }
 }

@@ -1,13 +1,19 @@
 package store.view;
 
+import static store.exceptions.ExceptionMessages.WRONG_INPUT_VALUE;
+import static store.exceptions.ExceptionMessages.WRONG_ORDER_FORMAT;
+
 import store.util.Answer;
 
 public class InputValidator {
     private static final String DELIMITERS_IN_ORDER_REGEX_WITH_BLANK_UNALLOWED = "\\[[^\\s\\-,]+\\-[0-9]+\\](,\\[[^\\s\\-,]+\\-[0-9]+\\])*";
 
     public static void validatePurchasingItems(String orderDetail) {
+        if (orderDetail == null || orderDetail.isBlank()) {
+            throw new IllegalArgumentException(WRONG_INPUT_VALUE.getMessage());
+        }
         if (delimiterNotInOrderOrBlankIncludedIn(orderDetail)) {
-            throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+            throw new IllegalArgumentException(WRONG_ORDER_FORMAT.getMessage());
         }
     }
 
@@ -21,6 +27,6 @@ public class InputValidator {
                 return;
             }
         }
-        throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+        throw new IllegalArgumentException(WRONG_INPUT_VALUE.getMessage());
     }
 }

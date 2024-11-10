@@ -1,5 +1,8 @@
 package store.service;
 
+import static store.exceptions.ExceptionMessages.ORDER_EXCEEDS_STOCK_QUANTITY;
+import static store.exceptions.ExceptionMessages.WRONG_ORDER_FORMAT;
+
 import java.util.HashMap;
 import java.util.Map;
 import store.exceptions.NotFoundByNameException;
@@ -21,7 +24,7 @@ public class OrderService {
             }
             return Cart.of(cart, items);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+            throw new IllegalArgumentException(WRONG_ORDER_FORMAT.getMessage());
         } catch (NotFoundByNameException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -31,7 +34,7 @@ public class OrderService {
         Map<Item, Integer> cart = consumerCart.getCart();
         for (Item item : cart.keySet()) {
             if (cart.get(item) > (item.getPromotionQuantity() + item.getRegularQuantity())) {
-                throw new IllegalArgumentException("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
+                throw new IllegalArgumentException(ORDER_EXCEEDS_STOCK_QUANTITY.getMessage());
             }
         }
     }

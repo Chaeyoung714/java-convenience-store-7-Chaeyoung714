@@ -1,9 +1,12 @@
 package store.model.consumer;
 
+import static store.exceptions.ExceptionMessages.WRONG_ORDER_FORMAT;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import store.exceptions.ExceptionMessages;
 import store.exceptions.NotFoundByNameException;
 import store.model.item.Item;
 import store.model.item.Items;
@@ -24,7 +27,7 @@ public class Cart{
     private void validatePositiveNumber(Collection<Integer> buyAmounts) {
         for (int buyAmount : buyAmounts) {
             if (buyAmount <= 0) {
-                throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
+                throw new IllegalArgumentException(WRONG_ORDER_FORMAT.getMessage());
             }
         }
     }

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import store.exceptions.ExceptionMessages;
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.model.item.Item;
@@ -54,7 +55,7 @@ public class OrderServiceTest {
 
         assertThatIllegalArgumentException().isThrownBy(
                         () -> orderService.checkStock(cart))
-                .withMessage("[ERROR] 재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
+                .withMessage(ExceptionMessages.ORDER_EXCEEDS_STOCK_QUANTITY.getMessage());
     }
 
 
