@@ -1,10 +1,9 @@
 package store.controller;
 
-import store.discountPolicy.MembershipPolicy;
-import store.discountPolicy.PromotionPolicy;
 import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
+import store.model.DiscountHistory;
 import store.model.Item;
 import store.model.Items;
 import store.model.Promotions;
@@ -32,23 +31,21 @@ public class ConvenienceStoreController {
     }
 
     private void purchaseOnce(Items items) {
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
-        MembershipPolicy membershipPolicy = new MembershipPolicy();
-
         outputView.printProducts(items);
-        Cart cart = orderItems(items, promotionPolicy);
-        applyMemberShip(promotionPolicy, membershipPolicy, cart);
-        outputView.printReceipt(cart, promotionPolicy, membershipPolicy);
+        DiscountHistory discountHistory = new DiscountHistory();
+        Cart cart = orderItems(items, discountHistory);
+        applyMemberShip(cart, discountHistory);
+        outputView.printReceipt(cart, discountHistory);
         restartOrEndPurchase(items);
     }
 
-    private Cart orderItems(Items items, PromotionPolicy promotionPolicy) {
+    private Cart orderItems(Items items, DiscountHistory discountHistory) {
         while (true) {
             try {
                 String purchasingItems = inputView.readPurchasingItems();
                 Cart cart = Cart.of(purchasingItems, items);
                 orderService.checkStock(cart);
-                applyPromotion(promotionPolicy, cart);
+                applyPromotion(cart, discountHistory);
                 orderService.orderItems(cart);
                 return cart;
             } catch (IllegalArgumentException e) {
@@ -57,21 +54,22 @@ public class ConvenienceStoreController {
         }
     }
 
-    private void applyPromotion(PromotionPolicy promotionPolicy, Cart cart) {
+    private void applyPromotion(Cart cart, DiscountHistory discountHistory) {
         try {
-            orderService.applyPromotion(cart, promotionPolicy);
+            orderService.applyPromotion(cart, discountHistory);
         } catch (OutOfPromotionStockException e) {
-            checkOrderIncludingRegularItems(promotionPolicy, e.getItem(), e.getBuyAmount(), e.getOutOfStockAmount(), cart);
+            checkOrderIncludingRegularItems(e.getItem(), e.getBuyAmount(), e.getOutOfStockAmount(), cart, discountHistory);
         } catch (DidNotBringPromotionGiveProductException e) {
-            checkAddGift(promotionPolicy, e.getGift(), e.getBuyAmount(), cart);
+            checkAddGift(e.getGift(), e.getBuyAmount(), cart, discountHistory);
         }
     }
 
-    private void checkOrderIncludingRegularItems(PromotionPolicy promotionPolicy, Item item, int buyAmount, int outOfStockAmount, Cart cart) {
+    private void checkOrderIncludingRegularItems(Item item, int buyAmount, int outOfStockAmount, Cart cart,
+                                                 DiscountHistory discountHistory) {
         while (true) {
             try {
                 String answer = inputView.readOutOfStockPromotion(item, outOfStockAmount);
-                orderService.orderWithOrWithoutRegularItems(answer, promotionPolicy, item, buyAmount, cart);
+                orderService.orderWithOrWithoutRegularItems(answer, item, buyAmount, outOfStockAmount, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
@@ -79,11 +77,11 @@ public class ConvenienceStoreController {
         }
     }
 
-    private void checkAddGift(PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
+    private void checkAddGift(Item item, int buyAmount, Cart cart, DiscountHistory discountHistory) {
         while (true) {
             try {
                 String answer = inputView.readAddGift(item);
-                orderService.orderAddingOrWithoutGift(answer, promotionPolicy, item, buyAmount, cart);
+                orderService.orderAddingOrWithoutGift(answer, item, buyAmount, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
@@ -91,11 +89,11 @@ public class ConvenienceStoreController {
         }
     }
 
-    private void applyMemberShip(PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy, Cart cart) {
+    private void applyMemberShip(Cart cart, DiscountHistory discountHistory) {
         while (true) {
             try {
                 String answer = inputView.readApplyMemberShip();
-                orderService.applyMemberShip(answer, promotionPolicy, membershipPolicy, cart);
+                orderService.applyMemberShip(answer, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());

@@ -1,50 +1,15 @@
 package store.discountPolicy;
 
-import java.util.HashMap;
-import java.util.Map;
 import store.model.Item;
 
 public class PromotionPolicy {
-    private final Map<Item, Integer> gift;
-    private int discountAmount;
+    /**
+     * gift를 정해주는 역할.
+     */
 
-    public PromotionPolicy() {
-        this.gift = new HashMap<>();
-    }
-
-    public void addGift(Item item, int buyAmount) {
+    public int calculateGift(Item item, int buyAmount) {
         int promotionBundleAmount = item.getPromotion().get().getBundleAmount();
         int giftAmount = Math.min(item.getPromotionQuantity(), buyAmount) / promotionBundleAmount;
-        updateGift(item, giftAmount);
-        updateDiscountAmount(item.getPrice(), giftAmount);
-    }
-
-    private void updateGift(Item item, int giftAmount) {
-        if (gift.keySet().contains(item)) {
-            gift.replace(item, gift.get(item) + giftAmount);
-            return;
-        }
-        gift.put(item, giftAmount);
-    }
-
-    private void updateDiscountAmount(int giftPrice, int giftAmount) {
-        discountAmount += (giftAmount * giftPrice);
-    }
-
-    public int getPromotionAppliedAmount() {
-        int promotionAppliledAmount = 0;
-        for (Item item : gift.keySet()) {
-            int bundleAmount = item.getPromotion().get().getBundleAmount();
-            promotionAppliledAmount += (bundleAmount * gift.get(item) * item.getPrice());
-        }
-        return promotionAppliledAmount;
-    }
-
-    public int getDiscountAmount() {
-        return discountAmount;
-    }
-
-    public Map<Item, Integer> getGift() {
-        return gift;
+        return giftAmount;
     }
 }

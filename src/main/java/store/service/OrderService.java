@@ -6,9 +6,17 @@ import store.discountPolicy.PromotionPolicy;
 import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
+import store.model.DiscountHistory;
 import store.model.Item;
 
 public class OrderService {
+    private final MembershipPolicy membershipPolicy;
+    private final PromotionPolicy promotionPolicy;
+
+    public OrderService(MembershipPolicy membershipPolicy, PromotionPolicy promotionPolicy) {
+        this.membershipPolicy = membershipPolicy;
+        this.promotionPolicy = promotionPolicy;
+    }
 
     public void checkStock(Cart consumerCart) {
         Map<Item, Integer> cart = consumerCart.getCart();
@@ -19,13 +27,13 @@ public class OrderService {
         }
     }
 
-    public void applyPromotion(Cart consumerCart, PromotionPolicy promotionPolicy) {
+    public void applyPromotion(Cart consumerCart, DiscountHistory discountHistory) {
         try {
             Map<Item, Integer> cart = consumerCart.getCart();
             for (Item item : cart.keySet()) {
                 if (item.hasOngoingPromotion()) {
                     checkWhetherReAskToConsumer(item, cart.get(item));
-                    simplyApplyPromotion(promotionPolicy, item, cart.get(item)); // 프로모션 예외가 안터진 경우
+                    simplyApplyPromotion(item, cart.get(item), discountHistory); // 프로모션 예외가 안터진 경우
                 }
             }
         } catch (OutOfPromotionStockException | DidNotBringPromotionGiveProductException e) {
@@ -54,61 +62,54 @@ public class OrderService {
         }
     }
 
-    public void orderAddingOrWithoutGift(String answer, PromotionPolicy promotionPolicy, Item gift, int buyAmount,
-                                         Cart cart) {
+    public void orderAddingOrWithoutGift(String answer, Item gift, int buyAmount, Cart cart, DiscountHistory discountHistory) {
         if (answer.equals("Y")) {
-            orderAddingGift(promotionPolicy, gift, buyAmount, cart);
+            applyPromotionAddingGift(gift, buyAmount, cart, discountHistory);
         }
         if (answer.equals("N")) {
-            orderWithoutGift(promotionPolicy, gift, buyAmount);
+            simplyApplyPromotion(gift, buyAmount, discountHistory);
         }
     }
 
-    public void orderWithOrWithoutRegularItems(String answer, PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
+    public void orderWithOrWithoutRegularItems(String answer, Item item, int buyAmount, int outOfStockAmount, Cart cart,
+                                               DiscountHistory discountHistory) {
         if (answer.equals("Y")) {
-            orderWithRegularItems(promotionPolicy, item, buyAmount);
+            simplyApplyPromotion(item, buyAmount, discountHistory);
         }
         if (answer.equals("N")) {
-            orderWithoutRegularItems(promotionPolicy, item, buyAmount, cart);
+            applyPromotionWithoutRegularItems(item, buyAmount, outOfStockAmount, cart, discountHistory);
         }
     }
 
-    public void simplyApplyPromotion(PromotionPolicy promotionPolicy, Item item, int buyAmount) {
+    public void simplyApplyPromotion(Item item, int buyAmount, DiscountHistory discountHistory) {
         //가장 기본 - 그대로 프로모션 적용
-        promotionPolicy.addGift(item, buyAmount);
+        int giftAmount = promotionPolicy.calculateGift(item, buyAmount);
+        discountHistory.addGift(item, giftAmount);
     }
 
-    private void orderWithRegularItems(PromotionPolicy promotionPolicy, Item item, int buyAmount) {
-        //모자란 건 프로모션 적용 안함! = 이대로 결제 + 결제시 프로모션과 정가 모두 적용
-        promotionPolicy.addGift(item, buyAmount);
-    }
-
-    private void orderWithoutRegularItems(PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
+    private void applyPromotionWithoutRegularItems(Item item, int buyAmount, int outOfStockAmount, Cart cart,
+                                                   DiscountHistory discountHistory) {
         //모자란 건 결제 안함! = outOfStock 만큼 구매하지 않음 + 결제시 프로모션만 적용
-        int bundleAmount = item.getPromotion().get().getBundleAmount();
-        int outOfStockAmount = buyAmount - (bundleAmount * (item.getPromotionQuantity() / bundleAmount));
         int updatedBuyAmount = buyAmount - outOfStockAmount;
-        promotionPolicy.addGift(item, updatedBuyAmount);
+        int giftAmount = promotionPolicy.calculateGift(item, updatedBuyAmount);
+        discountHistory.addGift(item, giftAmount);
         cart.deductBuyAmountOf(item, outOfStockAmount);
     }
 
-    private void orderAddingGift(PromotionPolicy promotionPolicy, Item item, int buyAmount, Cart cart) {
+    private void applyPromotionAddingGift(Item item, int buyAmount, Cart cart, DiscountHistory discountHistory) {
         // 증정품 추가함 = 1만큼 구매 추가 + 결제시 프로모션만 적용
         int updatedBuyAmount = buyAmount + 1;
-        promotionPolicy.addGift(item, updatedBuyAmount);
+        int giftAmount = promotionPolicy.calculateGift(item, updatedBuyAmount);
+        discountHistory.addGift(item, giftAmount);
         cart.addBuyAmountOf(item, 1);
     }
 
-    private void orderWithoutGift(PromotionPolicy promotionPolicy, Item item, int buyAmount) {
-        // 증정품 추가하지 않음 = 이대로 결제 + 결제시 프로모션만 적용
-        promotionPolicy.addGift(item, buyAmount);
-    }
-
-    public void applyMemberShip(String answer, PromotionPolicy promotionPolicy, MembershipPolicy membershipPolicy, Cart cart) {
+    public void applyMemberShip(String answer, Cart cart, DiscountHistory discountHistory) {
         if (answer.equals("Y")) {
             int totalCost = cart.getTotalCost();
-            int promotionAppliledAmount = promotionPolicy.getPromotionAppliedAmount();
-            membershipPolicy.applyMembership(totalCost - promotionAppliledAmount);
+            int promotionAppliledAmount = discountHistory.getPromotionAppliedAmount();
+            int membershipAmount = membershipPolicy.applyMembership(totalCost - promotionAppliledAmount);
+            discountHistory.addMembershipDiscount(membershipAmount);
         }
     }
 }

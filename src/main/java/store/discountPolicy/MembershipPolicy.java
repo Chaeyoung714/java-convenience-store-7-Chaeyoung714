@@ -1,18 +1,14 @@
 package store.discountPolicy;
 
 public class MembershipPolicy {
-    private int discountAmount;
+    private static final int DISCOUNT_PERCENT = 30;
+    private static final int MAX_DISCOUNT_AMOUNT = 8000;
 
-    public void applyMembership(int costExceptPromotionAppliedCost) {
-        int discountAmount = (costExceptPromotionAppliedCost * 3) / 10;
-        if (discountAmount > 8000) {
-            this.discountAmount = 8000;
-            return;
+    public int applyMembership(int costExceptPromotionAppliedAmount) {
+        int discountAmount = (costExceptPromotionAppliedAmount * DISCOUNT_PERCENT) / 100;
+        if (discountAmount > MAX_DISCOUNT_AMOUNT) {
+            return MAX_DISCOUNT_AMOUNT;
         }
-        this.discountAmount = discountAmount;
-    }
-
-    public int getDiscountAmount() {
         return discountAmount;
     }
 }

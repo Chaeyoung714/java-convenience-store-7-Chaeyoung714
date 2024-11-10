@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.discountPolicy.MembershipPolicy;
@@ -16,6 +17,7 @@ import store.discountPolicy.PromotionPolicy;
 import store.exceptions.DidNotBringPromotionGiveProductException;
 import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
+import store.model.DiscountHistory;
 import store.model.Items;
 import store.model.Promotions;
 import store.util.FileScanner;
@@ -24,12 +26,18 @@ public class OrderServiceTest {
     private static Promotions defaultPromotions;
     private static Items defaultItems;
     private static OrderService orderService;
+    private DiscountHistory discountHistory;
 
     @BeforeAll
     static void setUp() {
         defaultPromotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
         defaultItems = Items.register(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
-        orderService = new OrderService();
+        orderService = new OrderService(new MembershipPolicy(), new PromotionPolicy());
+    }
+
+    @BeforeEach
+    void setUpDiscountHistory() {
+        discountHistory = new DiscountHistory();
     }
 
     @Test
@@ -60,12 +68,11 @@ public class OrderServiceTest {
         ));
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[onlyRegular-3]", items);
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
-        orderService.applyPromotion(cart, promotionPolicy);
+        orderService.applyPromotion(cart, discountHistory);
 
-        assertThat(promotionPolicy.getGift().size()).isEqualTo(0);
-        assertThat(promotionPolicy.getDiscountAmount()).isEqualTo(0);
+        assertThat(discountHistory.getGifts().size()).isEqualTo(0);
+        assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(0);
     }
 
     @Test
@@ -77,9 +84,8 @@ public class OrderServiceTest {
         ));
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[withPromotion-7]", items);
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
-        assertThatThrownBy(() -> orderService.applyPromotion(cart, promotionPolicy))
+        assertThatThrownBy(() -> orderService.applyPromotion(cart, discountHistory))
                 .isInstanceOf(OutOfPromotionStockException.class);
     }
 
@@ -92,14 +98,13 @@ public class OrderServiceTest {
         ));
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[withPromotion-7]", items);
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
         orderService.orderWithOrWithoutRegularItems(
-                "Y", promotionPolicy, items.findByName("withPromotion"), 7, cart);
+                "Y", items.findByName("withPromotion"), 7, 1, cart, discountHistory);
 
-        assertThat(promotionPolicy.getGift().size()).isEqualTo(1);
-        assertThat(promotionPolicy.getGift().get(items.findByName("withPromotion"))).isEqualTo(2);
-        assertThat(promotionPolicy.getDiscountAmount()).isEqualTo(2000);
+        assertThat(discountHistory.getGifts().size()).isEqualTo(1);
+        assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(2);
+        assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(2000);
     }
 
     @Test
@@ -112,14 +117,13 @@ public class OrderServiceTest {
         ));
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[withPromotion-7]", items);
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
         orderService.orderWithOrWithoutRegularItems(
-                "N", promotionPolicy, items.findByName("withPromotion"), 7, cart);
+                "N", items.findByName("withPromotion"), 7, 1, cart, discountHistory);
 
-        assertThat(promotionPolicy.getGift().size()).isEqualTo(1);
-        assertThat(promotionPolicy.getGift().get(items.findByName("withPromotion"))).isEqualTo(2);
-        assertThat(promotionPolicy.getDiscountAmount()).isEqualTo(2000);
+        assertThat(discountHistory.getGifts().size()).isEqualTo(1);
+        assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(2);
+        assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(2000);
     }
 
 
@@ -132,9 +136,8 @@ public class OrderServiceTest {
         ));
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[withPromotion-5]", items);
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
-        assertThatThrownBy(() -> orderService.applyPromotion(cart, promotionPolicy))
+        assertThatThrownBy(() -> orderService.applyPromotion(cart, discountHistory))
                 .isInstanceOf(DidNotBringPromotionGiveProductException.class);
     }
 
@@ -147,14 +150,13 @@ public class OrderServiceTest {
         ));
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[withPromotion-5]", items);
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
         orderService.orderAddingOrWithoutGift(
-                "Y", promotionPolicy, items.findByName("withPromotion"), 5, cart);
+                "Y", items.findByName("withPromotion"), 5, cart, discountHistory);
 
-        assertThat(promotionPolicy.getGift().size()).isEqualTo(1);
-        assertThat(promotionPolicy.getGift().get(items.findByName("withPromotion"))).isEqualTo(2);
-        assertThat(promotionPolicy.getDiscountAmount()).isEqualTo(2000);
+        assertThat(discountHistory.getGifts().size()).isEqualTo(1);
+        assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(2);
+        assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(2000);
     }
 
     @Test
@@ -166,14 +168,13 @@ public class OrderServiceTest {
         ));
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[withPromotion-5]", items);
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
 
         orderService.orderAddingOrWithoutGift(
-                "N", promotionPolicy, items.findByName("withPromotion"), 5, cart);
+                "N", items.findByName("withPromotion"), 5, cart, discountHistory);
 
-        assertThat(promotionPolicy.getGift().size()).isEqualTo(1);
-        assertThat(promotionPolicy.getGift().get(items.findByName("withPromotion"))).isEqualTo(1);
-        assertThat(promotionPolicy.getDiscountAmount()).isEqualTo(1000);
+        assertThat(discountHistory.getGifts().size()).isEqualTo(1);
+        assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(1);
+        assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(1000);
     }
 
     @Test
@@ -184,12 +185,9 @@ public class OrderServiceTest {
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[test-5]", items);
 
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
-        MembershipPolicy membershipPolicy = new MembershipPolicy();
+        orderService.applyMemberShip("Y", cart, discountHistory);
 
-        orderService.applyMemberShip("Y", promotionPolicy, membershipPolicy, cart);
-
-        assertThat(membershipPolicy.getDiscountAmount()).isEqualTo(1500);
+        assertThat(discountHistory.getMembershipDiscountAmount()).isEqualTo(1500);
     }
 
     @Test
@@ -200,14 +198,11 @@ public class OrderServiceTest {
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[test-6]", items);
 
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
-        MembershipPolicy membershipPolicy = new MembershipPolicy();
-
-        orderService.simplyApplyPromotion(promotionPolicy, items.findByName("test"), 6);
+        orderService.simplyApplyPromotion(items.findByName("test"), 6, discountHistory);
         orderService.orderItems(cart);
-        orderService.applyMemberShip("Y", promotionPolicy, membershipPolicy, cart);
+        orderService.applyMemberShip("Y", cart, discountHistory);
 
-        assertThat(membershipPolicy.getDiscountAmount()).isEqualTo(0);
+        assertThat(discountHistory.getMembershipDiscountAmount()).isEqualTo(0);
     }
 
     @Test
@@ -218,12 +213,9 @@ public class OrderServiceTest {
         Items items = Items.register(testItems, defaultPromotions);
         Cart cart = Cart.of("[test-5]", items);
 
-        PromotionPolicy promotionPolicy = new PromotionPolicy();
-        MembershipPolicy membershipPolicy = new MembershipPolicy();
+        orderService.applyMemberShip("Y", cart, discountHistory);
 
-        orderService.applyMemberShip("Y", promotionPolicy, membershipPolicy, cart);
-
-        assertThat(membershipPolicy.getDiscountAmount()).isEqualTo(8000);
+        assertThat(discountHistory.getMembershipDiscountAmount()).isEqualTo(8000);
     }
 
 
