@@ -2,6 +2,7 @@ package store.controller;
 
 import static store.util.Answer.YES;
 
+import store.dto.ReceiptDto;
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.model.consumer.PurchaseCost;
@@ -75,7 +76,7 @@ public class ConvenienceStoreController {
 
     private void showPurchaseResult(Cart cart, DiscountHistory discountHistory) {
         PurchaseCost purchaseCost = orderService.calculateCost(cart, discountHistory);
-        outputView.printReceipt(cart, discountHistory, purchaseCost);
+        outputView.printReceipt(new ReceiptDto(cart, discountHistory, purchaseCost));
     }
 
     private void restartOrEndPurchase(Items items) {
