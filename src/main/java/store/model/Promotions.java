@@ -8,6 +8,13 @@ import java.util.Optional;
 import java.util.Set;
 
 public class Promotions {
+    private static final String PROMOTIONS_FILE_DELIMITER = ",";
+    private static final int NAME = 0;
+    private static final int BUY_AMOUNT = 1;
+    private static final int GET_AMOUNT = 2;
+    private static final int START_DATE = 3;
+    private static final int END_DATE = 4;
+
     private final List<Promotion> promotions;
 
     private Promotions(List<Promotion> promotions) {
@@ -27,9 +34,12 @@ public class Promotions {
     private static List<Promotion> parsePromotions(List<String> promotionFileData) {
         List<Promotion> promotions = new ArrayList<>();
         for (String promotionData : promotionFileData) {
-            String[] promotion = promotionData.split(",");
-            promotions.add(Promotion.from(
-                    promotion[0], promotion[1], promotion[2], promotion[3], promotion[4]
+            String[] promotion = promotionData.split(PROMOTIONS_FILE_DELIMITER);
+            promotions.add(Promotion.from(promotion[NAME]
+                    , promotion[BUY_AMOUNT]
+                    , promotion[GET_AMOUNT]
+                    , promotion[START_DATE]
+                    , promotion[END_DATE]
             ));
         }
         return promotions;

@@ -10,7 +10,6 @@ public class Cart{
     private final Map<Item, Integer> cart;
 
     private Cart(Map<Item, Integer> cart) {
-        // Item이 존재하는 item인지 확인해야 함
         validatePositiveNumber(cart.values());
         this.cart = cart;
     }
@@ -30,9 +29,9 @@ public class Cart{
 
     private static void validateExistingItem(Set<Item> cartItems, Items items) {
         try {
-            for (Item item : cartItems) {
-                items.findByName(item.getName());
-            }
+            cartItems.stream()
+                    .map(Item::getName)
+                    .forEach(items::findByName);
         } catch (NotFoundByNameException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -49,7 +48,7 @@ public class Cart{
         cart.replace(item, cart.get(item) + addAmount);
     }
 
-    public int getTotalCost() {
+    public int calculateTotalCost() {
         int totalCost = 0;
         for (Item item : cart.keySet()) {
             totalCost += (cart.get(item) * item.getPrice());
@@ -57,7 +56,7 @@ public class Cart{
         return totalCost;
     }
 
-    public int getTotalBuyAmount() {
+    public int calculateTotalBuyAmount() {
         int totalBuyAmount = 0;
         for (Item item : cart.keySet()) {
             totalBuyAmount += cart.get(item);

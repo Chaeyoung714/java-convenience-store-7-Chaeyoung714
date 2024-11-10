@@ -25,8 +25,11 @@ public class PromotionServiceOutboundHandler {
             try {
                 promotionService.checkAndApplyPromotion(item, cart.get(item), discountHistory);
             } catch (OutOfPromotionStockException e) {
+                int buyAmount = cart.get(item);
+                int bundleAmount = item.getPromotion().get().getBundleAmount();
+                int outOfStockAmount = buyAmount - (bundleAmount * (item.getPromotionQuantity() / bundleAmount));
                 promotionServiceObserver.notifyOutOfPromotionStock(
-                        OutOfStockPromotionDto.from(item, cart.get(item)), consumerCart, discountHistory);
+                        new OutOfStockPromotionDto(item, buyAmount, outOfStockAmount), consumerCart, discountHistory);
             } catch (NotAddGiftException e) {
                 promotionServiceObserver.notifyAddGift(new GiftDto(item, cart.get(item)), consumerCart, discountHistory);
             }

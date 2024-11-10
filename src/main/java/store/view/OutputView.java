@@ -103,8 +103,8 @@ public class OutputView {
     private void printTotalProductPrice(Cart cart) {
         StringBuilder totalProductPrice = new StringBuilder();
         totalProductPrice.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "총구매액"));
-        totalProductPrice.append(String.format("%-" + BUY_AMOUNT_WIDTH + "d", cart.getTotalBuyAmount()));
-        totalProductPrice.append(String.format("%," + PRICE_WIDTH + "d", cart.getTotalCost()));
+        totalProductPrice.append(String.format("%-" + BUY_AMOUNT_WIDTH + "d", cart.calculateTotalBuyAmount()));
+        totalProductPrice.append(String.format("%," + PRICE_WIDTH + "d", cart.calculateTotalCost()));
         System.out.println(totalProductPrice);
     }
 
@@ -127,7 +127,7 @@ public class OutputView {
     private void printFinalCost(Cart cart, DiscountHistory discountHistory) {
         StringBuilder paymentLine = new StringBuilder();
         int finalCost =
-                cart.getTotalCost() - (discountHistory.getMembershipDiscountAmount() + discountHistory.getPromotionDiscountAmount());
+                cart.calculateTotalCost() - (discountHistory.getMembershipDiscountAmount() + discountHistory.getPromotionDiscountAmount());
         paymentLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "내실돈"));
         paymentLine.append(
                 String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", finalCost));

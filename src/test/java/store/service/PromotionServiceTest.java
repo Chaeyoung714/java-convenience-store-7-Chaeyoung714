@@ -106,7 +106,7 @@ public class PromotionServiceTest {
         Map<Item, Integer> carMap = new HashMap<>();
         carMap.put(buyItem, buyAmount);
         Cart cart = Cart.of(carMap, items);
-        OutOfStockPromotionDto testOutOfStockInfo = OutOfStockPromotionDto.from(buyItem, 1);
+        OutOfStockPromotionDto testOutOfStockInfo = new OutOfStockPromotionDto(buyItem, 7,1);
 
         promotionService.applyPromotionWithoutRegularItems(testOutOfStockInfo, cart, discountHistory);
 

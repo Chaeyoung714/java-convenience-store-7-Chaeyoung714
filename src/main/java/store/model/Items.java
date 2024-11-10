@@ -9,6 +9,12 @@ import java.util.Set;
 import store.exceptions.NotFoundByNameException;
 
 public class Items {
+    private static final String PRODUCTS_FILE_DELIMITER = ",";
+    private static final int NAME = 0;
+    private static final int PRICE = 1;
+    private static final int QUANTITY = 2;
+    private static final int PROMOTION = 3;
+
     private final List<Item> items;
 
     private Items(List<Item> items) {
@@ -16,7 +22,6 @@ public class Items {
     }
 
     public static Items register(List<String> itemFileData, Promotions promotions) {
-        //ListString이 List<Item>이면 더 좋겠지만.. 어렵겠지?
         try {
             List<Item> items = parseItems(itemFileData, promotions);
             validateNameDuplication(items);
@@ -29,16 +34,16 @@ public class Items {
     private static List<Item> parseItems(List<String> itemFileData, Promotions promotions) {
         List<Item> items = new ArrayList<>();
         for (String itemData : itemFileData) {
-            String[] item = itemData.split(",");
-            Optional<Item> registeredItem = findByNameOrElseEmpty(item[0], items);
-            Optional<Promotion> promotionOfItem = promotions.findByName(item[3]);
+            String[] item = itemData.split(PRODUCTS_FILE_DELIMITER);
+            Optional<Item> registeredItem = findByNameOrElseEmpty(item[NAME], items);
+            Optional<Promotion> promotionOfItem = promotions.findByName(item[PROMOTION]);
             if (registeredItem.isEmpty()) {
                 items.add(ItemFactory.from(
-                        item[0], item[1], item[2], promotionOfItem
+                        item[NAME], item[PRICE], item[QUANTITY], promotionOfItem
                 ));
                 continue;
             }
-            registeredItem.get().updateItemInfo(item[2], promotionOfItem);
+            registeredItem.get().updateItemInfo(item[QUANTITY], promotionOfItem);
         }
         return items;
     }

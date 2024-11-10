@@ -1,9 +1,14 @@
 package store.model;
 
-import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.LocalDate;
+import store.util.DateMonitor;
 
 public class Promotion {
+    private static final String DATE_DELIMITER = "-";
+    private static final int YEAR = 0;
+    private static final int MONTH = 1;
+    private static final int DAY = 2;
+
     private final String name;
     private final int buyAmount;
     private final int getAmount;
@@ -42,17 +47,17 @@ public class Promotion {
 
     private static LocalDate transferToLocalDateFrom(String dateString) {
         try {
-            String[] date = dateString.split("-");
-            return LocalDate.of(Integer.parseInt(date[0])
-                    , Integer.parseInt(date[1])
-                    , Integer.parseInt(date[2]));
+            String[] date = dateString.split(DATE_DELIMITER);
+            return LocalDate.of(Integer.parseInt(date[YEAR])
+                    , Integer.parseInt(date[MONTH])
+                    , Integer.parseInt(date[DAY]));
         } catch (NullPointerException | NumberFormatException e) {
             throw new IllegalStateException("[SYSTEM] 잘못된 날짜입니다.");
         }
     }
 
-    public boolean isOngoing() { //실시간 바뀌므로 변수로 굳이 관리 x
-        LocalDate date = DateTimes.now().toLocalDate();
+    public boolean isOngoing() {
+        LocalDate date = DateMonitor.today();
         return (startDate.isEqual(date) || startDate.isBefore(date))
                 && (endDate.isEqual(date) || endDate.isAfter(date));
     }

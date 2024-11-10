@@ -1,13 +1,13 @@
 package store.controller;
 
+import static store.view.Answer.YES;
+
 import store.model.Cart;
 import store.model.DiscountHistory;
 import store.model.Items;
-import store.model.Promotions;
 import store.service.MembershipService;
 import store.service.PromotionServiceOutboundHandler;
 import store.service.OrderService;
-import store.util.FileScanner;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -76,7 +76,7 @@ public class ConvenienceStoreController {
         while (true) {
             try {
                 String answer = inputView.readRestartPurchase();
-                if (answer.equals("Y")) {
+                if (answer.equals(YES.getFormat())) {
                     purchaseOnce(items);
                 }
                 return;
