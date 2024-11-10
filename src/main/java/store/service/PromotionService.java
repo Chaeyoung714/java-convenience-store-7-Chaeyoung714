@@ -25,13 +25,13 @@ public class PromotionService {
 
     public void checkWhetherNotifyConsumer(Item item, int buyAmount) {
         if (buyAmount > item.getPromotionQuantity()) {
-            throw new OutOfPromotionStockException(item, buyAmount);
+            throw new OutOfPromotionStockException();
         }
         int promotionBundleAmount = item.getPromotion().get().getBundleAmount();
         int requiredBuyAmount = item.getPromotion().get().getBuyAmount();
         if (buyAmount % promotionBundleAmount == requiredBuyAmount) {
             if ((buyAmount + 1) <= item.getPromotionQuantity()) {
-                throw new NotAddGiftException(item, buyAmount);
+                throw new NotAddGiftException();
             }
         }
     }
