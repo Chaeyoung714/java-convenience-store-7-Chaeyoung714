@@ -3,7 +3,10 @@ package store.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,12 +22,15 @@ import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
 public class CartTest {
+    private static List<String> defaultPromotion;
     private static Promotions defaultPromotions;
+    private static Item defaultItem;
     private static Items defaultItems;
 
     @BeforeAll
     static void setUp() {
-        defaultPromotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
+        defaultPromotion = new ArrayList<>(Arrays.asList("testPromo2+1,2,1,2024-01-01,2024-12-31"));
+        defaultPromotions = Promotions.register(defaultPromotion);
         defaultItems = Items.register(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
     }
 
