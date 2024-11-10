@@ -1,7 +1,6 @@
 package store.service;
 
 import java.util.Map;
-import store.Promotions;
 import store.discountPolicy.MembershipPolicy;
 import store.discountPolicy.PromotionPolicy;
 import store.exceptions.DidNotBringPromotionGiveProductException;
