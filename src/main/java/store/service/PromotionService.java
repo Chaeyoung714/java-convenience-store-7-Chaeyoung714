@@ -27,6 +27,7 @@ public class PromotionService {
         }
     }
 
+    //분리 고려
     public void checkWhetherReAskToConsumer(Item item, int buyAmount) {
         if (buyAmount > item.getPromotionQuantity()) {
             throw new OutOfPromotionStockException(item, buyAmount);

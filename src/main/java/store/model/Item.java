@@ -20,20 +20,11 @@ public class Item {
         this.promotion = promotion;
     }
 
-    public static Item from(String name, String price, String quantity, String promotionName, Promotions promotions) {
+    public static Item from(String name, String price, String quantity, Optional<Promotion> promotion) {
         try {
-            int promotionQuantity = 0;
-            int regularQuantity = 0;
-            boolean hasOngoingPromotion = false;
-
-            Optional<Promotion> promotion = promotions.findByName(promotionName);
-            if (promotion.isEmpty()) { //프로모션 없음
-                regularQuantity = Integer.parseInt(quantity);
-            }
-            if (promotion.isPresent()) {
-                promotionQuantity = Integer.parseInt(quantity);
-                hasOngoingPromotion = promotion.get().isOngoing();
-            }
+            int promotionQuantity = determinePromotionQuantity(promotion, quantity);
+            int regularQuantity = determineRegularQuantity(promotion, quantity);
+            boolean hasOngoingPromotion = determinePromotionOngoing(promotion);
             return new Item(
                     name
                     , Integer.parseInt(price)
@@ -45,6 +36,27 @@ public class Item {
         } catch (NumberFormatException e) {
             throw new IllegalStateException("[SYSTEM] 잘못된 가격 또는 수량입니다.");
         }
+    }
+
+    private static int determineRegularQuantity(Optional<Promotion> promotion, String quantity) {
+        if (promotion.isEmpty()) {
+            return Integer.parseInt(quantity);
+        }
+        return 0;
+    }
+
+    private static int determinePromotionQuantity(Optional<Promotion> promotion, String quantity) {
+        if (promotion.isPresent()) {
+            return Integer.parseInt(quantity);
+        }
+        return 0;
+    }
+
+    private static boolean determinePromotionOngoing(Optional<Promotion> promotion) {
+        if (promotion.isPresent()) {
+            return promotion.get().isOngoing();
+        }
+        return false;
     }
 
     public void update(String quantity, String promotionName, Promotions promotions) {
@@ -67,20 +79,26 @@ public class Item {
 
     public void purchase(int amount) {
         if (promotionQuantity > 0) {
-            // amount <= promotionQuality
-            if (promotionQuantity >= amount) {
-                promotionQuantity -= amount;
+            amount = calculateWithPromotionQuantity(amount);
+            if (amount == 0) {
                 return;
             }
-            // promotionQuality < amount <= pro+regularQuality
-            amount -= promotionQuantity;
-            promotionQuantity = 0;
         }
         if (regularQuantity >= amount) {
             regularQuantity -= amount;
             return;
         }
         throw new IllegalStateException("Out of all product stock");
+    }
+
+    private int calculateWithPromotionQuantity(int amount) {
+        if (promotionQuantity >= amount) {
+            promotionQuantity -= amount;
+            return 0;
+        }
+        amount -= promotionQuantity;
+        promotionQuantity = 0;
+        return amount;
     }
 
     public String getName() {

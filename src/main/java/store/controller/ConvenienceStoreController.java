@@ -8,6 +8,7 @@ import store.model.Cart;
 import store.model.DiscountHistory;
 import store.model.Items;
 import store.model.Promotions;
+import store.service.MembershipService;
 import store.service.PromotionServiceHandler;
 import store.service.OrderService;
 import store.util.FileScanner;
@@ -18,13 +19,16 @@ public class ConvenienceStoreController {
     private final InputView inputView;
     private final OutputView outputView;
     private final OrderService orderService;
+    private final MembershipService membershipService;
     private final PromotionServiceHandler promotionServiceHandler;
 
     public ConvenienceStoreController(InputView inputView, OutputView outputView, OrderService orderService,
+                                      MembershipService membershipService,
                                       PromotionServiceHandler promotionServiceHandler) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.orderService = orderService;
+        this.membershipService = membershipService;
         this.promotionServiceHandler = promotionServiceHandler;
     }
 
@@ -98,7 +102,7 @@ public class ConvenienceStoreController {
         while (true) {
             try {
                 String answer = inputView.readApplyMemberShip();
-                orderService.applyMemberShip(answer, cart, discountHistory);
+                membershipService.applyMemberShip(answer, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());

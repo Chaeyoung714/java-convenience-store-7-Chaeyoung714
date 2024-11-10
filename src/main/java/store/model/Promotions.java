@@ -16,18 +16,23 @@ public class Promotions {
 
     public static Promotions register(List<String> promotionFileData) {
         try {
-            List<Promotion> promotions = new ArrayList<>();
-            for (String promotionData : promotionFileData) {
-                String[] promotion = promotionData.split(",");
-                promotions.add(Promotion.from(
-                        promotion[0], promotion[1], promotion[2], promotion[3], promotion[4]
-                ));
-            }
+            List<Promotion> promotions = parsePromotions(promotionFileData);
             validateNameDuplication(promotions);
             return new Promotions(promotions);
         } catch (NullPointerException e) {
             throw new IllegalStateException("[SYSTEM] 잘못된 프로모션입니다.");
         }
+    }
+
+    private static List<Promotion> parsePromotions(List<String> promotionFileData) {
+        List<Promotion> promotions = new ArrayList<>();
+        for (String promotionData : promotionFileData) {
+            String[] promotion = promotionData.split(",");
+            promotions.add(Promotion.from(
+                    promotion[0], promotion[1], promotion[2], promotion[3], promotion[4]
+            ));
+        }
+        return promotions;
     }
 
     public Optional<Promotion> findByName(String name) {
