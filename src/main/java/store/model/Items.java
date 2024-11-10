@@ -32,12 +32,12 @@ public class Items {
             Optional<Item> registeredItem = findByNameOrElseEmpty(item[0], items);
             Optional<Promotion> promotionOfItem = promotions.findByName(item[3]);
             if (registeredItem.isEmpty()) {
-                items.add(Item.from(
+                items.add(ItemFactory.from(
                         item[0], item[1], item[2], promotionOfItem
                 ));
                 continue;
             }
-            registeredItem.get().update(item[2], item[3], promotions);
+            registeredItem.get().updateItemInfo(item[2], promotionOfItem);
         }
         return items;
     }
