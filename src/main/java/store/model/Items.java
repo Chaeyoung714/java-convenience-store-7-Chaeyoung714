@@ -16,6 +16,7 @@ public class Items {
     }
 
     public static Items register(List<String> itemFileData, Promotions promotions) {
+        //ListString이 List<Item>이면 더 좋겠지만.. 어렵겠지?
         try {
             List<Item> items = parseItems(itemFileData, promotions);
             validateNameDuplication(items);

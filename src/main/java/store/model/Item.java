@@ -2,7 +2,7 @@ package store.model;
 
 import java.util.Optional;
 
-public class Item {
+public class Item{
     private String name;
     private int price;
     private int promotionQuantity;
@@ -11,7 +11,7 @@ public class Item {
     private Optional<Promotion> promotion;
 
     protected Item(String name, int price, int promotionQuantity, int regularQuantity, boolean hasOngoingPromotion,
-                 Optional<Promotion> promotion) {
+                   Optional<Promotion> promotion) {
         this.name = name;
         this.price = price;
         this.promotionQuantity = promotionQuantity;

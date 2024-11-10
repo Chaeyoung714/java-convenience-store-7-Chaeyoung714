@@ -1,5 +1,6 @@
 package store.controller;
 
+import java.util.Map;
 import store.dto.GiftDto;
 import store.dto.OutOfStockPromotionDto;
 import store.exceptions.NotAddGiftException;
@@ -51,8 +52,8 @@ public class ConvenienceStoreController {
     private Cart orderItems(Items items, DiscountHistory discountHistory) {
         while (true) {
             try {
-                String purchasingItems = inputView.readPurchasingItems();
-                Cart cart = Cart.of(purchasingItems, items);
+                String orderDetails = inputView.readPurchasingItems();
+                Cart cart = orderService.registerOrder(orderDetails, items);
                 orderService.checkStock(cart);
                 applyPromotion(cart, discountHistory);
                 orderService.orderItems(cart);

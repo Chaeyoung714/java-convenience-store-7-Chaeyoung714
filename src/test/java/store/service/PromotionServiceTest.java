@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +20,7 @@ import store.exceptions.NotAddGiftException;
 import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
 import store.model.DiscountHistory;
+import store.model.Item;
 import store.model.Items;
 import store.model.Promotions;
 import store.util.FileScanner;
@@ -46,7 +49,9 @@ public class PromotionServiceTest {
                 , "onlyRegular,1000,3,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[onlyRegular-3]", items);
+        Map<Item, Integer> carMap = new HashMap<>();
+        carMap.put(items.findByName("onlyRegular"), 3);
+        Cart cart = Cart.of(carMap, items);
 
         promotionService.checkAndApplyPromotion(cart, discountHistory);
 
@@ -62,7 +67,9 @@ public class PromotionServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[withPromotion-7]", items);
+        Map<Item, Integer> carMap = new HashMap<>();
+        carMap.put(items.findByName("withPromotion"), 7);
+        Cart cart = Cart.of(carMap, items);
 
         assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(cart, discountHistory))
                 .isInstanceOf(OutOfPromotionStockException.class);
@@ -93,7 +100,9 @@ public class PromotionServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[withPromotion-7]", items);
+        Map<Item, Integer> carMap = new HashMap<>();
+        carMap.put(items.findByName("withPromotion"), 7);
+        Cart cart = Cart.of(carMap, items);
         OutOfStockPromotionDto testOutOfStockInfo = OutOfStockPromotionDto.from(items.findByName("withPromotion"), 1);
 
         promotionService.applyPromotionWithoutRegularItems(testOutOfStockInfo, cart, discountHistory);
@@ -112,7 +121,9 @@ public class PromotionServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[withPromotion-5]", items);
+        Map<Item, Integer> carMap = new HashMap<>();
+        carMap.put(items.findByName("withPromotion"), 5);
+        Cart cart = Cart.of(carMap, items);
 
         assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(cart, discountHistory))
                 .isInstanceOf(NotAddGiftException.class);
@@ -126,7 +137,9 @@ public class PromotionServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[withPromotion-5]", items);
+        Map<Item, Integer> carMap = new HashMap<>();
+        carMap.put(items.findByName("withPromotion"), 5);
+        Cart cart = Cart.of(carMap, items);
         GiftDto testGiftInfo = new GiftDto(items.findByName("withPromotion"), 5);
 
         promotionService.applyPromotionAddingGift(testGiftInfo, cart, discountHistory);

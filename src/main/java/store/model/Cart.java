@@ -1,50 +1,40 @@
 package store.model;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import store.exceptions.NotFoundByNameException;
 
 public class Cart{
     private final Map<Item, Integer> cart;
 
     private Cart(Map<Item, Integer> cart) {
+        // Item이 존재하는 item인지 확인해야 함
+        validatePositiveNumber(cart.values());
         this.cart = cart;
     }
 
-    public static Cart of(String orderDetails, Items items) {
-        //역할 분리 필요
-        try {
-            Map<String, String> parsedOrderDetails = parseItems(orderDetails);
-            Map<Item, Integer> cart = new HashMap<>();
-            for (String itemName : parsedOrderDetails.keySet()) {
-                Item item = items.findByName(itemName);
-                int buyAmount = Integer.parseInt(parsedOrderDetails.get(itemName));
-                validatePositiveNumber(buyAmount);
-                cart.put(item, buyAmount);
+    public static Cart of(Map<Item, Integer> cart, Items items) {
+        validateExistingItem(cart.keySet(), items);
+        return new Cart(cart);
+    }
+
+    private void validatePositiveNumber(Collection<Integer> buyAmounts) {
+        for (int buyAmount : buyAmounts) {
+            if (buyAmount <= 0) {
+                throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
             }
-            return new Cart(cart);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
-        } catch (NotFoundByNameException e) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 상품입니다. 다시 입력해 주세요.");
         }
     }
 
-    private static Map<String, String> parseItems(String orderDetailInput) {
+    private static void validateExistingItem(Set<Item> cartItems, Items items) {
         try {
-            Map<String, String> parsedOrderDetails = new HashMap<>();
-            String[] orderDetails = orderDetailInput.split(",");
-            for (String orderDetail : orderDetails) {
-                validateBracketDelimiter(orderDetail);
-                String[] parsedOrderDetail = orderDetail.substring(1, orderDetail.length() - 1)
-                        .split("-");
-                validateHyphenDelimiter(parsedOrderDetail);
-                parsedOrderDetails.put(parsedOrderDetail[0], parsedOrderDetail[1]);
+            for (Item item : cartItems) {
+                items.findByName(item.getName());
             }
-            return parsedOrderDetails;
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
-            throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
+        } catch (NotFoundByNameException e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -73,24 +63,6 @@ public class Cart{
             totalBuyAmount += cart.get(item);
         }
         return totalBuyAmount;
-    }
-
-    private static void validateBracketDelimiter(String orderDetail) {
-        if (!orderDetail.startsWith("[") || !orderDetail.endsWith("]")) {
-            throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
-        }
-    }
-
-    private static void validateHyphenDelimiter(String[] parsedOrder) {
-        if (parsedOrder.length != 2) {
-            throw new IllegalArgumentException("[ERROR] 올바르지 않은 형식으로 입력했습니다. 다시 입력해 주세요.");
-        }
-    }
-
-    private static void validatePositiveNumber(int number) {
-        if (number <= 0) {
-            throw new IllegalArgumentException("[ERROR] 잘못된 입력입니다. 다시 입력해 주세요.");
-        }
     }
 
     public Map<Item, Integer> getCart() {

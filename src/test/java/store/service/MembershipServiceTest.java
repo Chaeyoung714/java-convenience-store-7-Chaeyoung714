@@ -4,13 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import store.discountPolicy.MembershipPolicy;
 import store.model.Cart;
 import store.model.DiscountHistory;
+import store.model.Item;
 import store.model.Items;
 import store.model.Promotions;
 import store.util.FileScanner;
@@ -38,7 +41,9 @@ public class MembershipServiceTest {
                 "test,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[test-5]", items);
+        Map<Item, Integer> carMap = new HashMap<>();
+        carMap.put(items.findByName("test"), 5);
+        Cart cart = Cart.of(carMap, items);
 
         membershipService.applyMemberShip("Y", cart, discountHistory);
 
@@ -51,7 +56,9 @@ public class MembershipServiceTest {
                 "test,1000,6,탄산2+1"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[test-6]", items);
+        Map<Item, Integer> carMap = new HashMap<>();
+        carMap.put(items.findByName("test"), 6);
+        Cart cart = Cart.of(carMap, items);
 
         discountHistory.addGift(items.findByName("test"), 2); //프로모션 적용
         membershipService.applyMemberShip("Y", cart, discountHistory);
@@ -64,7 +71,9 @@ public class MembershipServiceTest {
                 "test,10000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Cart cart = Cart.of("[test-5]", items);
+        Map<Item, Integer> carMap = new HashMap<>();
+        carMap.put(items.findByName("test"), 5);
+        Cart cart = Cart.of(carMap, items);
 
         membershipService.applyMemberShip("Y", cart, discountHistory);
 
