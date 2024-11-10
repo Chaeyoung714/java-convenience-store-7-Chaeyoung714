@@ -1,16 +1,11 @@
 package store.controller;
 
-import java.util.Map;
-import store.dto.GiftDto;
-import store.dto.OutOfStockPromotionDto;
-import store.exceptions.NotAddGiftException;
-import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
 import store.model.DiscountHistory;
 import store.model.Items;
 import store.model.Promotions;
 import store.service.MembershipService;
-import store.service.PromotionServiceHandler;
+import store.service.PromotionServiceOutboundHandler;
 import store.service.OrderService;
 import store.util.FileScanner;
 import store.view.InputView;
@@ -21,11 +16,11 @@ public class ConvenienceStoreController {
     private final OutputView outputView;
     private final OrderService orderService;
     private final MembershipService membershipService;
-    private final PromotionServiceHandler promotionServiceHandler;
+    private final PromotionServiceOutboundHandler promotionServiceHandler;
 
     public ConvenienceStoreController(InputView inputView, OutputView outputView, OrderService orderService,
                                       MembershipService membershipService,
-                                      PromotionServiceHandler promotionServiceHandler) {
+                                      PromotionServiceOutboundHandler promotionServiceHandler) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.orderService = orderService;
@@ -65,39 +60,33 @@ public class ConvenienceStoreController {
     }
 
     private void applyPromotion(Cart cart, DiscountHistory discountHistory) {
-        try {
-            promotionServiceHandler.applyPromotion(cart, discountHistory);
-        } catch (OutOfPromotionStockException e) {
-            checkOrderIncludingRegularItems(e.getOutOfStockPromotionDto(), cart, discountHistory);
-        } catch (NotAddGiftException e) {
-            checkAddGift(e.getGiftDto(), cart, discountHistory);
-        }
+        promotionServiceHandler.applyPromotion(cart, discountHistory);
     }
 
-    private void checkOrderIncludingRegularItems(OutOfStockPromotionDto dto, Cart cart,
-                                                 DiscountHistory discountHistory) {
-        while (true) {
-            try {
-                String answer = inputView.readOutOfStockPromotion(dto);
-                promotionServiceHandler.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
-                return;
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
+//    private void checkOrderIncludingRegularItems(OutOfStockPromotionDto dto, Cart cart,
+//                                                 DiscountHistory discountHistory) {
+//        while (true) {
+//            try {
+//                String answer = inputView.readOutOfStockPromotion(dto);
+//                promotionServiceHandler.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
+//                return;
+//            } catch (IllegalArgumentException e) {
+//                System.out.println(e.getMessage());
+//            }
+//        }
+//    }
 
-    private void checkAddGift(GiftDto dto, Cart cart, DiscountHistory discountHistory) {
-        while (true) {
-            try {
-                String answer = inputView.readAddGift(dto);
-                promotionServiceHandler.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
-                return;
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
+//    private void checkAddGift(GiftDto dto, Cart cart, DiscountHistory discountHistory) {
+//        while (true) {
+//            try {
+//                String answer = inputView.readAddGift(dto);
+//                promotionServiceHandler.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
+//                return;
+//            } catch (IllegalArgumentException e) {
+//                System.out.println(e.getMessage());
+//            }
+//        }
+//    }
 
     private void applyMemberShip(Cart cart, DiscountHistory discountHistory) {
         while (true) {

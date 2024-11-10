@@ -2,24 +2,14 @@ package store.service;
 
 import store.dto.GiftDto;
 import store.dto.OutOfStockPromotionDto;
-import store.exceptions.NotAddGiftException;
-import store.exceptions.OutOfPromotionStockException;
 import store.model.Cart;
 import store.model.DiscountHistory;
 
-public class PromotionServiceHandler {
+public class PromotionServiceInboundHandler {
     private final PromotionService promotionService;
 
-    public PromotionServiceHandler(PromotionService promotionService) {
+    public PromotionServiceInboundHandler(PromotionService promotionService) {
         this.promotionService = promotionService;
-    }
-
-    public void applyPromotion(Cart consumerCart, DiscountHistory discountHistory) {
-        try {
-            promotionService.checkAndApplyPromotion(consumerCart, discountHistory);
-        } catch (OutOfPromotionStockException | NotAddGiftException e) {
-            throw e;
-        }
     }
 
     public void orderAddingOrWithoutGift(String answer, GiftDto dto, Cart cart, DiscountHistory discountHistory) {
@@ -40,4 +30,5 @@ public class PromotionServiceHandler {
             promotionService.applyPromotionWithoutRegularItems(dto, cart, discountHistory);
         }
     }
+
 }

@@ -49,11 +49,10 @@ public class PromotionServiceTest {
                 , "onlyRegular,1000,3,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Map<Item, Integer> carMap = new HashMap<>();
-        carMap.put(items.findByName("onlyRegular"), 3);
-        Cart cart = Cart.of(carMap, items);
+        Item buyItem = items.findByName("onlyRegular");
+        int buyAmount = 3;
 
-        promotionService.checkAndApplyPromotion(cart, discountHistory);
+        promotionService.checkAndApplyPromotion(buyItem, buyAmount, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(0);
         assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(0);
@@ -67,11 +66,10 @@ public class PromotionServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Map<Item, Integer> carMap = new HashMap<>();
-        carMap.put(items.findByName("withPromotion"), 7);
-        Cart cart = Cart.of(carMap, items);
+        Item buyItem = items.findByName("withPromotion");
+        int buyAmount = 7;
 
-        assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(cart, discountHistory))
+        assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(buyItem, buyAmount, discountHistory))
                 .isInstanceOf(OutOfPromotionStockException.class);
     }
 
@@ -83,11 +81,13 @@ public class PromotionServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
+        Item buyItem = items.findByName("withPromotion");
+        int buyAmount = 7;
 
-        promotionService.applyDefaultPromotion(items.findByName("withPromotion"), 7, discountHistory);
+        promotionService.applyDefaultPromotion(buyItem, buyAmount, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
-        assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(2);
+        assertThat(discountHistory.getGifts().get(buyItem)).isEqualTo(2);
         assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(2000);
     }
 
@@ -100,15 +100,18 @@ public class PromotionServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
+        Item buyItem = items.findByName("withPromotion");
+        int buyAmount = 7;
+
         Map<Item, Integer> carMap = new HashMap<>();
-        carMap.put(items.findByName("withPromotion"), 7);
+        carMap.put(buyItem, buyAmount);
         Cart cart = Cart.of(carMap, items);
-        OutOfStockPromotionDto testOutOfStockInfo = OutOfStockPromotionDto.from(items.findByName("withPromotion"), 1);
+        OutOfStockPromotionDto testOutOfStockInfo = OutOfStockPromotionDto.from(buyItem, 1);
 
         promotionService.applyPromotionWithoutRegularItems(testOutOfStockInfo, cart, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
-        assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(2);
+        assertThat(discountHistory.getGifts().get(buyItem)).isEqualTo(2);
         assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(2000);
     }
 
@@ -121,11 +124,10 @@ public class PromotionServiceTest {
                 , "withPromotion,1000,6,null"
         ));
         Items items = Items.register(testItems, defaultPromotions);
-        Map<Item, Integer> carMap = new HashMap<>();
-        carMap.put(items.findByName("withPromotion"), 5);
-        Cart cart = Cart.of(carMap, items);
+        Item buyItem = items.findByName("withPromotion");
+        int buyAmount = 5;
 
-        assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(cart, discountHistory))
+        assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(buyItem, buyAmount, discountHistory))
                 .isInstanceOf(NotAddGiftException.class);
     }
 

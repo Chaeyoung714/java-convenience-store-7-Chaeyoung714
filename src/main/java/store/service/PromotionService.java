@@ -1,6 +1,5 @@
 package store.service;
 
-import java.util.Map;
 import store.discountPolicy.PromotionPolicy;
 import store.dto.GiftDto;
 import store.dto.OutOfStockPromotionDto;
@@ -17,18 +16,14 @@ public class PromotionService {
         this.promotionPolicy = promotionPolicy;
     }
 
-    public void checkAndApplyPromotion(Cart consumerCart, DiscountHistory discountHistory) {
-        Map<Item, Integer> cart = consumerCart.getCart();
-        for (Item item : cart.keySet()) {
-            if (item.hasOngoingPromotion()) {
-                checkWhetherReAskToConsumer(item, cart.get(item));
-                applyDefaultPromotion(item, cart.get(item), discountHistory); // 프로모션 예외가 안터진 경우
-            }
+    public void checkAndApplyPromotion(Item item, int buyAmount, DiscountHistory discountHistory) {
+        if (item.hasOngoingPromotion()) {
+            checkWhetherNotifyConsumer(item, buyAmount);
+            applyDefaultPromotion(item, buyAmount, discountHistory); // 프로모션 예외가 안터진 경우
         }
     }
 
-    //분리 고려
-    public void checkWhetherReAskToConsumer(Item item, int buyAmount) {
+    public void checkWhetherNotifyConsumer(Item item, int buyAmount) {
         if (buyAmount > item.getPromotionQuantity()) {
             throw new OutOfPromotionStockException(item, buyAmount);
         }
