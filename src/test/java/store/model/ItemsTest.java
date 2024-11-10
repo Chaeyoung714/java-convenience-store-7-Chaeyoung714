@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import store.model.item.Items;
+import store.model.item.ItemsFactory;
 import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
@@ -19,7 +20,7 @@ public class ItemsTest {
     @BeforeAll
     static void setUp() {
         defaultPromotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
-        defaultItems = Items.register(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
+        defaultItems = ItemsFactory.of(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
     }
 
     @ParameterizedTest

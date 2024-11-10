@@ -18,6 +18,7 @@ import store.model.consumer.Cart;
 import store.model.item.Item;
 import store.model.item.ItemFactory;
 import store.model.item.Items;
+import store.model.item.ItemsFactory;
 import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
@@ -31,7 +32,7 @@ public class CartTest {
     static void setUp() {
         defaultPromotion = new ArrayList<>(Arrays.asList("testPromo2+1,2,1,2024-01-01,2024-12-31"));
         defaultPromotions = Promotions.register(defaultPromotion);
-        defaultItems = Items.register(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
+        defaultItems = ItemsFactory.of(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
     }
 
     @Test

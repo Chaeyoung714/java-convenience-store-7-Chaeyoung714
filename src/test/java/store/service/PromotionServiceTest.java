@@ -21,6 +21,7 @@ import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.model.item.Item;
 import store.model.item.Items;
+import store.model.item.ItemsFactory;
 import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
@@ -47,7 +48,7 @@ public class PromotionServiceTest {
                 , "withPromotion,1000,6,null"
                 , "onlyRegular,1000,3,null"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
         Item buyItem = items.findByName("onlyRegular");
         int buyAmount = 3;
 
@@ -64,7 +65,7 @@ public class PromotionServiceTest {
                 "withPromotion,1000,6,탄산2+1"
                 , "withPromotion,1000,6,null"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
         Item buyItem = items.findByName("withPromotion");
         int buyAmount = 7;
 
@@ -79,7 +80,7 @@ public class PromotionServiceTest {
                 "withPromotion,1000,6,탄산2+1"
                 , "withPromotion,1000,6,null"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
         Item buyItem = items.findByName("withPromotion");
         int buyAmount = 7;
 
@@ -98,7 +99,7 @@ public class PromotionServiceTest {
                 "withPromotion,1000,6,탄산2+1"
                 , "withPromotion,1000,6,null"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
         Item buyItem = items.findByName("withPromotion");
         int buyAmount = 7;
 
@@ -122,7 +123,7 @@ public class PromotionServiceTest {
                 "withPromotion,1000,6,탄산2+1"
                 , "withPromotion,1000,6,null"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
         Item buyItem = items.findByName("withPromotion");
         int buyAmount = 5;
 
@@ -137,7 +138,7 @@ public class PromotionServiceTest {
                 "withPromotion,1000,6,탄산2+1"
                 , "withPromotion,1000,6,null"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
         Map<Item, Integer> carMap = new HashMap<>();
         carMap.put(items.findByName("withPromotion"), 5);
         Cart cart = Cart.of(carMap, items);
@@ -157,7 +158,7 @@ public class PromotionServiceTest {
                 "withPromotion,1000,6,탄산2+1"
                 , "withPromotion,1000,6,null"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
 
         promotionService.applyDefaultPromotion(items.findByName("withPromotion"), 5, discountHistory);
 

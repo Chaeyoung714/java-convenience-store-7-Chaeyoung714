@@ -15,6 +15,7 @@ import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.model.item.Item;
 import store.model.item.Items;
+import store.model.item.ItemsFactory;
 import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
@@ -40,7 +41,7 @@ public class MembershipServiceTest {
         List<String> testItems = new ArrayList<>(Arrays.asList(
                 "test,1000,6,null"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
         Map<Item, Integer> carMap = new HashMap<>();
         carMap.put(items.findByName("test"), 5);
         Cart cart = Cart.of(carMap, items);
@@ -55,7 +56,7 @@ public class MembershipServiceTest {
         List<String> testItems = new ArrayList<>(Arrays.asList(
                 "test,1000,6,탄산2+1"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
         Map<Item, Integer> carMap = new HashMap<>();
         carMap.put(items.findByName("test"), 6);
         Cart cart = Cart.of(carMap, items);
@@ -70,7 +71,7 @@ public class MembershipServiceTest {
         List<String> testItems = new ArrayList<>(Arrays.asList(
                 "test,10000,6,null"
         ));
-        Items items = Items.register(testItems, defaultPromotions);
+        Items items = ItemsFactory.of(testItems, defaultPromotions);
         Map<Item, Integer> carMap = new HashMap<>();
         carMap.put(items.findByName("test"), 5);
         Cart cart = Cart.of(carMap, items);

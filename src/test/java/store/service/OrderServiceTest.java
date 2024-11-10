@@ -13,6 +13,7 @@ import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.model.item.Item;
 import store.model.item.Items;
+import store.model.item.ItemsFactory;
 import store.model.promotion.Promotions;
 import store.util.FileScanner;
 
@@ -26,7 +27,7 @@ public class OrderServiceTest {
     static void setUp() {
         //테스트데이터로 수정하기
         defaultPromotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
-        defaultItems = Items.register(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
+        defaultItems = ItemsFactory.of(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
         orderService = new OrderService();
     }
 
