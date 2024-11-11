@@ -4,7 +4,7 @@ public class PurchaseCost {
     private final int purchaseCost;
     private final int totalItemCost;
 
-    public PurchaseCost(int purchaseCost, int totalItemCost) {
+    public PurchaseCost(final int purchaseCost, final int totalItemCost) {
         this.purchaseCost = purchaseCost;
         this.totalItemCost = totalItemCost;
     }

@@ -24,7 +24,7 @@ public class DiscountHistory {
         return promotionAppliledAmount;
     }
 
-    public void addGift(Item item, int amount) {
+    public void addGift(final Item item, final int amount) {
         if (amount == 0) {
             return;
         }
@@ -34,7 +34,7 @@ public class DiscountHistory {
         promotionDiscountAmount += (item.getPrice() * amount);
     }
 
-    public void setMembershipDiscount(int membershipDiscountAmount) {
+    public void setMembershipDiscount(final int membershipDiscountAmount) {
         if (isMembershipApplied) {
             throw new IllegalStateException("[SYSTEM] Duplicated membership applied.");
         }
@@ -42,13 +42,13 @@ public class DiscountHistory {
         this.isMembershipApplied = true;
     }
 
-    private void validateDuplicatedGift(Item item) {
+    private void validateDuplicatedGift(final Item item) {
         if (gifts.keySet().contains(item)) {
             throw new IllegalStateException("[SYSTEM] Duplicated promotion on same item.");
         }
     }
 
-    private void validateHasOngoingPromotion(Item item) {
+    private void validateHasOngoingPromotion(final Item item) {
         if (!item.hasOngoingPromotion()) {
             throw new IllegalStateException("[SYSTEM] Gift is not have Ongoing Promotion Item.");
         }

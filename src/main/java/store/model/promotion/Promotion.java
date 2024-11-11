@@ -17,7 +17,8 @@ public class Promotion {
     private final LocalDate startDate;
     private final LocalDate endDate;
 
-    private Promotion(String name, int buyAmount, int getAmount, LocalDate startDate, LocalDate endDate) {
+    private Promotion(final String name, final int buyAmount, final int getAmount, final LocalDate startDate,
+                      final LocalDate endDate) {
         validatePositiveNumber(buyAmount);
         validatePositiveNumber(getAmount);
         this.name = name;
@@ -28,7 +29,8 @@ public class Promotion {
         this.endDate = endDate;
     }
 
-    public static Promotion from(String name, String buyAmount, String getAmount, String startDate, String endDate) {
+    public static Promotion from(final String name, final String buyAmount, final String getAmount,
+                                 final String startDate, final String endDate) {
         try {
             return new Promotion(name
                     , Integer.parseInt(buyAmount)
@@ -40,13 +42,13 @@ public class Promotion {
         }
     }
 
-    private void validatePositiveNumber(int number) {
+    private void validatePositiveNumber(final int number) {
         if (number <= 0) {
             throw new IllegalStateException("[SYSTEM] Wrong promotion buyAmount or getAmount");
         }
     }
 
-    private static LocalDate transferToLocalDateFrom(String dateString) {
+    private static LocalDate transferToLocalDateFrom(final String dateString) {
         try {
             String[] date = dateString.split(DATE_DELIMITER);
             return LocalDate.of(Integer.parseInt(date[YEAR])

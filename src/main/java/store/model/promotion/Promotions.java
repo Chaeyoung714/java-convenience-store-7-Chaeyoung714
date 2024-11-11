@@ -17,11 +17,11 @@ public class Promotions {
 
     private final List<Promotion> promotions;
 
-    private Promotions(List<Promotion> promotions) {
+    private Promotions(final List<Promotion> promotions) {
         this.promotions = promotions;
     }
 
-    public static Promotions of(List<String> promotionFileData) {
+    public static Promotions of(final List<String> promotionFileData) {
         try {
             List<Promotion> promotions = parsePromotions(promotionFileData);
             validateNameDuplication(promotions);
@@ -31,7 +31,7 @@ public class Promotions {
         }
     }
 
-    private static List<Promotion> parsePromotions(List<String> promotionFileData) {
+    private static List<Promotion> parsePromotions(final List<String> promotionFileData) {
         List<Promotion> promotions = new ArrayList<>();
         for (String promotionData : promotionFileData) {
             String[] promotion = promotionData.split(PROMOTIONS_FILE_DELIMITER);
@@ -45,7 +45,7 @@ public class Promotions {
         return promotions;
     }
 
-    public Optional<Promotion> findByName(String name) {
+    public Optional<Promotion> findByName(final String name) {
         for (Promotion promotion : promotions) {
             if (promotion.getName().equals(name)) {
                 return Optional.of(promotion);
@@ -54,7 +54,7 @@ public class Promotions {
         return Optional.empty();
     }
 
-    private static void validateNameDuplication(List<Promotion> promotions) {
+    private static void validateNameDuplication(final List<Promotion> promotions) {
         Set<String> uniqueNames = new HashSet<>();
         for (Promotion promotion : promotions) {
             if (addDuplicatedName(uniqueNames, promotion.getName())) {
@@ -63,7 +63,7 @@ public class Promotions {
         }
     }
 
-    private static boolean addDuplicatedName(Set<String> uniqueNames, String name) {
+    private static boolean addDuplicatedName(final Set<String> uniqueNames, final String name) {
         return !uniqueNames.add(name);
     }
 

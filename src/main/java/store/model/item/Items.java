@@ -9,12 +9,12 @@ import store.exceptions.NotFoundByNameException;
 public class Items {
     private final List<Item> items;
 
-    protected Items(List<Item> items) {
+    protected Items(final List<Item> items) {
         validateNameDuplication(items);
         this.items = items;
     }
 
-    public Item findByName(String name) {
+    public Item findByName(final String name) {
         for (Item item : items) {
             if (item.getName().equals(name)) {
                 return item;
@@ -23,7 +23,7 @@ public class Items {
         throw new NotFoundByNameException();
     }
 
-    private static void validateNameDuplication(List<Item> items) {
+    private static void validateNameDuplication(final List<Item> items) {
         Set<String> uniqueNames = new HashSet<>();
         for (Item item : items) {
             if (addDuplicatedName(uniqueNames, item.getName())) {
@@ -32,7 +32,7 @@ public class Items {
         }
     }
 
-    private static boolean addDuplicatedName(Set<String> uniqueNames, String name) {
+    private static boolean addDuplicatedName(final Set<String> uniqueNames, final String name) {
         return !uniqueNames.add(name);
     }
 

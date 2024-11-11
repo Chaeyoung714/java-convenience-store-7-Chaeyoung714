@@ -13,7 +13,7 @@ public class ItemsFactory {
     private static final int QUANTITY = 2;
     private static final int PROMOTION = 3;
 
-    public static Items of(List<String> itemFileData, Promotions promotions) {
+    public static Items of(final List<String> itemFileData, final Promotions promotions) {
         try {
             List<Item> items = parseItems(itemFileData, promotions);
             return new Items(items);
@@ -22,7 +22,7 @@ public class ItemsFactory {
         }
     }
 
-    private static List<Item> parseItems(List<String> itemFileData, Promotions promotions) {
+    private static List<Item> parseItems(final List<String> itemFileData, final Promotions promotions) {
         List<Item> items = new ArrayList<>();
         for (String itemData : itemFileData) {
             String[] item = itemData.split(PRODUCTS_FILE_DELIMITER);
@@ -38,7 +38,7 @@ public class ItemsFactory {
         return items;
     }
 
-    private static Optional<Item> findByNameOrElseEmpty(String name, List<Item> registeredItems) {
+    private static Optional<Item> findByNameOrElseEmpty(final String name, final List<Item> registeredItems) {
         for (Item item : registeredItems) {
             if (item.getName().equals(name)) {
                 return Optional.of(item);

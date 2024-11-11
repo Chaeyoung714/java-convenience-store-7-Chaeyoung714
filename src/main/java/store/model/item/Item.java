@@ -11,8 +11,8 @@ public class Item{
     private boolean hasOngoingPromotion;
     private Optional<Promotion> promotion;
 
-    protected Item(String name, int price, int promotionQuantity, int regularQuantity, boolean hasOngoingPromotion,
-                   Optional<Promotion> promotion) {
+    protected Item(final String name, final int price, final int promotionQuantity, final int regularQuantity
+            , final boolean hasOngoingPromotion, final Optional<Promotion> promotion) {
         validatePositiveNumber(price);
         validatePositiveNumber(promotionQuantity);
         validatePositiveNumber(regularQuantity);
@@ -24,7 +24,7 @@ public class Item{
         this.promotion = promotion;
     }
 
-    public void updateItemInfo(String quantity, Optional<Promotion> promotion) {
+    public void updateItemInfo(final String quantity, final Optional<Promotion> promotion) {
         try {
             validatePositiveNumber(Integer.parseInt(quantity));
             if (promotion.isEmpty() && this.promotion.isPresent()) {
@@ -41,7 +41,7 @@ public class Item{
         }
     }
 
-    private void updatePromotionItemInfo(String quantity, Optional<Promotion> promotion) {
+    private void updatePromotionItemInfo(final String quantity, final Optional<Promotion> promotion) {
         this.promotionQuantity = Integer.parseInt(quantity);
         this.hasOngoingPromotion = promotion.get().isOngoing();
         this.promotion = promotion;
@@ -71,7 +71,7 @@ public class Item{
         return amount;
     }
 
-    private void validatePositiveNumber(int number) {
+    private void validatePositiveNumber(final int number) {
         if (number < 0) {
             throw new IllegalStateException("[SYSTEM] Wrong number in Item");
         }

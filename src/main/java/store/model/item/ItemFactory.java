@@ -5,7 +5,7 @@ import store.model.promotion.Promotion;
 
 public class ItemFactory {
 
-    public static Item from(String name, String price, String quantity, Optional<Promotion> promotion) {
+    public static Item from(final String name, final String price, final String quantity, final Optional<Promotion> promotion) {
         try {
             int promotionQuantity = determinePromotionQuantity(promotion, quantity);
             int regularQuantity = determineRegularQuantity(promotion, quantity);
@@ -23,21 +23,21 @@ public class ItemFactory {
         }
     }
 
-    private static int determineRegularQuantity(Optional<Promotion> promotion, String quantity) {
+    private static int determineRegularQuantity(final Optional<Promotion> promotion, final String quantity) {
         if (promotion.isEmpty()) {
             return Integer.parseInt(quantity);
         }
         return 0;
     }
 
-    private static int determinePromotionQuantity(Optional<Promotion> promotion, String quantity) {
+    private static int determinePromotionQuantity(final Optional<Promotion> promotion, final String quantity) {
         if (promotion.isPresent()) {
             return Integer.parseInt(quantity);
         }
         return 0;
     }
 
-    private static boolean determinePromotionOngoing(Optional<Promotion> promotion) {
+    private static boolean determinePromotionOngoing(final Optional<Promotion> promotion) {
         if (promotion.isPresent()) {
             return promotion.get().isOngoing();
         }
