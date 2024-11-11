@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import net.bytebuddy.pool.TypePool.Resolution.NoSuchTypeException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,6 +57,17 @@ public class OrderServiceTest {
         assertThat(cart.getCart().size()).isEqualTo(2);
         assertThat(cart.getCart().get(defaultItem1)).isEqualTo(3);
         assertThat(cart.getCart().get(defaultItem2)).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("[success] 같은 상품을 2번 이상 주문할 시 상품의 구매 수량을 추가한다.")
+    void accumulateBuyAmountWhenOrderDuplicates() {
+        String testOrder = "[test1-3],[test2-5],[test1-1]";
+
+        Cart cart = orderService.registerOrder(testOrder, defaultItems);
+
+        assertThat(cart.getCart().size()).isEqualTo(2);
+        assertThat(cart.getCart().get(defaultItem1)).isEqualTo(4);
     }
 
     @Test

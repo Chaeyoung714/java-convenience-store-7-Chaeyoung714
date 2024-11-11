@@ -38,7 +38,7 @@ public class PromotionsTest {
     }
 
     @ParameterizedTest
-    @DisplayName("[successs] 오늘 날짜(2024-11-09~2024-11-11 기준) 에 맞는 프로모션을 반환하다.")
+    @DisplayName("[success] 오늘 날짜(2024-11-09~2024-11-11 기준) 에 맞는 프로모션을 반환하다.")
     @CsvSource(value = {"2024-11-09,2024-11-11,true", "2024-11-01,2024-11-30,true", "2024-01-01,2024-10-31,false",
             "2024-12-01,2025-07-14,false"}
             , delimiter = ',')

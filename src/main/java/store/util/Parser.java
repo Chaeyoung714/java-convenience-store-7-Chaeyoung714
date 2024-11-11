@@ -4,6 +4,7 @@ import static store.exceptions.ExceptionMessages.WRONG_ORDER_FORMAT;
 
 import java.util.HashMap;
 import java.util.Map;
+import store.exceptions.ExceptionMessages;
 
 public class Parser {
     private static final String DELIMITER_BETWEEN_EACH_ORDER = ",";
@@ -17,9 +18,9 @@ public class Parser {
     private Parser() {
     }
 
-    public static Map<String, String> parseOrderDetails(String orderDetailInput) throws IllegalArgumentException {
+    public static Map<String, Integer> parseOrderDetails(String orderDetailInput) throws IllegalArgumentException {
         try {
-            Map<String, String> parsedOrderDetails = new HashMap<>();
+            Map<String, Integer> parsedOrderDetails = new HashMap<>();
             String[] orderDetails = orderDetailInput.split(DELIMITER_BETWEEN_EACH_ORDER);
             for (String orderDetail : orderDetails) {
                 parseEachOrderDetail(orderDetail, parsedOrderDetails);
@@ -30,12 +31,24 @@ public class Parser {
         }
     }
 
-    private static void parseEachOrderDetail(String unparsedOrderDetail, Map<String, String> parsedOrderDetails) {
+    private static void parseEachOrderDetail(String unparsedOrderDetail, Map<String, Integer> parsedOrderDetails) {
         validateBracketDelimiter(unparsedOrderDetail);
         String[] parsedOrderDetail = unparsedOrderDetail.substring(1, unparsedOrderDetail.length() - 1)
                 .split(DELIMITER_BETWEEN_NAME_AND_AMOUNT);
         validateHyphenDelimiter(parsedOrderDetail);
-        parsedOrderDetails.put(parsedOrderDetail[ITEM_NAME], parsedOrderDetail[BUY_AMOUNT]);
+        addOrderDetail(parsedOrderDetail[ITEM_NAME], parsedOrderDetail[BUY_AMOUNT], parsedOrderDetails);
+    }
+
+    private static void addOrderDetail(String itemName, String buyAmount, Map<String, Integer> parsedOrderDetails) {
+        try {
+            if (parsedOrderDetails.containsKey(itemName)) {
+                parsedOrderDetails.replace(itemName, parsedOrderDetails.get(itemName) + Integer.parseInt(buyAmount));
+                return;
+            }
+            parsedOrderDetails.put(itemName, Integer.parseInt(buyAmount));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(WRONG_ORDER_FORMAT.getMessage());
+        }
     }
 
     private static void validateBracketDelimiter(String orderDetail) {

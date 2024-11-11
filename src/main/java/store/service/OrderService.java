@@ -17,7 +17,7 @@ public class OrderService {
 
     public Cart registerOrder(String orderDetails, Items items) {
         try {
-            Map<Item, Integer> cart = addItemToCart(orderDetails, items);
+            Map<Item, Integer> cart = addItemsToCart(orderDetails, items);
             return Cart.of(cart, items);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(WRONG_ORDER_FORMAT.getMessage());
@@ -26,12 +26,12 @@ public class OrderService {
         }
     }
 
-    private Map<Item, Integer> addItemToCart(String orderDetails, Items items) {
-        Map<String, String> parsedOrderDetails = Parser.parseOrderDetails(orderDetails);
+    private Map<Item, Integer> addItemsToCart(String orderDetails, Items items) {
+        Map<String, Integer> parsedOrderDetails = Parser.parseOrderDetails(orderDetails);
         Map<Item, Integer> cart = new HashMap<>();
         for (String itemName : parsedOrderDetails.keySet()) {
             Item item = items.findByName(itemName);
-            cart.put(item, Integer.parseInt(parsedOrderDetails.get(itemName)));
+            cart.put(item, parsedOrderDetails.get(itemName));
         }
         return cart;
     }
