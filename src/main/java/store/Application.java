@@ -8,13 +8,9 @@ import store.util.FileScanner;
 
 public class Application {
     public static void main(String[] args) {
-
-        Promotions promotions = Promotions.of(FileScanner.readFile("./src/main/resources/promotions.md"));
-        Items items = ItemsFactory.of(FileScanner.readFile("./src/main/resources/products.md"), promotions);
-
         DependencyConfig dependencyConfig = new DependencyConfig();
         ConvenienceStoreController controller = dependencyConfig.convenienceStoreController();
 
-        controller.run(items);
+        controller.run();
     }
 }

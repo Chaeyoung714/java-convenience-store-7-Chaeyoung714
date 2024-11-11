@@ -8,9 +8,12 @@ import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.model.consumer.PurchaseCost;
 import store.model.item.Items;
+import store.model.item.ItemsFactory;
+import store.model.promotion.Promotions;
 import store.service.MembershipService;
 import store.service.handlerWithController.PromotionServiceOutboundHandler;
 import store.service.OrderService;
+import store.util.FileScanner;
 import store.view.input.OrderInputView;
 import store.view.output.ItemStockOutputView;
 import store.view.output.ReceiptOutputView;
@@ -35,8 +38,18 @@ public class ConvenienceStoreController {
         this.promotionServiceHandler = promotionServiceHandler;
     }
 
-    public void run(Items items) {
+    public void run() {
+        Items items = registerConvenienceStore();
         purchaseOnce(items);
+    }
+
+    private Items registerConvenienceStore() {
+        try {
+            Promotions promotions = Promotions.of(FileScanner.readFile("./src/main/resources/promotions.md"));
+            return ItemsFactory.of(FileScanner.readFile("./src/main/resources/products.md"), promotions);
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException("[SYSTEM] 매장 내 오류로 서비스 이용이 일시 중단되었습니다. 이용에 불편을 드려 죄송합니다.");
+        }
     }
 
     private void purchaseOnce(Items items) {
