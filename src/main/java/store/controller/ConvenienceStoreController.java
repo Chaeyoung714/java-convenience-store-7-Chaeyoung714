@@ -35,7 +35,7 @@ public class ConvenienceStoreController {
     }
 
     private void purchaseOnce(Items items) {
-        outputView.printProducts(items);
+        outputView.printItemsStock(items);
         DiscountHistory discountHistory = new DiscountHistory();
         Cart cart = orderItems(items, discountHistory);
         applyMemberShip(cart, discountHistory);

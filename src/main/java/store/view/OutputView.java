@@ -10,20 +10,19 @@ import store.model.item.Item;
 import store.model.item.Items;
 
 public class OutputView {
-    private static final int TOTAL_BILL_WIDTH = 35;
-    private static final int PRODUCT_NAME_WIDTH = 19;
-    private static final int BUY_AMOUNT_WIDTH = 9;
-    private static final int PRICE_WIDTH = 7;
-    private static StringBuilder partBuilder = new StringBuilder();
+    private final ReceiptLinePrinter receiptLinePrinter;
 
-    public void printProducts(Items items) {
-        printProductStartLine();
+    public OutputView(ReceiptLinePrinter receiptLinePrinter) {
+        this.receiptLinePrinter = receiptLinePrinter;
+    }
+
+    public void printItemsStock(Items items) {
+        printItemStockStartLine();
         for (Item item : items.getItems()) {
             String name = item.getName();
             int price = item.getPrice();
             String regularQuantity = quantityForPrint(item.getRegularQuantity());
             String promotionQuantity = quantityForPrint(item.getPromotionQuantity());
-
             if (item.hasOngoingPromotion()) {
                 String promotionName = item.getPromotion().get().getName();
                 System.out.println(String.format(
@@ -35,7 +34,7 @@ public class OutputView {
         }
     }
 
-    private void printProductStartLine() {
+    private void printItemStockStartLine() {
         System.out.println(System.lineSeparator() + "안녕하세요. W편의점입니다."
                 + System.lineSeparator() + "현재 보유하고 있는 상품입니다."
                 + System.lineSeparator());
@@ -44,96 +43,45 @@ public class OutputView {
     private String quantityForPrint(int quantity) {
         if (quantity == 0) {
             return "재고 없음";
-
         }
         return String.format("%,d개", quantity);
     }
 
     public void printReceipt(ReceiptDto dto) {
         System.out.println();
-        printDivisionLine("W 편의점");
-        printPurchaseHistoryStartLine();
-        printPurchaseHistory(dto.getPurchaseHistoryDtos());
-        printDivisionLine("증\t정");
-        printPromotionHistory(dto.getPromotionHistoryDtos());
-        printDivisionLine("===");
+        receiptLinePrinter.printDivisionLine("W 편의점");
+        printPurchaseHistories(dto.getPurchaseHistoryDtos());
+        receiptLinePrinter.printDivisionLine("증\t정");
+        printPromotionHistories(dto.getPromotionHistoryDtos());
+        receiptLinePrinter.printDivisionLine("===");
         printCostResult(dto.getCostResultDto());
     }
 
-    private void printDivisionLine(String title) {
-        StringBuilder startLine = new StringBuilder("=".repeat(TOTAL_BILL_WIDTH));
-        int halfIndexOfBillWidth = TOTAL_BILL_WIDTH / 2;
-        int halfLengthOfName = title.length() / 2;
-        startLine.replace(halfIndexOfBillWidth - halfLengthOfName, halfIndexOfBillWidth + halfLengthOfName, title);
-        System.out.println(startLine);
-    }
-
-    private void printPurchaseHistoryStartLine() {
-        StringBuilder secondLine = new StringBuilder();
-        secondLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "상품명"));
-        secondLine.append(String.format("%-" + BUY_AMOUNT_WIDTH + "s", "수량"));
-        secondLine.append(String.format("%-" + PRICE_WIDTH + "s", "금액"));
-        System.out.println(secondLine);
-    }
-
-    private void printPurchaseHistory(PurchaseHistoryDtos dtos) {
+    private void printPurchaseHistories(PurchaseHistoryDtos dtos) {
+        System.out.println(receiptLinePrinter.printPurchaseHistoryStartLine());
         StringBuilder purchaseHistory = new StringBuilder();
         for (PurchaseHistoryDto dto : dtos.dtos()) {
-            purchaseHistory.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", dto.name()));
-            purchaseHistory.append(String.format("%-," + BUY_AMOUNT_WIDTH + "d", dto.buyAmount()));
-            purchaseHistory.append(String.format("%," + PRICE_WIDTH + "d", dto.totalCost()));
-            purchaseHistory.append(System.lineSeparator());
+            purchaseHistory.append(receiptLinePrinter.printPurchaseHistoryLine(dto));
         }
         System.out.print(purchaseHistory);
     }
 
-    private void printPromotionHistory(PromotionHistoryDtos dtos) {
+    private void printPromotionHistories(PromotionHistoryDtos dtos) {
         StringBuilder promotionHistory = new StringBuilder();
         for (PromotionHistoryDto dto : dtos.dtos()) {
-            promotionHistory.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", dto.name()));
-            promotionHistory.append(
-                    String.format("%-," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", dto.amount()));
-            promotionHistory.append(System.lineSeparator());
+            promotionHistory.append(receiptLinePrinter.printPromotionHistoryLine(dto));
         }
         System.out.print(promotionHistory);
     }
 
     private void printCostResult(CostResultDto dto) {
-        printTotalProductPrice(dto.totalItemCost(), dto.totalBuyAmount());
-        printPromotionDiscountAmount(dto.promotionDiscountAmount());
-        printMembershipDiscoutAmount(dto.membershipDiscountAmount());
-        printFinalCost(dto.finalCost());
+        StringBuilder costResults = new StringBuilder();
+        costResults.append(receiptLinePrinter.printTotalProductPrice(dto.totalItemCost(), dto.totalBuyAmount()));
+        costResults.append(receiptLinePrinter.printPromotionDiscountAmount(dto.promotionDiscountAmount()));
+        costResults.append(receiptLinePrinter.printMembershipDiscoutAmount(dto.membershipDiscountAmount()));
+        costResults.append(receiptLinePrinter.printFinalCost(dto.finalCost()));
+        System.out.println(costResults);
     }
 
-    private void printTotalProductPrice(int totalItemCost, int totalBuyAmount) {
-        StringBuilder totalProductPrice = new StringBuilder();
-        totalProductPrice.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "총구매액"));
-        totalProductPrice.append(String.format("%-" + BUY_AMOUNT_WIDTH + "d", totalBuyAmount));
-        totalProductPrice.append(String.format("%," + PRICE_WIDTH + "d", totalItemCost));
-        System.out.println(totalProductPrice);
-    }
 
-    private void printPromotionDiscountAmount(int promotionDiscountAmount) {
-        StringBuilder promotionLine = new StringBuilder();
-        promotionLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "행사할인"));
-        promotionLine.append(
-                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", -promotionDiscountAmount));
-        System.out.println(promotionLine);
-    }
-
-    private void printMembershipDiscoutAmount(int membershipDiscountAmount) {
-        StringBuilder membershipLine = new StringBuilder();
-        membershipLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "멤버십할인"));
-        membershipLine.append(
-                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", -membershipDiscountAmount));
-        System.out.println(membershipLine);
-    }
-
-    private void printFinalCost(int finalCost) {
-        StringBuilder paymentLine = new StringBuilder();
-        paymentLine.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "내실돈"));
-        paymentLine.append(
-                String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", finalCost));
-        System.out.println(paymentLine);
-    }
 }

@@ -12,11 +12,16 @@ import store.service.handlerWithController.PromotionServiceInboundHandler;
 import store.service.handlerWithController.PromotionServiceOutboundHandler;
 import store.view.InputView;
 import store.view.OutputView;
+import store.view.ReceiptLinePrinter;
 
 public class DependencyConfig {
 
     public InputView inputView() {
         return new InputView();
+    }
+
+    public OutputView outputView() {
+        return new OutputView(new ReceiptLinePrinter());
     }
 
     public PromotionService promotionService() {
@@ -48,7 +53,7 @@ public class DependencyConfig {
     public ConvenienceStoreController convenienceStoreController() {
         return new ConvenienceStoreController(
                 inputView()
-                , new OutputView()
+                , outputView()
                 , new OrderService()
                 , membershipService()
                 , promotionServiceOutboundHandler()
