@@ -26,13 +26,22 @@ public class PromotionService {
     public void checkWhetherNotifyConsumer(Item item, int buyAmount) {
         int promotionBundleAmount = item.getPromotion().get().getBundleAmount();
         int requiredBuyAmount = item.getPromotion().get().getBuyAmount();
-        if (buyAmount > item.getPromotionQuantity()) {
+        int promotionStock = item.getPromotionQuantity();
+        checkOutOfPromotionStock(buyAmount, promotionBundleAmount, promotionStock);
+        checkAddGift(buyAmount, promotionBundleAmount, requiredBuyAmount, promotionStock);
+    }
+
+    private void checkOutOfPromotionStock(int buyAmount, int promotionBundleAmount, int promotionStock) {
+        if (buyAmount > promotionStock) {
             int outOfStockAmount =
-                    buyAmount - (promotionBundleAmount * (item.getPromotionQuantity() / promotionBundleAmount));
+                    buyAmount - (promotionBundleAmount * (promotionStock / promotionBundleAmount));
             throw new OutOfPromotionStockException(outOfStockAmount);
         }
+    }
+
+    private void checkAddGift(int buyAmount, int promotionBundleAmount, int requiredBuyAmount, int promotionStock) {
         if (buyAmount % promotionBundleAmount == requiredBuyAmount) {
-            if ((buyAmount + promotionPolicy.getDefaultGiftAmount()) <= item.getPromotionQuantity()) {
+            if ((buyAmount + promotionPolicy.getDefaultGiftAmount()) <= promotionStock) {
                 throw new NotAddGiftException();
             }
         }

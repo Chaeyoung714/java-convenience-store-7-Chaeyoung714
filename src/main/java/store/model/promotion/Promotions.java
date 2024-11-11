@@ -35,12 +35,8 @@ public class Promotions {
         List<Promotion> promotions = new ArrayList<>();
         for (String promotionData : promotionFileData) {
             String[] promotion = promotionData.split(PROMOTIONS_FILE_DELIMITER);
-            promotions.add(Promotion.from(promotion[NAME]
-                    , promotion[BUY_AMOUNT]
-                    , promotion[GET_AMOUNT]
-                    , promotion[START_DATE]
-                    , promotion[END_DATE]
-            ));
+            promotions.add(Promotion.from(promotion[NAME], promotion[BUY_AMOUNT], promotion[GET_AMOUNT]
+                    , promotion[START_DATE], promotion[END_DATE]));
         }
         return promotions;
     }

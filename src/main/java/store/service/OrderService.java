@@ -16,19 +16,24 @@ import store.util.Parser;
 public class OrderService {
 
     public Cart registerOrder(String orderDetails, Items items) {
-        Map<String, String> parsedOrderDetails = Parser.parseOrderDetails(orderDetails);
         try {
-            Map<Item, Integer> cart = new HashMap<>();
-            for (String itemName : parsedOrderDetails.keySet()) {
-                Item item = items.findByName(itemName);
-                cart.put(item, Integer.parseInt(parsedOrderDetails.get(itemName)));
-            }
+            Map<Item, Integer> cart = addItemToCart(orderDetails, items);
             return Cart.of(cart, items);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(WRONG_ORDER_FORMAT.getMessage());
         } catch (NotFoundByNameException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
+    }
+
+    private Map<Item, Integer> addItemToCart(String orderDetails, Items items) {
+        Map<String, String> parsedOrderDetails = Parser.parseOrderDetails(orderDetails);
+        Map<Item, Integer> cart = new HashMap<>();
+        for (String itemName : parsedOrderDetails.keySet()) {
+            Item item = items.findByName(itemName);
+            cart.put(item, Integer.parseInt(parsedOrderDetails.get(itemName)));
+        }
+        return cart;
     }
 
     public void checkStock(Cart consumerCart) {

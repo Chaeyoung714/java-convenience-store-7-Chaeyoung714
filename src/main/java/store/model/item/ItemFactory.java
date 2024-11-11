@@ -5,21 +5,16 @@ import store.model.promotion.Promotion;
 
 public class ItemFactory {
 
-    public static Item from(final String name, final String price, final String quantity, final Optional<Promotion> promotion) {
+    public static Item from(final String name, final String price, final String quantity,
+                            final Optional<Promotion> promotion) {
         try {
             int promotionQuantity = determinePromotionQuantity(promotion, quantity);
             int regularQuantity = determineRegularQuantity(promotion, quantity);
             boolean hasOngoingPromotion = determinePromotionOngoing(promotion);
             return new Item(
-                    name
-                    , Integer.parseInt(price)
-                    , promotionQuantity
-                    , regularQuantity
-                    , hasOngoingPromotion
-                    , promotion
-            );
+                    name, Integer.parseInt(price), promotionQuantity, regularQuantity, hasOngoingPromotion, promotion);
         } catch (NumberFormatException e) {
-            throw new IllegalStateException("[SYSTEM] 잘못된 가격 또는 수량입니다.");
+            throw new IllegalStateException("[SYSTEM] Wrong quantity or wrong price");
         }
     }
 

@@ -25,20 +25,16 @@ public class Item{
     }
 
     public void updateItemInfo(final String quantity, final Optional<Promotion> promotion) {
-        try {
-            validatePositiveNumber(Integer.parseInt(quantity));
-            if (promotion.isEmpty() && this.promotion.isPresent()) {
-                this.regularQuantity = Integer.parseInt(quantity);
-                return;
-            }
-            if (promotion.isPresent() && this.promotion.isEmpty()) {
-                updatePromotionItemInfo(quantity, promotion);
-                return;
-            }
-            throw new IllegalStateException("[SYSTEM] Promotion item duplicated or regular item duplicated");
-        } catch (NumberFormatException e) {
-            throw new IllegalStateException("[SYSTEM] Wrong item quantity");
+        validatePositiveNumber(Integer.parseInt(quantity));
+        if (promotion.isEmpty() && this.promotion.isPresent()) {
+            this.regularQuantity = Integer.parseInt(quantity);
+            return;
         }
+        if (promotion.isPresent() && this.promotion.isEmpty()) {
+            updatePromotionItemInfo(quantity, promotion);
+            return;
+        }
+        throw new IllegalStateException("[SYSTEM] Promotion item duplicated or regular item duplicated");
     }
 
     private void updatePromotionItemInfo(final String quantity, final Optional<Promotion> promotion) {

@@ -17,8 +17,8 @@ public class ItemsFactory {
         try {
             List<Item> items = parseItems(itemFileData, promotions);
             return new Items(items);
-        } catch (NullPointerException e) {
-            throw new IllegalStateException("[SYSTEM] Wrong item quantity or price");
+        } catch (NullPointerException | NumberFormatException e) {
+            throw new IllegalStateException("[SYSTEM] Wrong item value");
         }
     }
 
@@ -29,8 +29,7 @@ public class ItemsFactory {
             Optional<Item> registeredItem = findByNameOrElseEmpty(item[NAME], items);
             Optional<Promotion> promotionOfItem = promotions.findByName(item[PROMOTION]);
             if (registeredItem.isEmpty()) {
-                items.add(ItemFactory.from(
-                        item[NAME], item[PRICE], item[QUANTITY], promotionOfItem));
+                items.add(ItemFactory.from(item[NAME], item[PRICE], item[QUANTITY], promotionOfItem));
                 continue;
             }
             registeredItem.get().updateItemInfo(item[QUANTITY], promotionOfItem);

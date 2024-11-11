@@ -13,13 +13,8 @@ public record ItemStockDtos(List<ItemStockDto> dtos) {
         List<ItemStockDto> dtos = new ArrayList<>();
         for (Item item : items.getItems()) {
             dtos.add(ItemStockDto.from(
-                    item.getName()
-                    , item.getPrice()
-                    , item.getRegularQuantity()
-                    , item.getPromotionQuantity()
-                    , item.hasOngoingPromotion()
-                    , item.getPromotion()
-            ));
+                    item.getName(), item.getPrice(), item.getRegularQuantity(), item.getPromotionQuantity()
+                    , item.hasOngoingPromotion(), item.getPromotion()));
         }
         return new ItemStockDtos(dtos);
     }
