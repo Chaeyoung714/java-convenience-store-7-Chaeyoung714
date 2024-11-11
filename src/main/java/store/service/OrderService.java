@@ -34,7 +34,7 @@ public class OrderService {
     public void checkStock(Cart consumerCart) {
         Map<Item, Integer> cart = consumerCart.getCart();
         for (Item item : cart.keySet()) {
-            if (cart.get(item) > (item.getPromotionQuantity() + item.getRegularQuantity())) {
+            if (item.isOutOfStockWhenBuyAmountIs(cart.get(item))) {
                 throw new IllegalArgumentException(ORDER_EXCEEDS_STOCK_QUANTITY.getMessage());
             }
         }
@@ -49,8 +49,7 @@ public class OrderService {
 
     public PurchaseCost calculateCost(Cart cart, DiscountHistory discountHistory) {
         int totalItemCost = cart.calculateTotalCost();
-        int totalDiscountAmount =
-                discountHistory.getMembershipDiscountAmount() + discountHistory.getPromotionDiscountAmount();
+        int totalDiscountAmount = discountHistory.calculateTotalDiscountAmount();
         return new PurchaseCost(totalItemCost - totalDiscountAmount, totalItemCost);
     }
 }

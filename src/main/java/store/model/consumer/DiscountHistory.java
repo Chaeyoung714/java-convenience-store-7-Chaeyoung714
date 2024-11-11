@@ -42,9 +42,13 @@ public class DiscountHistory {
         this.isMembershipApplied = true;
     }
 
+    public int calculateTotalDiscountAmount() {
+        return membershipDiscountAmount + promotionDiscountAmount;
+    }
+
     private void validateDuplicatedGift(final Item item) {
         if (gifts.keySet().contains(item)) {
-            throw new IllegalStateException("[SYSTEM] Duplicated promotion on same item.");
+            throw new IllegalStateException("[SYSTEM] Duplicated gift on same item.");
         }
     }
 

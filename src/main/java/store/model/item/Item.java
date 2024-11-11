@@ -47,6 +47,10 @@ public class Item{
         this.promotion = promotion;
     }
 
+    public boolean isOutOfStockWhenBuyAmountIs(final int buyAmount) {
+        return buyAmount > (promotionQuantity + regularQuantity);
+    }
+
     public void purchase(int amount) {
         if (promotionQuantity > 0) {
             amount = calculateWithPromotionQuantity(amount);
