@@ -8,6 +8,7 @@ import store.dto.output.PurchaseHistoryDtos.PurchaseHistoryDto;
 public class ReceiptLinePrinter {
     private static final String DIVISION_LINE = "=";
     private static final int TOTAL_BILL_WIDTH = 35;
+    private static final int DIVISION_LINE_WIDTH = 38;
     private static StringBuilder lineBuilder = new StringBuilder();
 
     public void printDivisionLineWith(String title) {
@@ -19,7 +20,7 @@ public class ReceiptLinePrinter {
     }
 
     public void printDivisionLine() {
-        StringBuilder divisionLine = new StringBuilder(DIVISION_LINE.repeat(TOTAL_BILL_WIDTH + 3));
+        StringBuilder divisionLine = new StringBuilder(DIVISION_LINE.repeat(DIVISION_LINE_WIDTH));
         System.out.println(divisionLine);
     }
 
@@ -43,8 +44,8 @@ public class ReceiptLinePrinter {
     public String buildPromotionHistoryLine(PromotionHistoryDto dto) {
         lineBuilder.setLength(0);
         lineBuilder.append(String.format(RECEIPT_LEFT_PART_STRING, dto.name()));
-        lineBuilder.append(
-                String.format(RECEIPT_MIDDLE_PART_NUMBER, dto.amount())); //다시 체크
+        lineBuilder.append(String.format(RECEIPT_MIDDLE_PART_NUMBER, dto.amount()));
+        lineBuilder.append(String.format(RECEIPT_RIGHT_PART_STRING_ALIGN_LEFT, ""));
         lineBuilder.append(System.lineSeparator());
         return lineBuilder.toString();
     }
@@ -73,7 +74,7 @@ public class ReceiptLinePrinter {
         lineBuilder.append(String.format(RECEIPT_LEFT_PART_STRING, "멤버십할인"));
         lineBuilder.append(String.format(RECEIPT_MIDDLE_PART_STRING, ""));
         lineBuilder.append(String.format(
-                        RECEIPT_RIGHT_PART_STRING_ALIGN_RIGHT, String.format(MINUS_NUMBER, membershipDiscountAmount)));
+                RECEIPT_RIGHT_PART_STRING_ALIGN_RIGHT, String.format(MINUS_NUMBER, membershipDiscountAmount)));
         lineBuilder.append(System.lineSeparator());
         return lineBuilder.toString();
     }
@@ -82,8 +83,7 @@ public class ReceiptLinePrinter {
         lineBuilder.setLength(0);
         lineBuilder.append(String.format(RECEIPT_LEFT_PART_STRING, "내실돈"));
         lineBuilder.append(String.format(RECEIPT_MIDDLE_PART_STRING, ""));
-        lineBuilder.append(
-                String.format(RECEIPT_RIGHT_PART_NUMBER, finalCost));
+        lineBuilder.append(String.format(RECEIPT_RIGHT_PART_NUMBER, finalCost));
         return lineBuilder.toString();
     }
 }
