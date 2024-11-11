@@ -17,4 +17,7 @@ public record PromotionHistoryDtos(List<PromotionHistoryDto> dtos) {
         }
         return new PromotionHistoryDtos(dtos);
     }
+
+    public record PromotionHistoryDto(String name, int amount) {
+    }
 }

@@ -17,4 +17,7 @@ public record PurchaseHistoryDtos(List<PurchaseHistoryDto> dtos) {
         }
         return new PurchaseHistoryDtos(dtos);
     }
+
+    public record PurchaseHistoryDto(String name, int buyAmount, int totalCost) {
+    }
 }

@@ -1,10 +1,10 @@
 package store.view;
 
 import store.dto.CostResultDto;
-import store.dto.PromotionHistoryDto;
 import store.dto.PromotionHistoryDtos;
-import store.dto.PurchaseHistoryDto;
+import store.dto.PromotionHistoryDtos.PromotionHistoryDto;
 import store.dto.PurchaseHistoryDtos;
+import store.dto.PurchaseHistoryDtos.PurchaseHistoryDto;
 import store.dto.ReceiptDto;
 import store.model.item.Item;
 import store.model.item.Items;
