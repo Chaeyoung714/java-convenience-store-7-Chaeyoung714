@@ -43,10 +43,6 @@ public class Item{
         this.promotion = promotion;
     }
 
-    public boolean isOutOfStockWhenBuyAmountIs(final int buyAmount) {
-        return buyAmount > (promotionQuantity + regularQuantity);
-    }
-
     public void purchase(int amount) {
         if (promotionQuantity > 0) {
             amount = calculateWithPromotionQuantity(amount);
@@ -69,6 +65,10 @@ public class Item{
         amount -= promotionQuantity;
         promotionQuantity = 0;
         return amount;
+    }
+
+    public boolean isOutOfStockWhenBuyAmountIs(final int buyAmount) {
+        return buyAmount > (promotionQuantity + regularQuantity);
     }
 
     private void validatePositiveNumber(final int number) {

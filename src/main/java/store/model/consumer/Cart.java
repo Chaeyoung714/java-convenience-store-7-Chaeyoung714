@@ -23,24 +23,6 @@ public class Cart{
         return new Cart(cart);
     }
 
-    private void validatePositiveNumber(final Collection<Integer> buyAmounts) {
-        for (int buyAmount : buyAmounts) {
-            if (buyAmount <= 0) {
-                throw new IllegalArgumentException(WRONG_ORDER_FORMAT.getMessage());
-            }
-        }
-    }
-
-    private static void validateExistingItem(final Set<Item> cartItems, Items items) {
-        try {
-            cartItems.stream()
-                    .map(Item::getName)
-                    .forEach(items::findByName);
-        } catch (NotFoundByNameException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
     public void deductBuyAmountOf(final Item item, final int deductAmount) {
         if (cart.get(item) < deductAmount) {
             throw new IllegalStateException("[SYSTEM] Cannot Deduct Buy Amount Under Zero");
@@ -66,6 +48,24 @@ public class Cart{
             totalBuyAmount += cart.get(item);
         }
         return totalBuyAmount;
+    }
+
+    private void validatePositiveNumber(final Collection<Integer> buyAmounts) {
+        for (int buyAmount : buyAmounts) {
+            if (buyAmount <= 0) {
+                throw new IllegalArgumentException(WRONG_ORDER_FORMAT.getMessage());
+            }
+        }
+    }
+
+    private static void validateExistingItem(final Set<Item> cartItems, Items items) {
+        try {
+            cartItems.stream()
+                    .map(Item::getName)
+                    .forEach(items::findByName);
+        } catch (NotFoundByNameException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     public Map<Item, Integer> getCart() {

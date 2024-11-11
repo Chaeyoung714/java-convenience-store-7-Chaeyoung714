@@ -65,7 +65,7 @@ public class DiscountHistoryTest {
     @Test
     @DisplayName("[프로모션][success] 증정품을 받기 위한 구매 금액까지 합산하여 프로모션 영향을 받은 총 금액을 합산한다.")
     void calculateTotalPromotionAppliedAmount() {
-        assertThat(discountHistory.getPromotionAppliedAmount()).isEqualTo(24000);
+        assertThat(discountHistory.calculatePromotionAppliedAmount()).isEqualTo(24000);
     }
 
     @Test

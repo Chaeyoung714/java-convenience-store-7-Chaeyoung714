@@ -31,6 +31,15 @@ public class Promotions {
         }
     }
 
+    public Optional<Promotion> findByName(final String name) {
+        for (Promotion promotion : promotions) {
+            if (promotion.getName().equals(name)) {
+                return Optional.of(promotion);
+            }
+        }
+        return Optional.empty();
+    }
+
     private static List<Promotion> parsePromotions(final List<String> promotionFileData) {
         List<Promotion> promotions = new ArrayList<>();
         for (String promotionData : promotionFileData) {
@@ -39,15 +48,6 @@ public class Promotions {
                     , promotion[START_DATE], promotion[END_DATE]));
         }
         return promotions;
-    }
-
-    public Optional<Promotion> findByName(final String name) {
-        for (Promotion promotion : promotions) {
-            if (promotion.getName().equals(name)) {
-                return Optional.of(promotion);
-            }
-        }
-        return Optional.empty();
     }
 
     private static void validateNameDuplication(final List<Promotion> promotions) {

@@ -15,15 +15,6 @@ public class DiscountHistory {
         this.isMembershipApplied = false;
     }
 
-    public int getPromotionAppliedAmount() {
-        int promotionAppliledAmount = 0;
-        for (Item item : gifts.keySet()) {
-            int bundleAmount = item.getPromotion().get().getBundleAmount();
-            promotionAppliledAmount += (bundleAmount * gifts.get(item) * item.getPrice());
-        }
-        return promotionAppliledAmount;
-    }
-
     public void addGift(final Item item, final int amount) {
         if (amount == 0) {
             return;
@@ -42,6 +33,15 @@ public class DiscountHistory {
         this.isMembershipApplied = true;
     }
 
+    public int calculatePromotionAppliedAmount() {
+        int promotionAppliledAmount = 0;
+        for (Item item : gifts.keySet()) {
+            int bundleAmount = item.getPromotion().get().getBundleAmount();
+            promotionAppliledAmount += (bundleAmount * gifts.get(item) * item.getPrice());
+        }
+        return promotionAppliledAmount;
+    }
+
     public int calculateTotalDiscountAmount() {
         return membershipDiscountAmount + promotionDiscountAmount;
     }
@@ -54,7 +54,7 @@ public class DiscountHistory {
 
     private void validateHasOngoingPromotion(final Item item) {
         if (!item.hasOngoingPromotion()) {
-            throw new IllegalStateException("[SYSTEM] Gift is not have Ongoing Promotion Item.");
+            throw new IllegalStateException("[SYSTEM] Gift doesn't have any ongoing promotion.");
         }
     }
 
