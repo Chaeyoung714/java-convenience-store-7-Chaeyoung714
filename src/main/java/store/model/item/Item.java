@@ -1,8 +1,5 @@
 package store.model.item;
 
-import static store.exceptions.ExceptionMessages.WRONG_ORDER_FORMAT;
-
-import java.util.Collection;
 import java.util.Optional;
 import store.model.promotion.Promotion;
 

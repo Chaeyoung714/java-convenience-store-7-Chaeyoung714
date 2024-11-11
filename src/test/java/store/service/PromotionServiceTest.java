@@ -22,13 +22,17 @@ import store.model.consumer.DiscountHistory;
 import store.model.item.Item;
 import store.model.item.Items;
 import store.model.item.ItemsFactory;
-import store.model.promotion.Promotion;
 import store.model.promotion.Promotions;
-import store.util.FileScanner;
 
 public class PromotionServiceTest {
     private static Promotions defaultPromotions;
     private static PromotionService promotionService;
+    private static List<String> defaultItemList;
+    private static Items defaultItems;
+    private static Item promotionItem;
+    private static Item regularItem;
+
+
     private DiscountHistory discountHistory;
 
     @BeforeAll
@@ -37,6 +41,14 @@ public class PromotionServiceTest {
                 "testPromo2+1,2,1,2024-01-01,2024-12-31"
         )));
         promotionService = new PromotionService(new PromotionPolicy());
+        defaultItemList = new ArrayList<>(Arrays.asList(
+                "withPromotion,1000,6,testPromo2+1"
+                , "withPromotion,1000,6,null"
+                , "onlyRegular,1000,3,null"
+        ));
+        defaultItems = ItemsFactory.of(defaultItemList, defaultPromotions);
+        promotionItem = defaultItems.findByName("withPromotion");
+        regularItem = defaultItems.findByName("onlyRegular");
     }
 
     @BeforeEach
@@ -45,128 +57,92 @@ public class PromotionServiceTest {
     }
 
     @Test
-    void 프로모션_상품이_아니면_행사할인_없이_주문이_완료된다() {
-        List<String> testItems = new ArrayList<>(Arrays.asList(
-                "withPromotion,1000,6,탄산2+1"
-                , "withPromotion,1000,6,null"
-                , "onlyRegular,1000,3,null"
-        ));
-        Items items = ItemsFactory.of(testItems, defaultPromotions);
-        Item buyItem = items.findByName("onlyRegular");
-        int buyAmount = 3;
-
-        promotionService.checkAndApplyPromotion(buyItem, buyAmount, discountHistory);
+    @DisplayName("[success] 정가 상품만 있다면 행사할인 적용을 하지 않는다.")
+    void notApplyPromotionIfNotHavingOngoingPromotion() {
+        promotionService.checkAndApplyPromotion(regularItem, 3, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(0);
         assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(0);
     }
 
     @Test
-    @DisplayName("프로모션 상품일때 프로모션 재고가 모자랄때 과정 1")
-    void 프로모션_상품일때_프로모션_재고가_모자라면_예외를_발생하여_사용자에게_질문한다() {
-        List<String> testItems = new ArrayList<>(Arrays.asList(
-                "withPromotion,1000,6,탄산2+1"
-                , "withPromotion,1000,6,null"
-        ));
-        Items items = ItemsFactory.of(testItems, defaultPromotions);
-        Item buyItem = items.findByName("withPromotion");
-        int buyAmount = 7;
+    @DisplayName("[success] 프로모션 상품이 있다면 행사할인을 적용한다.")
+    void applyPromotionWhenHaveOngoingPromotion() {
+        promotionService.checkAndApplyPromotion(promotionItem, 4, discountHistory);
 
-        assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(buyItem, buyAmount, discountHistory))
+        assertThat(discountHistory.getGifts().size()).isEqualTo(1);
+        assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(1000);
+    }
+
+    @Test
+    @DisplayName("[success][프로모션 재고가 부족할 때] (1) 예외가 발생하여 사용자에게 질문한다.")
+    void generateException_whenOutOfPromotionStock() {
+        assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(promotionItem, 7, discountHistory))
                 .isInstanceOf(OutOfPromotionStockException.class);
     }
 
     @Test
-    @DisplayName("프로모션 상품일때 프로모션 재고가 모자랄때 과정 2-1")
-    void 프로모션_재고가_모자랄때_정가로_계산한다() {
-        List<String> testItems = new ArrayList<>(Arrays.asList(
-                "withPromotion,1000,6,탄산2+1"
-                , "withPromotion,1000,6,null"
-        ));
-        Items items = ItemsFactory.of(testItems, defaultPromotions);
-        Item buyItem = items.findByName("withPromotion");
-        int buyAmount = 7;
-
-        promotionService.applyDefaultPromotion(buyItem, buyAmount, discountHistory);
+    @DisplayName("[success][프로모션 재고가 부족할 때] (2-1) 부족한 수량은 정가로 계산한다.")
+    void calculateWithRegularItems_whenOutOfPromotionStock() {
+        promotionService.applyDefaultPromotion(promotionItem, 7, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
-        assertThat(discountHistory.getGifts().get(buyItem)).isEqualTo(2);
+        assertThat(discountHistory.getGifts().get(promotionItem)).isEqualTo(2);
         assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(2000);
     }
 
     @Test
-    // Cart가 달라지는 것으로, 2-1과 비교해 필요 없음.
-    @DisplayName("프로모션 상품일때 프로모션 재고가 모자랄때 과정 2-2")
-    void 프로모션_재고가_모자랄때_제외하고_계산한다() {
-        List<String> testItems = new ArrayList<>(Arrays.asList(
-                "withPromotion,1000,6,탄산2+1"
-                , "withPromotion,1000,6,null"
-        ));
-        Items items = ItemsFactory.of(testItems, defaultPromotions);
-        Item buyItem = items.findByName("withPromotion");
+    @DisplayName("[success][프로모션 재고가 모자랄 때] (2-2) 부족한 수량을 제외하고 계산하여 구매 수량을 부족한 수량만큼 차감한다.")
+    void calculateWithoutRegularItems_whenOutOfPromotionStock() {
         int buyAmount = 7;
-
+        int outOfStockAmount = 1;
         Map<Item, Integer> carMap = new HashMap<>();
-        carMap.put(buyItem, buyAmount);
-        Cart cart = Cart.of(carMap, items);
-        OutOfStockPromotionDto testOutOfStockInfo = new OutOfStockPromotionDto(buyItem, 7,1);
+        carMap.put(promotionItem, buyAmount);
+        Cart cart = Cart.of(carMap, defaultItems);
+        OutOfStockPromotionDto testOutOfStockInfo = new OutOfStockPromotionDto(
+                promotionItem, buyAmount, outOfStockAmount);
 
         promotionService.applyPromotionWithoutRegularItems(testOutOfStockInfo, cart, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
-        assertThat(discountHistory.getGifts().get(buyItem)).isEqualTo(2);
+        assertThat(discountHistory.getGifts().get(promotionItem)).isEqualTo(2);
         assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(2000);
+        assertThat(cart.getCart().get(promotionItem)).isEqualTo(buyAmount - outOfStockAmount);
     }
 
 
     @Test
-    @DisplayName("프로모션 상품일 때 증정품 1개 추가가 가능할 때 과정 1")
-    void 프로모션_상품일때_증정품_1개_추가가_가능하면_예외를_발생하여_사용자에게_질문한다() {
-        List<String> testItems = new ArrayList<>(Arrays.asList(
-                "withPromotion,1000,6,탄산2+1"
-                , "withPromotion,1000,6,null"
-        ));
-        Items items = ItemsFactory.of(testItems, defaultPromotions);
-        Item buyItem = items.findByName("withPromotion");
-        int buyAmount = 5;
-
-        assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(buyItem, buyAmount, discountHistory))
+    @DisplayName("[success][증정품 1개 추가가 가능할 때] (1) 예외가 발생하여 사용자에게 질문한다.")
+    void generateException_whenCanAddGift() {
+        assertThatThrownBy(() -> promotionService.checkAndApplyPromotion(promotionItem, 5, discountHistory))
                 .isInstanceOf(NotAddGiftException.class);
     }
 
     @Test
-    @DisplayName("프로모션 상품일 때 증정품 1개 추가가 가능할 때 과정 2-1")
-    void 증정품_1개_추가가_가능할때_추가한다() {
-        List<String> testItems = new ArrayList<>(Arrays.asList(
-                "withPromotion,1000,6,탄산2+1"
-                , "withPromotion,1000,6,null"
-        ));
-        Items items = ItemsFactory.of(testItems, defaultPromotions);
+    @DisplayName("[success][증정품 1개 추가가 가능할 때] (2-1) 증정품 1개를 추가한다.")
+    void calculateAddingGift_whenCanAddGift() {
+        int buyAmount = 5;
+        int addingGiftAmount = 1;
         Map<Item, Integer> carMap = new HashMap<>();
-        carMap.put(items.findByName("withPromotion"), 5);
-        Cart cart = Cart.of(carMap, items);
-        GiftDto testGiftInfo = new GiftDto(items.findByName("withPromotion"), 5);
+        carMap.put(promotionItem, buyAmount);
+        Cart cart = Cart.of(carMap, defaultItems);
+        GiftDto testGiftInfo = new GiftDto(promotionItem, buyAmount);
 
         promotionService.applyPromotionAddingGift(testGiftInfo, cart, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
-        assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(2);
+        assertThat(discountHistory.getGifts().get(promotionItem)).isEqualTo(2);
         assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(2000);
+        assertThat(cart.getCart().get(promotionItem)).isEqualTo(buyAmount + addingGiftAmount);
     }
 
     @Test
-    @DisplayName("프로모션 상품일 때 증정품 1개 추가가 가능할 때 과정 2-2")
-    void 증정품_1개_추가가_가능할때_추가하지_않는다() {
-        List<String> testItems = new ArrayList<>(Arrays.asList(
-                "withPromotion,1000,6,탄산2+1"
-                , "withPromotion,1000,6,null"
-        ));
-        Items items = ItemsFactory.of(testItems, defaultPromotions);
-
-        promotionService.applyDefaultPromotion(items.findByName("withPromotion"), 5, discountHistory);
+    @DisplayName("[success][증정품 1개 추가가 가능할 때] (2-2) 증정품을 추가하지 않는다.")
+    void calculateWithoutGift_whenCanAddGift() {
+        promotionService.applyDefaultPromotion(promotionItem, 5, discountHistory);
 
         assertThat(discountHistory.getGifts().size()).isEqualTo(1);
-        assertThat(discountHistory.getGifts().get(items.findByName("withPromotion"))).isEqualTo(1);
+        assertThat(discountHistory.getGifts().get(promotionItem)).isEqualTo(1);
         assertThat(discountHistory.getPromotionDiscountAmount()).isEqualTo(1000);
     }
 

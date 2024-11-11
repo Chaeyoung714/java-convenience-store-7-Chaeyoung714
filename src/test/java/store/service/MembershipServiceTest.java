@@ -21,7 +21,6 @@ import store.model.item.Items;
 import store.model.item.ItemsFactory;
 import store.model.promotion.Promotion;
 import store.model.promotion.Promotions;
-import store.util.FileScanner;
 
 public class MembershipServiceTest {
     private static Promotions defaultPromotions;

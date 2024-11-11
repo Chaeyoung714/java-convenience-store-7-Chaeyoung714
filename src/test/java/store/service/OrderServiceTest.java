@@ -1,6 +1,5 @@
 package store.service;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,12 +15,10 @@ import org.junit.jupiter.api.Test;
 import store.exceptions.ExceptionMessages;
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
-import store.model.consumer.DiscountHistoryTest;
 import store.model.consumer.PurchaseCost;
 import store.model.item.Item;
 import store.model.item.Items;
 import store.model.item.ItemsFactory;
-import store.model.promotion.Promotion;
 import store.model.promotion.Promotions;
 
 public class OrderServiceTest {
