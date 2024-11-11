@@ -15,6 +15,7 @@ import store.service.handlerWithController.PromotionServiceOutboundHandler;
 import store.service.OrderService;
 import store.util.FileScanner;
 import store.view.input.OrderInputView;
+import store.view.output.ExceptionMessageOutputView;
 import store.view.output.ItemStockOutputView;
 import store.view.output.ReceiptOutputView;
 
@@ -75,7 +76,7 @@ public class ConvenienceStoreController {
                 orderService.orderItems(cart);
                 return cart;
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                ExceptionMessageOutputView.printErrorMessage(e.getMessage());
             }
         }
     }
@@ -91,7 +92,7 @@ public class ConvenienceStoreController {
                 membershipService.applyMemberShip(answer, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                ExceptionMessageOutputView.printErrorMessage(e.getMessage());
             }
         }
     }
@@ -110,7 +111,7 @@ public class ConvenienceStoreController {
                 }
                 return;
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                ExceptionMessageOutputView.printErrorMessage(e.getMessage());
             }
         }
     }

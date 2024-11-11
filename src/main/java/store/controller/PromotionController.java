@@ -6,6 +6,7 @@ import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.service.handlerWithController.PromotionServiceInboundHandler;
 import store.view.input.PromotionInputView;
+import store.view.output.ExceptionMessageOutputView;
 
 public class PromotionController implements PromotionServiceObserver {
     private final PromotionInputView promotionInputView;
@@ -25,7 +26,7 @@ public class PromotionController implements PromotionServiceObserver {
                 promotionServiceHandler.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                ExceptionMessageOutputView.printErrorMessage(e.getMessage());
             }
         }
     }
@@ -38,7 +39,7 @@ public class PromotionController implements PromotionServiceObserver {
                 promotionServiceHandler.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
+                ExceptionMessageOutputView.printErrorMessage(e.getMessage());
             }
         }
     }
