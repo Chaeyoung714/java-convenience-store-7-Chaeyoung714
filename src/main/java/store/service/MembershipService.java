@@ -2,6 +2,7 @@ package store.service;
 
 import static store.util.Answer.YES;
 
+import store.discountPolicy.DefaultMembershipPolicy;
 import store.discountPolicy.MembershipPolicy;
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;

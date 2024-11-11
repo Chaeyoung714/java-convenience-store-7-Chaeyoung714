@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import store.discountPolicy.PromotionPolicy;
+import store.discountPolicy.DefaultPromotionPolicy;
 import store.dto.promotion.GiftDto;
 import store.dto.promotion.OutOfStockPromotionDto;
 import store.exceptions.NotAddGiftException;
@@ -40,7 +40,7 @@ public class PromotionServiceTest {
         defaultPromotions = Promotions.of(new ArrayList<>(Arrays.asList(
                 "testPromo2+1,2,1,2024-01-01,2024-12-31"
         )));
-        promotionService = new PromotionService(new PromotionPolicy());
+        promotionService = new PromotionService(new DefaultPromotionPolicy());
         defaultItemList = new ArrayList<>(Arrays.asList(
                 "withPromotion,1000,6,testPromo2+1"
                 , "withPromotion,1000,6,null"

@@ -12,13 +12,13 @@ import store.model.item.Item;
 import store.model.item.ItemFactory;
 import store.model.promotion.Promotion;
 
-public class PromotionPolicyTest {
-    private static PromotionPolicy promotionPolicy;
+public class DefaultPromotionPolicyTest {
+    private static DefaultPromotionPolicy promotionPolicy;
     private static Promotion defaultPromotion;
 
     @BeforeAll
     static void setUp() {
-        promotionPolicy = new PromotionPolicy();
+        promotionPolicy = new DefaultPromotionPolicy();
         defaultPromotion = Promotion.from("testPromo2+1", "2", "1", "2024-01-01", "2024-12-31");
     }
 
@@ -29,7 +29,7 @@ public class PromotionPolicyTest {
     void calculateGiftAmount(int buyAmount, int expectedGiftAmount) {
         Item testItem = ItemFactory.from("test", "1000", "7", Optional.of(defaultPromotion));
 
-        int giftAmount = promotionPolicy.calculateGift(testItem, buyAmount);
+        int giftAmount = promotionPolicy.calculateGiftAmount(testItem, buyAmount);
 
         assertThat(giftAmount).isEqualTo(expectedGiftAmount);
     }
@@ -37,6 +37,6 @@ public class PromotionPolicyTest {
     @Test
     @DisplayName("[success] 모든 프로모션의 증정품 기본 수량은 1이다.")
     void getFixedDefaultGiftAmount() {
-        assertThat(promotionPolicy.getGiftAmount()).isEqualTo(1);
+        assertThat(promotionPolicy.getDefaultGiftAmount()).isEqualTo(1);
     }
 }

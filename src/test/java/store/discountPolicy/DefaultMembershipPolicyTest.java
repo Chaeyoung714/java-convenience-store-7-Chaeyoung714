@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class MembershipPolicyTest {
-    private static MembershipPolicy membershipPolicy;
+public class DefaultMembershipPolicyTest {
+    private static DefaultMembershipPolicy membershipPolicy;
 
     @BeforeAll
     static void setUp() {
-        membershipPolicy = new MembershipPolicy();
+        membershipPolicy = new DefaultMembershipPolicy();
     }
 
     @Test

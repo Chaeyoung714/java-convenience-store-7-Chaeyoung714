@@ -3,6 +3,8 @@ package store;
 import store.controller.ConvenienceStoreController;
 import store.controller.PromotionController;
 import store.controller.PromotionServiceObserver;
+import store.discountPolicy.DefaultMembershipPolicy;
+import store.discountPolicy.DefaultPromotionPolicy;
 import store.discountPolicy.MembershipPolicy;
 import store.discountPolicy.PromotionPolicy;
 import store.service.MembershipService;
@@ -22,9 +24,17 @@ public class DependencyConfig {
         return new ReceiptOutputView(new ReceiptLinePrinter());
     }
 
+    public PromotionPolicy promotionPolicy() {
+        return new DefaultPromotionPolicy();
+    }
+
+    public MembershipPolicy membershipPolicy() {
+        return new DefaultMembershipPolicy();
+    }
+
     public PromotionService promotionService() {
         return new PromotionService(
-                new PromotionPolicy());
+                promotionPolicy());
     }
 
     public PromotionServiceInboundHandler promotionServiceInboundHandler() {
@@ -45,7 +55,7 @@ public class DependencyConfig {
     }
 
     public MembershipService membershipService() {
-        return new MembershipService(new MembershipPolicy());
+        return new MembershipService(membershipPolicy());
     }
 
     public ConvenienceStoreController convenienceStoreController() {

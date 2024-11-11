@@ -12,7 +12,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import store.discountPolicy.MembershipPolicy;
+import store.discountPolicy.DefaultMembershipPolicy;
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.model.item.Item;
@@ -34,7 +34,7 @@ public class MembershipServiceTest {
                 "testPromo2+1,2,1,2024-01-01,2024-12-31"
         )));
         defaultPromotion = Promotion.from("testPromo2+1", "2", "1", "2024-01-01", "2024-12-31");
-        membershipService = new MembershipService(new MembershipPolicy());
+        membershipService = new MembershipService(new DefaultMembershipPolicy());
     }
 
     @BeforeEach

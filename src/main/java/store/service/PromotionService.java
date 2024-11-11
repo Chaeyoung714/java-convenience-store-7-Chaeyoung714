@@ -32,29 +32,29 @@ public class PromotionService {
             throw new OutOfPromotionStockException(outOfStockAmount);
         }
         if (buyAmount % promotionBundleAmount == requiredBuyAmount) {
-            if ((buyAmount + promotionPolicy.getGiftAmount()) <= item.getPromotionQuantity()) {
+            if ((buyAmount + promotionPolicy.getDefaultGiftAmount()) <= item.getPromotionQuantity()) {
                 throw new NotAddGiftException();
             }
         }
     }
 
     public void applyDefaultPromotion(Item item, int buyAmount, DiscountHistory discountHistory) {
-        int giftAmount = promotionPolicy.calculateGift(item, buyAmount);
+        int giftAmount = promotionPolicy.calculateGiftAmount(item, buyAmount);
         discountHistory.addGift(item, giftAmount);
     }
 
     public void applyPromotionWithoutRegularItems(OutOfStockPromotionDto dto, Cart cart,
                                                   DiscountHistory discountHistory) {
         int updatedBuyAmount = dto.buyAmount() - dto.outOfStockAmount();
-        int giftAmount = promotionPolicy.calculateGift(dto.item(), updatedBuyAmount);
+        int giftAmount = promotionPolicy.calculateGiftAmount(dto.item(), updatedBuyAmount);
         discountHistory.addGift(dto.item(), giftAmount);
         cart.deductBuyAmountOf(dto.item(), dto.outOfStockAmount());
     }
 
     public void applyPromotionAddingGift(GiftDto dto, Cart cart, DiscountHistory discountHistory) {
-        int updatedBuyAmount = dto.buyAmount() + promotionPolicy.getGiftAmount();
-        int giftAmount = promotionPolicy.calculateGift(dto.gift(), updatedBuyAmount);
+        int updatedBuyAmount = dto.buyAmount() + promotionPolicy.getDefaultGiftAmount();
+        int giftAmount = promotionPolicy.calculateGiftAmount(dto.gift(), updatedBuyAmount);
         discountHistory.addGift(dto.gift(), giftAmount);
-        cart.addBuyAmountOf(dto.gift(), promotionPolicy.getGiftAmount());
+        cart.addBuyAmountOf(dto.gift(), promotionPolicy.getDefaultGiftAmount());
     }
 }
