@@ -1,4 +1,4 @@
-package store.dto;
+package store.dto.output;
 
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;

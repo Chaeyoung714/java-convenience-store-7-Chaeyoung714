@@ -3,8 +3,8 @@ package store.service.handlerWithController;
 import static store.util.Answer.NO;
 import static store.util.Answer.YES;
 
-import store.dto.GiftDto;
-import store.dto.OutOfStockPromotionDto;
+import store.dto.promotion.GiftDto;
+import store.dto.promotion.OutOfStockPromotionDto;
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.service.PromotionService;

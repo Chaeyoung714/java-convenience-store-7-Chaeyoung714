@@ -1,34 +1,14 @@
-package store.view;
+package store.view.input;
 
 import camp.nextstep.edu.missionutils.Console;
-import store.dto.GiftDto;
-import store.dto.OutOfStockPromotionDto;
 
-public class InputView {
+public class OrderInputView {
     public String readPurchasingItems() {
         System.out.println(System.lineSeparator()
                 + "구매하실 상품명과 수량을 입력해 주세요. (예: [사이다-2],[감자칩-1])");
         String purchasingItems = Console.readLine();
         InputValidator.validatePurchasingItems(purchasingItems);
         return purchasingItems;
-    }
-
-    public String readOutOfStockPromotion(OutOfStockPromotionDto dto) {
-        System.out.println(String.format(System.lineSeparator()
-                        + "현재 %s %,d개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)"
-                , dto.itemName(), dto.outOfStockAmount()));
-        String answer = Console.readLine();
-        InputValidator.validateYesOrNoAnswer(answer);
-        return answer;
-    }
-
-    public String readAddGift(GiftDto dto) {
-        System.out.println(String.format(System.lineSeparator()
-                        + "현재 %s은(는) 1개를 무료로 더 받을 수 있습니다. 추가하시겠습니까? (Y/N)"
-                , dto.giftName()));
-        String answer = Console.readLine();
-        InputValidator.validateYesOrNoAnswer(answer);
-        return answer;
     }
 
     public String readApplyMemberShip() {

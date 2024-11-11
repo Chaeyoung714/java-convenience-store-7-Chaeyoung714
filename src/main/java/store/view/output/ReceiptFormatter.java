@@ -1,4 +1,4 @@
-package store.view;
+package store.view.output;
 
 public class ReceiptFormatter {
     private static final int LEFT_ONE_THIRD_WIDTH = 19;

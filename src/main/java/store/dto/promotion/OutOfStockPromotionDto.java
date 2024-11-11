@@ -1,4 +1,4 @@
-package store.dto;
+package store.dto.promotion;
 
 import store.model.item.Item;
 

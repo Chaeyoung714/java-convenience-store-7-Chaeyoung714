@@ -1,18 +1,19 @@
 package store.controller;
 
-import store.dto.GiftDto;
-import store.dto.OutOfStockPromotionDto;
+import store.dto.promotion.GiftDto;
+import store.dto.promotion.OutOfStockPromotionDto;
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
 import store.service.handlerWithController.PromotionServiceInboundHandler;
-import store.view.InputView;
+import store.view.input.PromotionInputView;
 
 public class PromotionController implements PromotionServiceObserver {
-    private final InputView inputView;
+    private final PromotionInputView promotionInputView;
     private final PromotionServiceInboundHandler promotionServiceHandler;
 
-    public PromotionController(InputView inputView, PromotionServiceInboundHandler promotionServiceHandler) {
-        this.inputView = inputView;
+    public PromotionController(PromotionInputView promotionInputView,
+                               PromotionServiceInboundHandler promotionServiceHandler) {
+        this.promotionInputView = promotionInputView;
         this.promotionServiceHandler = promotionServiceHandler;
     }
 
@@ -20,7 +21,7 @@ public class PromotionController implements PromotionServiceObserver {
     public void notifyOutOfPromotionStock(OutOfStockPromotionDto dto, Cart cart, DiscountHistory discountHistory) {
         while (true) {
             try {
-                String answer = inputView.readOutOfStockPromotion(dto);
+                String answer = promotionInputView.readOutOfStockPromotion(dto);
                 promotionServiceHandler.orderWithOrWithoutRegularItems(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {
@@ -34,7 +35,7 @@ public class PromotionController implements PromotionServiceObserver {
     public void notifyAddGift(GiftDto dto, Cart cart, DiscountHistory discountHistory) {
         while (true) {
             try {
-                String answer = inputView.readAddGift(dto);
+                String answer = promotionInputView.readAddGift(dto);
                 promotionServiceHandler.orderAddingOrWithoutGift(answer, dto, cart, discountHistory);
                 return;
             } catch (IllegalArgumentException e) {

@@ -1,48 +1,17 @@
-package store.view;
+package store.view.output;
 
-import static store.view.ReceiptFormatter.*;
+import store.dto.output.CostResultDto;
+import store.dto.output.PromotionHistoryDtos;
+import store.dto.output.PromotionHistoryDtos.PromotionHistoryDto;
+import store.dto.output.PurchaseHistoryDtos;
+import store.dto.output.PurchaseHistoryDtos.PurchaseHistoryDto;
+import store.dto.output.ReceiptDto;
 
-import store.dto.CostResultDto;
-import store.dto.ItemStockDtos;
-import store.dto.ItemStockDtos.ItemStockDto;
-import store.dto.PromotionHistoryDtos;
-import store.dto.PromotionHistoryDtos.PromotionHistoryDto;
-import store.dto.PurchaseHistoryDtos;
-import store.dto.PurchaseHistoryDtos.PurchaseHistoryDto;
-import store.dto.ReceiptDto;
-
-public class OutputView {
+public class ReceiptOutputView {
     private final ReceiptLinePrinter receiptLinePrinter;
 
-    public OutputView(ReceiptLinePrinter receiptLinePrinter) {
+    public ReceiptOutputView(ReceiptLinePrinter receiptLinePrinter) {
         this.receiptLinePrinter = receiptLinePrinter;
-    }
-
-    public void printItemsStock(ItemStockDtos dtos) {
-        printItemStockStartLine();
-        for (ItemStockDto dto : dtos.dtos()) {
-            if (!dto.promotionName().isEmpty()) {
-                String promotionQuantity = quantityForPrint(dto.promotionQuantity());
-                System.out.println(String.format(PROMOTION_ITEM_STOCK
-                        , dto.name(), dto.price(), promotionQuantity, dto.promotionName()));
-            }
-            String regularQuantity = quantityForPrint(dto.regularQuantity());
-            System.out.println(String.format(REGULAR_ITEM_STOCK
-                    , dto.name(), dto.price(), regularQuantity));
-        }
-    }
-
-    private void printItemStockStartLine() {
-        System.out.println(System.lineSeparator() + "안녕하세요. W편의점입니다."
-                + System.lineSeparator() + "현재 보유하고 있는 상품입니다."
-                + System.lineSeparator());
-    }
-
-    private String quantityForPrint(int quantity) {
-        if (quantity == 0) {
-            return "재고 없음";
-        }
-        return String.format("%,d개", quantity);
     }
 
     public void printReceipt(ReceiptDto dto) {

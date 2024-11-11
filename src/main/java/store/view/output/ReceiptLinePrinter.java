@@ -1,9 +1,9 @@
-package store.view;
+package store.view.output;
 
-import static store.view.ReceiptFormatter.*;
+import static store.view.output.ReceiptFormatter.*;
 
-import store.dto.PromotionHistoryDtos.PromotionHistoryDto;
-import store.dto.PurchaseHistoryDtos.PurchaseHistoryDto;
+import store.dto.output.PromotionHistoryDtos.PromotionHistoryDto;
+import store.dto.output.PurchaseHistoryDtos.PurchaseHistoryDto;
 
 public class ReceiptLinePrinter {
     private static final String DIVISION_LINE = "=";

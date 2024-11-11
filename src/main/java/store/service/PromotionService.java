@@ -1,8 +1,8 @@
 package store.service;
 
 import store.discountPolicy.PromotionPolicy;
-import store.dto.GiftDto;
-import store.dto.OutOfStockPromotionDto;
+import store.dto.promotion.GiftDto;
+import store.dto.promotion.OutOfStockPromotionDto;
 import store.exceptions.NotAddGiftException;
 import store.exceptions.OutOfPromotionStockException;
 import store.model.consumer.Cart;

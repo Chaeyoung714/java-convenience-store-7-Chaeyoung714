@@ -1,4 +1,4 @@
-package store.dto;
+package store.dto.output;
 
 import java.util.ArrayList;
 import java.util.List;

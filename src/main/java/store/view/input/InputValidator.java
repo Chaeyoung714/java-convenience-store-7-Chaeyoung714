@@ -1,4 +1,4 @@
-package store.view;
+package store.view.input;
 
 import static store.exceptions.ExceptionMessages.WRONG_INPUT_VALUE;
 import static store.exceptions.ExceptionMessages.WRONG_ORDER_FORMAT;
@@ -21,9 +21,9 @@ public class InputValidator {
         return !inputValue.matches(DELIMITERS_IN_ORDER_REGEX_WITH_BLANK_UNALLOWED);
     }
 
-    public static void validateYesOrNoAnswer(String answer) {
-        for (Answer ans : Answer.values()) {
-            if (ans.getFormat().equals(answer)) {
+    public static void validateYesOrNoAnswer(String answerInput) {
+        for (Answer answer : Answer.values()) {
+            if (answer.getFormat().equals(answerInput)) {
                 return;
             }
         }

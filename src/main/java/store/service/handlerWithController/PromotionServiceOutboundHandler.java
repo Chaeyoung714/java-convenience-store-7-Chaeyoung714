@@ -2,8 +2,8 @@ package store.service.handlerWithController;
 
 import java.util.Map;
 import store.controller.PromotionServiceObserver;
-import store.dto.GiftDto;
-import store.dto.OutOfStockPromotionDto;
+import store.dto.promotion.GiftDto;
+import store.dto.promotion.OutOfStockPromotionDto;
 import store.exceptions.NotAddGiftException;
 import store.exceptions.OutOfPromotionStockException;
 import store.model.consumer.Cart;
