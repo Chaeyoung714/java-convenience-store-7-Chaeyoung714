@@ -1,6 +1,10 @@
 package store.view.output;
 
 public class ReceiptFormatter {
+
+    private ReceiptFormatter() {
+    }
+
     private static final int LEFT_ONE_THIRD_WIDTH = 19;
     private static final int MIDDLE_ONE_THIRD_WIDTH = 9;
     private static final int RIGHT_ONE_THIRD_WITH = 7;

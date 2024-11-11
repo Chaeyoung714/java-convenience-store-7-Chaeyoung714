@@ -14,6 +14,8 @@ public class Parser {
     private static final int ITEM_NAME = 0;
     private static final int BUY_AMOUNT = 1;
 
+    private Parser() {
+    }
 
     public static Map<String, String> parseOrderDetails(String orderDetailInput) throws IllegalArgumentException {
         try {

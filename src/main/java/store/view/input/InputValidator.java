@@ -6,6 +6,10 @@ import static store.exceptions.ExceptionMessages.WRONG_ORDER_FORMAT;
 import store.util.Answer;
 
 public class InputValidator {
+
+    private InputValidator() {
+    }
+
     private static final String DELIMITERS_IN_ORDER_REGEX_WITH_BLANK_UNALLOWED = "\\[[^\\s\\-,]+\\-[0-9]+\\](,\\[[^\\s\\-,]+\\-[0-9]+\\])*";
 
     public static void validatePurchasingItems(String orderDetail) {
