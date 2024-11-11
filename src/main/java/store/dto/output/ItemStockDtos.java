@@ -26,6 +26,7 @@ public record ItemStockDtos(List<ItemStockDto> dtos) {
 
     public record ItemStockDto(String name, int price, int regularQuantity, int promotionQuantity,
                                String promotionName) {
+
         public static ItemStockDto from(String name, int price, int regularQuantity, int promotionQuantity,
                                         boolean hasOngoingPromotion, Optional<Promotion> promotion) {
             String promotionName = "";

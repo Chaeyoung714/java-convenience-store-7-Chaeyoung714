@@ -11,8 +11,7 @@ public record PromotionHistoryDtos(List<PromotionHistoryDto> dtos) {
         List<PromotionHistoryDto> dtos = new ArrayList<>();
         for (Item item : discountHistory.getGifts().keySet()) {
             dtos.add(new PromotionHistoryDto(
-                    item.getName()
-                    , discountHistory.getGifts().get(item)
+                    item.getName(), discountHistory.getGifts().get(item)
             ));
         }
         return new PromotionHistoryDtos(dtos);

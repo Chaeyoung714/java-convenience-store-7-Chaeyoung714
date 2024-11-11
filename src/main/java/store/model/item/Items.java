@@ -26,10 +26,14 @@ public class Items {
     private static void validateNameDuplication(List<Item> items) {
         Set<String> uniqueNames = new HashSet<>();
         for (Item item : items) {
-            if (!uniqueNames.add(item.getName())) {
-                throw new IllegalStateException("[SYSTEM] 중복된 상품명입니다.");
+            if (addDuplicatedName(uniqueNames, item.getName())) {
+                throw new IllegalStateException("[SYSTEM] Duplicated name of item");
             }
         }
+    }
+
+    private static boolean addDuplicatedName(Set<String> uniqueNames, String name) {
+        return !uniqueNames.add(name);
     }
 
     public List<Item> getItems() {

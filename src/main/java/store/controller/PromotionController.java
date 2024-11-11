@@ -28,7 +28,6 @@ public class PromotionController implements PromotionServiceObserver {
                 System.out.println(e.getMessage());
             }
         }
-
     }
 
     @Override

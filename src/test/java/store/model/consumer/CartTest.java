@@ -32,7 +32,7 @@ public class CartTest {
 
     @BeforeAll
     static void setUp() {
-        defaultPromotions = Promotions.register(new ArrayList<>(Arrays.asList(
+        defaultPromotions = Promotions.of(new ArrayList<>(Arrays.asList(
                 "testPromo2+1,2,1,2024-01-01,2024-12-31"
         )));
         defaultItem1 = ItemFactory.from("test1", "1000", "5", Optional.empty());

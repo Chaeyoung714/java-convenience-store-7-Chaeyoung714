@@ -15,7 +15,7 @@ public class PromotionsTest {
 
     @BeforeAll
     static void setUp() {
-        defaultPromotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
+        defaultPromotions = Promotions.of(FileScanner.readFile("./src/main/resources/promotions.md"));
         defaultpromotionList = defaultPromotions.getPromotions();
     }
 

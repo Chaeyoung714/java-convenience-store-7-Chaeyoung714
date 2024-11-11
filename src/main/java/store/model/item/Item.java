@@ -32,15 +32,19 @@ public class Item{
                 return;
             }
             if (promotion.isPresent() && this.promotion.isEmpty()) {
-                this.promotionQuantity = Integer.parseInt(quantity);
-                this.hasOngoingPromotion = promotion.get().isOngoing();
-                this.promotion = promotion;
+                updatePromotionItemInfo(quantity, promotion);
                 return;
             }
-            throw new IllegalStateException("[SYSTEM] 프로모션이 중복 적용되거나 정가제품이 중복 적용되었습니다.");
+            throw new IllegalStateException("[SYSTEM] Promotion item duplicated or regular item duplicated");
         } catch (NumberFormatException e) {
-            throw new IllegalStateException("[SYSTEM] 잘못된 수량입니다.");
+            throw new IllegalStateException("[SYSTEM] Wrong item quantity");
         }
+    }
+
+    private void updatePromotionItemInfo(String quantity, Optional<Promotion> promotion) {
+        this.promotionQuantity = Integer.parseInt(quantity);
+        this.hasOngoingPromotion = promotion.get().isOngoing();
+        this.promotion = promotion;
     }
 
     public void purchase(int amount) {
@@ -54,7 +58,7 @@ public class Item{
             regularQuantity -= amount;
             return;
         }
-        throw new IllegalStateException("Out of all product stock");
+        throw new IllegalStateException("[SYSTEM] Out of all product stock");
     }
 
     private int calculateWithPromotionQuantity(int amount) {

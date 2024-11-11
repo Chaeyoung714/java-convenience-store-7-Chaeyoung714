@@ -21,7 +21,7 @@ public class ItemsFactoryTest {
 
     @BeforeAll
     static void setUp() {
-        defaultPromotions = Promotions.register(FileScanner.readFile("./src/main/resources/promotions.md"));
+        defaultPromotions = Promotions.of(FileScanner.readFile("./src/main/resources/promotions.md"));
         defaultItems = ItemsFactory.of(FileScanner.readFile("./src/main/resources/products.md"), defaultPromotions);
     }
 

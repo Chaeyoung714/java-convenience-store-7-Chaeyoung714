@@ -36,13 +36,13 @@ public class Promotion {
                     , transferToLocalDateFrom(startDate)
                     , transferToLocalDateFrom(endDate));
         } catch (NumberFormatException e) {
-            throw new IllegalStateException("[SYSTEM] 잘못된 수량입니다.");
+            throw new IllegalStateException("[SYSTEM] Wrong promotion buyAmount or getAmount");
         }
     }
 
     private void validatePositiveNumber(int number) {
         if (number <= 0) {
-            throw new IllegalStateException("[SYSTEM] 잘못된 수량입니다.");
+            throw new IllegalStateException("[SYSTEM] Wrong promotion buyAmount or getAmount");
         }
     }
 
@@ -53,7 +53,7 @@ public class Promotion {
                     , Integer.parseInt(date[MONTH])
                     , Integer.parseInt(date[DAY]));
         } catch (NullPointerException | NumberFormatException | DateTimeException e) {
-            throw new IllegalStateException("[SYSTEM] 잘못된 날짜입니다.");
+            throw new IllegalStateException("[SYSTEM] Wrong type of date");
         }
     }
 

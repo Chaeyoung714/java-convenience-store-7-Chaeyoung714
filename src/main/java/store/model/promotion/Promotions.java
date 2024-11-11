@@ -21,13 +21,13 @@ public class Promotions {
         this.promotions = promotions;
     }
 
-    public static Promotions register(List<String> promotionFileData) {
+    public static Promotions of(List<String> promotionFileData) {
         try {
             List<Promotion> promotions = parsePromotions(promotionFileData);
             validateNameDuplication(promotions);
             return new Promotions(promotions);
         } catch (NullPointerException e) {
-            throw new IllegalStateException("[SYSTEM] 잘못된 프로모션입니다.");
+            throw new IllegalStateException("[SYSTEM] Wrong promotion type");
         }
     }
 
@@ -57,10 +57,14 @@ public class Promotions {
     private static void validateNameDuplication(List<Promotion> promotions) {
         Set<String> uniqueNames = new HashSet<>();
         for (Promotion promotion : promotions) {
-            if (!uniqueNames.add(promotion.getName())) {
-                throw new IllegalStateException("[SYSTEM] 중복된 프로모션입니다.");
+            if (addDuplicatedName(uniqueNames, promotion.getName())) {
+                throw new IllegalStateException("[SYSTEM] Duplicated name of promotion");
             }
         }
+    }
+
+    private static boolean addDuplicatedName(Set<String> uniqueNames, String name) {
+        return !uniqueNames.add(name);
     }
 
     public List<Promotion> getPromotions() {

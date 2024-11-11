@@ -40,12 +40,16 @@ public class ConvenienceStoreController {
     }
 
     private void purchaseOnce(Items items) {
-        itemStockOutputView.printItemsStock(ItemStockDtos.of(items));
+        showItemStock(items);
         DiscountHistory discountHistory = new DiscountHistory();
         Cart cart = orderItems(items, discountHistory);
         applyMemberShip(cart, discountHistory);
         showPurchaseResult(cart, discountHistory);
         restartOrEndPurchase(items);
+    }
+
+    private void showItemStock(Items items) {
+        itemStockOutputView.printItemsStock(ItemStockDtos.of(items));
     }
 
     private Cart orderItems(Items items, DiscountHistory discountHistory) {

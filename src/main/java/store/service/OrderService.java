@@ -21,8 +21,7 @@ public class OrderService {
             Map<Item, Integer> cart = new HashMap<>();
             for (String itemName : parsedOrderDetails.keySet()) {
                 Item item = items.findByName(itemName);
-                int buyAmount = Integer.parseInt(parsedOrderDetails.get(itemName));
-                cart.put(item, buyAmount);
+                cart.put(item, Integer.parseInt(parsedOrderDetails.get(itemName)));
             }
             return Cart.of(cart, items);
         } catch (NumberFormatException e) {
