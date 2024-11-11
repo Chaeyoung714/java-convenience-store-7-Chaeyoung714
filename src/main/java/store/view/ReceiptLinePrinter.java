@@ -77,7 +77,6 @@ public class ReceiptLinePrinter {
         lineBuilder.append(String.format("%-" + PRODUCT_NAME_WIDTH + "s", "내실돈"));
         lineBuilder.append(
                 String.format("%," + (BUY_AMOUNT_WIDTH + PRICE_WIDTH) + "d", finalCost));
-        lineBuilder.append(System.lineSeparator());
         return lineBuilder.toString();
     }
 }

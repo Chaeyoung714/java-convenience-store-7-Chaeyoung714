@@ -2,6 +2,7 @@ package store.controller;
 
 import static store.util.Answer.YES;
 
+import store.dto.ItemStockDtos;
 import store.dto.ReceiptDto;
 import store.model.consumer.Cart;
 import store.model.consumer.DiscountHistory;
@@ -35,7 +36,7 @@ public class ConvenienceStoreController {
     }
 
     private void purchaseOnce(Items items) {
-        outputView.printItemsStock(items);
+        outputView.printItemsStock(ItemStockDtos.of(items));
         DiscountHistory discountHistory = new DiscountHistory();
         Cart cart = orderItems(items, discountHistory);
         applyMemberShip(cart, discountHistory);

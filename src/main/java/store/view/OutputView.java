@@ -1,13 +1,13 @@
 package store.view;
 
 import store.dto.CostResultDto;
+import store.dto.ItemStockDtos;
+import store.dto.ItemStockDtos.ItemStockDto;
 import store.dto.PromotionHistoryDtos;
 import store.dto.PromotionHistoryDtos.PromotionHistoryDto;
 import store.dto.PurchaseHistoryDtos;
 import store.dto.PurchaseHistoryDtos.PurchaseHistoryDto;
 import store.dto.ReceiptDto;
-import store.model.item.Item;
-import store.model.item.Items;
 
 public class OutputView {
     private final ReceiptLinePrinter receiptLinePrinter;
@@ -16,21 +16,18 @@ public class OutputView {
         this.receiptLinePrinter = receiptLinePrinter;
     }
 
-    public void printItemsStock(Items items) {
+    public void printItemsStock(ItemStockDtos dtos) {
         printItemStockStartLine();
-        for (Item item : items.getItems()) {
-            String name = item.getName();
-            int price = item.getPrice();
-            String regularQuantity = quantityForPrint(item.getRegularQuantity());
-            String promotionQuantity = quantityForPrint(item.getPromotionQuantity());
-            if (item.hasOngoingPromotion()) {
-                String promotionName = item.getPromotion().get().getName();
+        for (ItemStockDto dto : dtos.dtos()) {
+            String regularQuantity = quantityForPrint(dto.regularQuantity());
+            String promotionQuantity = quantityForPrint(dto.promotionQuantity());
+            if (!dto.promotionName().isEmpty()) {
                 System.out.println(String.format(
                         "- %s %,d원 %s %s"
-                        , name, price, promotionQuantity, promotionName));
+                        , dto.name(), dto.price(), promotionQuantity, dto.promotionName()));
             }
             System.out.println(String.format("- %s %,d원 %s"
-                    , name, price, regularQuantity));
+                    , dto.name(), dto.price(), regularQuantity));
         }
     }
 
