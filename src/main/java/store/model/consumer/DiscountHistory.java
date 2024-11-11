@@ -25,6 +25,9 @@ public class DiscountHistory {
     }
 
     public void addGift(Item item, int amount) {
+        if (amount == 0) {
+            return;
+        }
         validateHasOngoingPromotion(item);
         validateDuplicatedGift(item);
         gifts.put(item, amount);
