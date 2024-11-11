@@ -1,5 +1,7 @@
 package store.view;
 
+import static store.view.ReceiptFormatter.*;
+
 import store.dto.CostResultDto;
 import store.dto.ItemStockDtos;
 import store.dto.ItemStockDtos.ItemStockDto;
@@ -19,14 +21,13 @@ public class OutputView {
     public void printItemsStock(ItemStockDtos dtos) {
         printItemStockStartLine();
         for (ItemStockDto dto : dtos.dtos()) {
-            String regularQuantity = quantityForPrint(dto.regularQuantity());
-            String promotionQuantity = quantityForPrint(dto.promotionQuantity());
             if (!dto.promotionName().isEmpty()) {
-                System.out.println(String.format(
-                        "- %s %,d원 %s %s"
+                String promotionQuantity = quantityForPrint(dto.promotionQuantity());
+                System.out.println(String.format(PROMOTION_ITEM_STOCK
                         , dto.name(), dto.price(), promotionQuantity, dto.promotionName()));
             }
-            System.out.println(String.format("- %s %,d원 %s"
+            String regularQuantity = quantityForPrint(dto.regularQuantity());
+            System.out.println(String.format(REGULAR_ITEM_STOCK
                     , dto.name(), dto.price(), regularQuantity));
         }
     }
@@ -46,11 +47,11 @@ public class OutputView {
 
     public void printReceipt(ReceiptDto dto) {
         System.out.println();
-        receiptLinePrinter.printDivisionLine("W 편의점");
+        receiptLinePrinter.printDivisionLineWith("W 편의점");
         printPurchaseHistories(dto.getPurchaseHistoryDtos());
-        receiptLinePrinter.printDivisionLine("증\t정");
+        receiptLinePrinter.printDivisionLineWith("증\t정");
         printPromotionHistories(dto.getPromotionHistoryDtos());
-        receiptLinePrinter.printDivisionLine("===");
+        receiptLinePrinter.printDivisionLine();
         printCostResult(dto.getCostResultDto());
     }
 
@@ -58,7 +59,7 @@ public class OutputView {
         System.out.println(receiptLinePrinter.printPurchaseHistoryStartLine());
         StringBuilder purchaseHistory = new StringBuilder();
         for (PurchaseHistoryDto dto : dtos.dtos()) {
-            purchaseHistory.append(receiptLinePrinter.printPurchaseHistoryLine(dto));
+            purchaseHistory.append(receiptLinePrinter.buildPurchaseHistoryLine(dto));
         }
         System.out.print(purchaseHistory);
     }
@@ -66,19 +67,17 @@ public class OutputView {
     private void printPromotionHistories(PromotionHistoryDtos dtos) {
         StringBuilder promotionHistory = new StringBuilder();
         for (PromotionHistoryDto dto : dtos.dtos()) {
-            promotionHistory.append(receiptLinePrinter.printPromotionHistoryLine(dto));
+            promotionHistory.append(receiptLinePrinter.buildPromotionHistoryLine(dto));
         }
         System.out.print(promotionHistory);
     }
 
     private void printCostResult(CostResultDto dto) {
         StringBuilder costResults = new StringBuilder();
-        costResults.append(receiptLinePrinter.printTotalProductPrice(dto.totalItemCost(), dto.totalBuyAmount()));
-        costResults.append(receiptLinePrinter.printPromotionDiscountAmount(dto.promotionDiscountAmount()));
-        costResults.append(receiptLinePrinter.printMembershipDiscoutAmount(dto.membershipDiscountAmount()));
-        costResults.append(receiptLinePrinter.printFinalCost(dto.finalCost()));
+        costResults.append(receiptLinePrinter.buildTotalProductPriceLine(dto.totalItemCost(), dto.totalBuyAmount()));
+        costResults.append(receiptLinePrinter.buildPromotionDiscountAmountLine(dto.promotionDiscountAmount()));
+        costResults.append(receiptLinePrinter.buildMembershipDiscountAmountLine(dto.membershipDiscountAmount()));
+        costResults.append(receiptLinePrinter.buildFinalCostLine(dto.finalCost()));
         System.out.println(costResults);
     }
-
-
 }
